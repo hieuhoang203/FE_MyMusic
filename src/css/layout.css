@@ -1,0 +1,66 @@
+:root {
+    --menu-color: #121212;
+    --text-color: #fbfbfb;
+    --heart-color: #1ed760;
+    --display-item-color: #4d4d4d;
+}
+
+.standing-menu {
+    height: 100%;
+    width: 34%;
+}
+
+.toolbar {
+    height: 20%;
+    border-radius: 10px;
+    background-color: var(--menu-color);
+    margin: 10px -3px 5px 10px;
+    position: relative;
+}
+
+.toolbar-item {
+    position: absolute;
+    left: 15px;
+}
+
+.item-search {
+    top: 50px;
+}
+
+.library {
+    margin: 1px -3px 5px 10px;
+    border-radius: 10px;
+    height: 76%;
+    background-color: var(--menu-color);
+}
+
+.library-item {
+    padding-left: 17px;
+}
+
+.library-item .icon-library {
+    margin-right: 210px;
+}
+
+.icon-bonus {
+    margin-right: 15px;
+}
+
+a {
+    text-decoration: none;
+    color: var(--display-item-color);
+}
+
+a h4 {
+    margin-left: 10px;
+    display: inline-block;
+}
+
+a:hover {
+    color: var(--text-color);
+}
+
+.playing {
+    color: var(--text-color);
+}
+
