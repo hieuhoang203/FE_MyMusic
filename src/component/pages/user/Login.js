@@ -1,52 +1,78 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "../../../css/login.css";
-import logo from "../../../asset/logomusic.png";
+import {createBrowserHistory as useHistory} from "history";
 
 function Login() {
+
+    const history = useHistory();
+
+    const addClassForContainer = () => {
+        history.replace('/register')
+        const container = document.getElementById("container")
+        container.classList.add('active')
+    }
+
+    const removeClassFromContainer = () => {
+        history.replace('/login')
+        const container = document.getElementById("container")
+        container.classList.remove('active')
+    }
+
     return (
-        <>
-            <div className="container-login">
-                <div className="logo">
-                    <img src={logo} alt="Can't load image!"/>
-                    <a href="/">My music</a>
-                </div>
-                <div className="create-account">
-                    <h1>Login your account 👋</h1>
-                    <div className="social-login">
-                        <button className="google">
-                            <i className='bx bxl-google bx-sm bx-tada-hover'></i>
-                            Use Google
-                        </button>
-                        <button className="facebook">
-                            <i className='bx bxl-facebook bx-sm bx-tada-hover'></i>
-                            Use Facebook
-                        </button>
+        <div id="container">
+            <div className="form-container sign-up">
+                <form action="">
+                    <h1>Create Account</h1>
+                    <div className="social-icon">
+                        <a href="" className="icon">
+                            <i className='bx bxl-google bx-sm'></i>
+                        </a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="" className="icon">
+                            <i className='bx bxl-facebook bx-sm'></i>
+                        </a>
                     </div>
-                    <div className="divider">
-                        <div className="line"></div>
-                        <p>Or</p>
-                        <div className="line"></div>
+                    <span>or use email for registration</span>
+                    <input type="text" placeholder={'Name'}/>
+                    <input type="email" placeholder={'Email'}/>
+                    <input type="password" placeholder={'Password'}/>
+                    <button>Sign up</button>
+                </form>
+            </div>
+            <div className="form-container sign-in">
+                <form action="">
+                    <h1>Sign In</h1>
+                    <div className="social-icon">
+                        <a href="" className="icon">
+                            <i className='bx bxl-google bx-sm'></i>
+                        </a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="" className="icon">
+                            <i className='bx bxl-facebook bx-sm'></i>
+                        </a>
                     </div>
-                    <form action="">
-                        <label>Email:</label>
-                        <div className="custom-input">
-                            <input type="email" name={'email'} placeholder={'Your Email'} autoComplete={'off'}/>
-                            <i className='bx bx-at'></i>
-                        </div>
-                        <label>Password:</label>
-                        <div className="custom-input">
-                            <input type="password" name={'password'} placeholder={'Your Password'}/>
-                            <i className='bx bx-lock-alt'></i>
-                        </div>
-                        <button className="login">Login</button>
-                        <div className="links">
-                            <a href="">Reset password</a>
-                            <a href="/register">Don't have an account?</a>
-                        </div>
-                    </form>
+                    <span>or use email password</span>
+                    <input type="email" placeholder={'Email'}/>
+                    <input type="password" placeholder={'Password'}/>
+                    <a href="">Forget your password?</a>
+                    <button>Sign in</button>
+                </form>
+            </div>
+            <div className="toggle-container">
+                <div className="toggle">
+                    <div className="toggle-panel toggle-left">
+                        <h1>Well come back 👋</h1>
+                        <p>Enter your personal details to use all of site features</p>
+                        <button className="hidden" id="login" onClick={() => removeClassFromContainer()}>Sign In</button>
+                    </div>
+                    <div className="toggle-panel toggle-right">
+                        <h1>Hello, Friend 😘</h1>
+                        <p>Register with your personal details to use all of site features</p>
+                        <button className="hidden" id="register" onClick={() => addClassForContainer()}>Sign Up</button>
+                    </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

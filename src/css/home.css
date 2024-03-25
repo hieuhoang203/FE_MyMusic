@@ -1,1 +1,73 @@
+.home-page {
+    height: 100vh;
+    width: 100vw;
+}
 
+.toolbar-content {
+    height: 88%;
+    display: flex;
+    overflow: hidden;
+}
+
+.content {
+    margin: 10px;
+    height: 93%;
+    width: 66%;
+    color: var(--text-color);
+    background-color: var(--menu-color);
+    padding: 10px;
+    border-radius: 10px;
+    overflow: auto;
+}
+
+.header-content {
+    display: flex;
+}
+
+.button-arrow {
+    width: 25px;
+    max-height: 25px;
+    margin-top: 5px;
+    margin-right: 10px;
+    border-radius: 50%;
+    padding: 5px;
+    background-color: var(--backgroud-color);
+}
+
+.button-arrow a {
+    color: var(--text-color);
+}
+
+.search-box {
+    top: 90px;
+    position: absolute;
+    width: 820px;
+    background-color: transparent;
+}
+
+.list-button {
+    display: flex;
+}
+
+.link-search {
+    border: none;
+    text-align: center;
+    width: 70px;
+    background-color: var(--display-item-color);
+    margin: 10px;
+    height: 30px;
+    border-radius: 30px;
+}
+
+.link-search:hover {
+    cursor: pointer;
+}
+
+.link-search a {
+    font-size: small;
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+.albums {
+}

@@ -1,18 +1,1 @@
-:root{
-    --fallback-fonts: Helvetica Neue,helvetica,arial,Hiragino Kaku Gothic ProN,Meiryo,MS Gothic;
-    --menu-color: #121212;
-    --backgroud-color: #000000;
-    --text-color: #fbfbfb;
-    --heart-color: #1ed760;
-    --display-item-color: #4d4d4d;
-}
 
-body {
-    vertical-align: baseline;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background-color: var(--backgroud-color);
-    -webkit-font-smoothing: antialiased;
-    font-family: CircularSp,CircularSp-Arab,CircularSp-Hebr,CircularSp-Cyrl,CircularSp-Grek,CircularSp-Deva,var(--fallback-fonts, sans-serif),sans-serif;
-}

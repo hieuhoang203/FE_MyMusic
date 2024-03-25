@@ -1,0 +1,22 @@
+body.dark {
+    --light: #181a1e;
+    --grey: #2525c;
+    --dark: #fbfbfb;
+}
+
+.bx {
+    font-size: 1.7rem;
+}
+
+li {
+    list-style: none;
+}
+
+html {
+    overflow-x: hidden;
+}
+
+.side-bar {
+    position: fixed;
+    top: 0;
+}
