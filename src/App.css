@@ -1,31 +1,12 @@
-:root{
-  --fallback-fonts: Helvetica Neue,helvetica,arial,Hiragino Kaku Gothic ProN,Meiryo,MS Gothic;
-  --menu-color: #121212;
-  --backgroud-color: #000000;
-  --text-color: #fbfbfb;
-  --heart-color: #1ed760;
-  --display-item-color: #4d4d4d;
-  --cart-color: #242424;
-  --light: #f6f6f9;
-  --primary: #1976D2;
-  --light-primary: #CFE8FF;
-  --grey: #eee;
-  --dark-grey: #AAAAAA;
-  --dark: #363949;
-  --danger: #D32F2F;
-  --light-danger: #FECDD3;
-  --warning: #FBC02D;
-  --light-warning: #FFF2C6;
-  --success: #388E3C;
-  --light-success: #BBF7D0;
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
-body {
-  vertical-align: baseline;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  background-color: var(--backgroud-color);
-  -webkit-font-smoothing: antialiased;
-  font-family: CircularSp,CircularSp-Arab,CircularSp-Hebr,CircularSp-Cyrl,CircularSp-Grek,CircularSp-Deva,var(--fallback-fonts, sans-serif),sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    outline: 0;
+    appearance: none;
+    border: 0;
+    text-decoration: none;
 }

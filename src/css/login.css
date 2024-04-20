@@ -1,4 +1,12 @@
-#container {
+.body-login {
+    background: #c9d6ff linear-gradient(to right, #c9d6ff, #1ed760);
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.box-container {
     margin: 40px auto 0;
     background-color: #fbfbfb;
     border-radius: 30px;
@@ -9,29 +17,29 @@
     min-height: 480px;
 }
 
-#container p {
+.box-container p {
     font-size: 14px;
     line-height: 20px;
     letter-spacing: 0.3px;
     margin: 20px 0;
 }
 
-#container span {
+.box-container span {
     font-size: 12px;
 }
 
-#container a {
+.box-container a {
     color: #333;
     font-size: 13px;
     text-decoration: none;
     margin: 15px 0 10px;
 }
 
-#container button {
+.box-container button {
     background-color: #3CB371;
     color: #fff;
     font-size: 12px;
-     padding: 10px 45px;
+    padding: 10px 45px;
     border: 1px solid transparent;
     border-radius: 8px;
     font-weight: 600;
@@ -41,12 +49,12 @@
     cursor: pointer;
 }
 
-#container button.hidden {
+.box-container button.hidden {
     background-color: transparent;
     border-color: #fff;
 }
 
-#container form {
+.box-container form {
     background-color: #fff;
     display: flex;
     align-items: center;
@@ -56,7 +64,7 @@
     height: 100%;
 }
 
-#container input {
+.box-container input {
     background-color: #eee;
     border: none;
     margin: 8px 0;
@@ -80,7 +88,7 @@
     z-index: 2;
 }
 
-#container.active .sign-in {
+.box-container.active .sign-in {
     transform: translateX(100%);
 }
 
@@ -91,7 +99,7 @@
     z-index: 1;
 }
 
-#container.active .sign-up {
+.box-container.active .sign-up {
     transform: translateX(100%);
     opacity: 1;
     z-index: 5;
@@ -124,6 +132,10 @@
     height: 40px;
 }
 
+.social-icon a i {
+    color: #1d1d1d;
+}
+
 .toggle-container {
     position: absolute;
     top: 0;
@@ -136,22 +148,22 @@
     z-index: 1000;
 }
 
-#container.active .toggle-container {
+.box-container.active .toggle-container {
     transform: translateX(-100%);
     border-radius: 0 150px 100px 0;
 }
 
-.toggle {
+.body-login .box-container .toggle-container .toggle {
     height: 100%;
     color: #fff;
     position: relative;
-    background: var(--display-item-color) linear-gradient(to right, var(--display-item-color), var(--heart-color));
+    background: #4d4d4d linear-gradient(to right, #4d4d4d, #3CB371);
     width: 200%;
     left: -100%;
     transition: all 0.6s ease-in-out;
 }
 
-#container.active .toggle {
+.box-container.active .toggle {
     transform: translateX(50%);
 }
 
@@ -172,10 +184,9 @@
 
 .toggle-left {
     transform: translateX(-200%);
-
 }
 
-#container.active .toggle-left {
+.box-container.active .toggle-left {
     transform: translateX(0);
 }
 
@@ -184,6 +195,6 @@
     transform: translateX(0);
 }
 
-#container.active .toggle-right {
+.box-container.active .toggle-right {
     transform: translateX(200%);
 }

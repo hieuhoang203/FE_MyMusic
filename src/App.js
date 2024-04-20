@@ -1,30 +1,45 @@
 import './App.css';
 import React from "react";
-import Home from "./component/pages/home/Home";
-import Login from "./component/pages/user/Login";
 import {Route, Routes} from "react-router-dom";
-import Search from "./component/pages/home/Search";
-import Layout from "./component/pages/menu/Layout";
-import DashBoard from "./component/admin/DashBoard";
-import Artist from "./component/pages/home/Artist";
-import Album from "./component/pages/home/Album";
+import Home from "./component/pages/home/Home";
+import DashBoardAdmin from "./component/pages/admin/layout/DashBoardAdmin";
+import LoginAndRegister from "./component/pages/user/Login";
+import AnalyticsAdmin from "./component/pages/admin/AnalyticsAdmin";
+import User from "./component/pages/admin/User";
+import Artis from "./component/pages/admin/Artis";
+import SongAdmin from "./component/pages/admin/SongAdmin";
+import PodcastAdmin from "./component/pages/admin/PodcastAdmin";
+import Genres from "./component/pages/admin/Genres";
+import DashBoardArtis from "./component/pages/artis/layout/DashBoardArtis";
+import PodcastArtis from "./component/pages/artis/PodcastArtis";
+import SongArtis from "./component/pages/artis/SongArtis";
+import AnalyticsArtis from "./component/pages/artis/AnalyticsArtis";
+import Album from "./component/pages/artis/Album";
 
 
 function App() {
     return (
-        <div className="container">
+        <>
             <Routes>
-                <Route path={'/'} element={<Layout/>}>
-                    <Route path={''} element={<Home/>}></Route>
-                    <Route path={'search'} element={<Search/>}></Route>
-                    <Route path={'artist'} element={<Artist/>}></Route>
+                <Route path={'/'} element={<Home/>}></Route>
+                <Route path={'/login'} element={<LoginAndRegister/>}></Route>
+                <Route path={'/register'} element={<LoginAndRegister/>}></Route>
+                <Route path={'/admin/'} element={<DashBoardAdmin/>}>
+                    <Route path={''} element={<AnalyticsAdmin/>}></Route>
+                    <Route path={'user'} element={<User/>}></Route>
+                    <Route path={'artis'} element={<Artis/>}></Route>
+                    <Route path={'songs'} element={<SongAdmin/>}></Route>
+                    <Route path={'podcast'} element={<PodcastAdmin/>}></Route>
+                    <Route path={'genres'} element={<Genres/>}></Route>
+                </Route>
+                <Route path={'/artis/'} element={<DashBoardArtis/>}>
+                    <Route path={''} element={<AnalyticsArtis/>}></Route>
+                    <Route path={'songs'} element={<SongArtis/>}></Route>
+                    <Route path={'podcast'} element={<PodcastArtis/>}></Route>
                     <Route path={'album'} element={<Album/>}></Route>
                 </Route>
-                <Route path={'/login'} element={<Login/>}></Route>
-                <Route path={'/register'} element={<Login/>}></Route>
-                <Route path={'/admin/dashboard'} element={<DashBoard/>}></Route>
             </Routes>
-        </div>
+        </>
     );
 }
 
