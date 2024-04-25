@@ -117,6 +117,71 @@ b {
     color: var(--color-warning);
 }
 
+.body-dashboard .container main .recent-orders table thead th {
+    position: relative;
+    text-align: left;
+}
+
+.body-dashboard .container main .recent-orders table thead th i {
+    margin-left: 150px;
+    font-size: 20px;
+}
+
+.body-dashboard .container main .recent-orders table thead th i:hover {
+    cursor: pointer;
+}
+
+.body-dashboard .container main .recent-orders table tbody td.button:hover {
+    cursor: pointer;
+}
+
+.body-dashboard .container main ul {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.css-dev-only-do-not-override-1qfezbu.ant-pagination .ant-pagination-item-active {
+    color: unset;
+    background-color: var(--color-white);
+    border-color: unset;
+    border: var(--color-light);
+}
+
+.css-dev-only-do-not-override-1qfezbu.ant-pagination .ant-pagination-item a,
+.css-dev-only-do-not-override-1qfezbu.ant-pagination .ant-pagination-item-link span {
+    color: var(--color-dark);
+}
+
+.css-dev-only-do-not-override-1qfezbu.ant-modal .ant-modal-content{
+    background-color: var(--color-dark);
+    min-height: 350px;
+    color: var(--color-white);
+}
+
+.modal .ant-modal-content .ant-modal-close {
+    background-color: var(--color-white);
+    color: var(--color-danger);
+}
+
+.modal .ant-modal-content form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--color-white);
+}
+
+.css-dev-only-do-not-override-1qfezbu.ant-form-item .ant-form-item-label >label {
+    color: var(--color-white);
+    font-size: 16px;
+}
+
+.modal .ant-modal-content form input {
+    font-size: 18px;
+}
+
+.modal .ant-modal-content form .button-submit{
+    text-align: center;
+}
+
 .body-dashboard .container {
     display: grid;
     width: 98%;

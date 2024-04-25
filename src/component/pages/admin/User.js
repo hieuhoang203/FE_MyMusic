@@ -46,22 +46,22 @@ const User = () => {
                 <h2 className={'name-user'}>New Users</h2>
                 <div className="user-list">
                     <div className="user">
-                        <img src={thuy}/>
+                        <img src={thuy} alt={'Can not show image'}/>
                         <h2>Thúy</h2>
                         <p>54 Min Ago</p>
                     </div>
                     <div className="user">
-                        <img src={truc}/>
+                        <img src={truc} alt={'Can not show image'}/>
                         <h2>Trúc</h2>
                         <p>3 Hours Ago</p>
                     </div>
                     <div className="user">
-                        <img src={vanh}/>
+                        <img src={vanh} alt={'Can not show image'}/>
                         <h2>Vân Anh</h2>
                         <p>6 Hours Ago</p>
                     </div>
                     <div className="user">
-                        <img src={plus}/>
+                        <img src={plus} alt={'Can not show image'}/>
                         <h2>More</h2>
                         <p>New User</p>
                     </div>
@@ -85,7 +85,7 @@ const User = () => {
                     <tbody>
                     {UserList.map((value, index) => (
                         <tr key={index}>
-                            <td><img src={value.avatar} alt=""/></td>
+                            <td><img src={value.avatar} alt={'Can not show image'}/></td>
                             <td>{value.name}</td>
                             <td>{value.sex}</td>
                             <td>{value.birthday}</td>

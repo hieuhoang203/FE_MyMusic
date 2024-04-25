@@ -5,11 +5,14 @@ import 'boxicons';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
+import {StyleProvider} from "@ant-design/cssinjs";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <App/>
+        <StyleProvider hashPriority="high">
+            <App id={1}/>
+        </StyleProvider>
     </BrowserRouter>
 );
 

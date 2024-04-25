@@ -58,7 +58,7 @@ const Album = () => {
                 <h2 className={'name-user'}>Add Album</h2>
                 <div className="user-list">
                     <div className="user">
-                        <img src={plus}/>
+                        <img src={plus} alt={'Can not show image'}/>
                         <h2>More</h2>
                         <p>New Album</p>
                     </div>
@@ -81,7 +81,7 @@ const Album = () => {
                     <tbody>
                     {newSong.map((value, index) => (
                         <tr key={index}>
-                            <td><img src={value.avatar} alt=""/></td>
+                            <td><img src={value.avatar} alt={'Can not show image'}/></td>
                             <td>{value.name}</td>
                             <td>{value.artis}</td>
                             <td>{value.duration}</td>

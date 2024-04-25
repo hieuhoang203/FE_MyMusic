@@ -35,7 +35,7 @@ const DashBoardArtis = () => {
                 <aside>
                     <div className="toggle">
                         <div className="logo">
-                            <img src={logo}/>
+                            <img src={logo} alt={'Can not show image'}/>
                             <h2>Sub<span className="danger">lime</span></h2>
                         </div>
                         <div className="close" id="close-btn">
@@ -49,7 +49,7 @@ const DashBoardArtis = () => {
                             <i className='bx bx-album'></i>
                             <h3>Album</h3>
                         </Link>
-                        <Link onClick={() => changeActiveSideBar(2)} to={'/artis/songs'}>
+                        <Link onClick={() => changeActiveSideBar(2)} to={'/artis/song'}>
                             <i className='bx bx-music'></i>
                             <h3>Song</h3>
                             <span className="message-count">27</span>
@@ -92,7 +92,7 @@ const DashBoardArtis = () => {
                                 <small className="text-muted">Admin</small>
                             </div>
                             <div className="profile-photo">
-                                <img src={vanh}/>
+                                <img src={vanh} alt={'Can not show image'}/>
                             </div>
                         </div>
 
@@ -100,7 +100,7 @@ const DashBoardArtis = () => {
 
                     <div className="user-profile">
                         <div className="logo" onClick={() => goHome()}>
-                            <img src={logo}/>
+                            <img src={logo} alt={'Can not show image'}/>
                             <h2>Sublime</h2>
                             <p>Hoàng Văn Hiếu 🫅</p>
                         </div>

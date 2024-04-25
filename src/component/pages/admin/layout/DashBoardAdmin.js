@@ -62,10 +62,10 @@ const DashBoardAdmin = () => {
                             <h3>Analytics</h3>
                         </Link>
                         <Link onClick={() => changeActiveSideBar(4)} to={'/admin/genres'}>
-                            <i className='bx bxs-volume-full'></i>
+                            <i className='bx bx-volume-full'></i>
                             <h3>Genres</h3>
                         </Link>
-                        <Link onClick={() => changeActiveSideBar(5)} to={'/admin/songs'}>
+                        <Link onClick={() => changeActiveSideBar(5)} to={'/admin/song'}>
                             <i className='bx bx-music'></i>
                             <h3>Song</h3>
                             <span className="message-count">27</span>
@@ -75,7 +75,11 @@ const DashBoardAdmin = () => {
                             <h3>Podcast</h3>
                             <span className="message-count">13</span>
                         </Link>
-                        <Link onClick={() => changeActiveSideBar(7)} to={'/setting'}>
+                        <Link onClick={() => changeActiveSideBar(7)} to={'/admin/role'}>
+                            <i className='bx bx-ghost'></i>
+                            <h3>Roles</h3>
+                        </Link>
+                        <Link onClick={() => changeActiveSideBar(8)} to={'/setting'}>
                             <i className='bx bx-cog'></i>
                             <h3>Settings</h3>
                         </Link>

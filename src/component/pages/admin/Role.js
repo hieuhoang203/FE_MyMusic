@@ -2,25 +2,18 @@ import React, {useEffect, useState} from "react";
 import plus from "../../../asset/plus.png";
 import {Button, ConfigProvider, Form, Input, message, Modal, Pagination} from "antd";
 import {TinyColor} from "@ctrl/tinycolor";
-import {
-    deleteGenres,
-    getAllGenres,
-    returnStatus,
-    saveGenres,
-    searchGenres,
-    updateGenres
-} from "../../../service/genresService";
+import {deleteRole, getAllRole, returnStatus, saveRole, searchRole, updateRole} from "../../../service/roleService";
 
-const Genres = () => {
+const Role = () => {
 
     // Pagination
+    const [page, setPage] = useState(0);
+
     const [pagination, setPagination] = useState({
         page: 1,
         limit: 5,
         totalRows: 1,
     });
-
-    const [page, setPage] = useState(0);
 
     function handlePageChange(value) {
         setPage(prevState => (value - 1))
@@ -30,8 +23,8 @@ const Genres = () => {
     const [load, setLoad] = useState(true);
     const [form] = Form.useForm();
 
-    // List genres
-    const [listGenres, setListGenres] = useState([{}])
+    // List Role
+    const [listRole, setListRole] = useState([{}])
 
     // Modal's display change variable
     const [modal, setModal] = useState(false);
@@ -49,7 +42,7 @@ const Genres = () => {
         colors.map((color) => new TinyColor(color).darken(5).toString());
 
     // Mapping object to BE
-    const [genres, setGenres] = useState({
+    const [role, setRole] = useState({
         code: "",
         name: ""
     })
@@ -57,8 +50,8 @@ const Genres = () => {
     const [id, setId] = useState();
 
     useEffect(() => {
-        getAllGenres(page).then((response) => {
-            setListGenres(response.data.content)
+        getAllRole(page).then((response) => {
+            setListRole(response.data.content)
             setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
         })
     }, [load, formCustom, page]);
@@ -75,16 +68,16 @@ const Genres = () => {
         setFormCustom((formCustom) => (value))
     }
 
-    // Create genres
-    function createGenres() {
-        saveGenres(genres).then((response) => {
+    // Create Role
+    function createRole() {
+        saveRole(role).then((response) => {
             setModal(false)
             message.open({
                 type: "success",
-                content: "Genres added successfully!"
+                content: "Role added successfully!"
             })
             setLoad(!load)
-            setGenres({
+            setRole({
                 code: "",
                 name: ""
             })
@@ -92,7 +85,7 @@ const Genres = () => {
         }).catch((error) => {
             message.open({
                 type: "error",
-                content: "Cannot add new genres!"
+                content: "Cannot add new Role!"
             })
             console.log(error)
         })
@@ -104,16 +97,16 @@ const Genres = () => {
         form.setFieldValue('name', '');
     }
 
-    // Update genres
-    function updateNewGenres() {
-        updateGenres(id, genres).then((response) => {
+    // Update Role
+    function updateNewRole() {
+        updateRole(id, role).then((response) => {
             setModal(false)
             message.open({
                 type: "success",
-                content: "Genres update successfully!"
+                content: "Role update successfully!"
             })
             setLoad(!load)
-            setGenres({
+            setRole({
                 code: "",
                 name: ""
             })
@@ -121,7 +114,7 @@ const Genres = () => {
         }).catch((error) => {
             message.open({
                 type: "error",
-                content: "Cannot update genres!"
+                content: "Cannot update Role!"
             })
             console.log(error)
         })
@@ -129,21 +122,21 @@ const Genres = () => {
 
     async function fillDataUpdate(id) {
         setId(id)
-        const newValue = await searchGenres(id)
+        const newValue = await searchRole(id)
         const value = {
             code: newValue.data.code,
             name: newValue.data.name,
         }
-        setGenres((prevState) => ({...prevState, ...value}))
+        setRole((prevState) => ({...prevState, ...value}))
         setModal(true)
         setFormCustom(false)
         form.setFieldValue('name', value.name);
         form.setFieldValue('code', value.code);
-        console.log(genres)
+        console.log(role)
     }
 
     function deleteRecord(id) {
-        deleteGenres(id).then((response) => {
+        deleteRole(id).then((response) => {
             message.open({
                 type: "success",
                 content: "Delete successfully!"
@@ -160,7 +153,7 @@ const Genres = () => {
         return value.status === 'ShutDown';
     }
 
-    // Return status Genres
+    // Return status Role
     function returnStatusRecord(id) {
         returnStatus(id).then((response) => {
             message.open({
@@ -180,21 +173,21 @@ const Genres = () => {
     return (
         <>
             <div className="new-users">
-                <h2 className={'name-user'}>New Genres</h2>
+                <h2 className={'name-user'}>New role</h2>
                 <div className="user-list">
                     <div className="user" onClick={() => openModal(true)}>
                         <img src={plus} alt={'Can not show image'}/>
                         <h2>More</h2>
-                        <p>New Genres</p>
+                        <p>New role</p>
                     </div>
                 </div>
             </div>
 
             <div className="recent-orders">
-                <h2>Genres List</h2>
+                <h2>Role List</h2>
                 <table>
                     <thead>
-                    <tr key={listGenres.length + 7}>
+                    <tr key={listRole.length + 7}>
                         <th>Code<i className='bx bx-search-alt-2'></i></th>
                         <th>Name<i className='bx bx-search-alt-2'></i></th>
                         <th>Status<i className='bx bx-filter-alt'></i></th>
@@ -204,8 +197,8 @@ const Genres = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {listGenres.map((value, index) => (
-                        <tr key={value.id}>
+                    {listRole.map((value, index) => (
+                        <tr key={index}>
                             <td>{value.code}</td>
                             <td>{value.name}</td>
                             <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
@@ -238,10 +231,9 @@ const Genres = () => {
                     wrapperCol={{flex: 1}}
                     colon={false}
                     style={{maxWidth: 600, marginTop: '60px'}}
-                    initialValues={genres}
                     form={form}
                 >
-                    <h2>{formCustom ? "Create Genres" : "Update Genres"}</h2>
+                    <h2>{formCustom ? "Create role" : "Update role"}</h2>
                     {/*<Form.Item label={'Image'} name={'avatar'}*/}
                     {/*           valuePropName={'fileList'}*/}
                     {/*           rules={[*/}
@@ -278,58 +270,29 @@ const Genres = () => {
                     {/*        }*/}
                     {/*        multiple={false}*/}
                     {/*        customRequest={(info) => {*/}
-                    {/*            setGenres({...genres, avatar: info.file})*/}
+                    {/*            setRole({...role, avatar: info.file})*/}
                     {/*            console.log(info.file)*/}
                     {/*        }}*/}
-                    {/*        fileList={genres.avatar}*/}
+                    {/*        fileList={role.avatar}*/}
                     {/*    >*/}
                     {/*        <Button icon={<UploadOutlined/>}>Click to upload</Button>*/}
                     {/*    </Upload>*/}
                     {/*</Form.Item>*/}
                     <Form.Item label={'Code'} name={'code'}
                                rules={[
-                                   {required: true, message: 'Code can not be left blank!'},
-                                   {
-                                       validator: (_, value) => {
-                                           if (!value) {
-                                               return Promise.resolve();
-                                           }
-                                           const lowercaseValue = value.trim().toLowerCase();
-                                           const isDuplicate = listGenres.some(
-                                               (genres) => genres.code.trim().toLowerCase() === lowercaseValue
-                                           )
-                                           if (isDuplicate) {
-                                               return Promise.reject('Code already exists!');
-                                           }
-                                       }
-                                   }
+                                   {required: true, message: 'Code can not be left blank!'}
                                ]}
+                               initialValue={role.code}
                     >
-                        <Input placeholder={'Enter code'}
-                               onChange={(event) => setGenres({...genres, code: event.target.value})} name={'code'}></Input>
+                        <Input name={'code'} placeholder={'Enter code'} onChange={(event) => setRole({...role, code: event.target.value})}></Input>
                     </Form.Item>
                     <Form.Item label={'Name'} name={'name'}
                                rules={[
-                                   {required: true, message: 'Name can not be left blank!'},
-                                   {
-                                       validator: (_, value) => {
-                                           if (!value) {
-                                               return Promise.resolve();
-                                           }
-                                           const lowercaseValue = value.trim().toLowerCase();
-                                           const isDuplicate = listGenres.some(
-                                               (genres) => genres.name.trim().toLowerCase() === lowercaseValue
-                                           )
-                                           if (isDuplicate) {
-                                               return Promise.reject('Name already exists!');
-                                           }
-                                           return Promise.resolve();
-                                       }
-                                   }
+                                   {required: true, message: 'Name can not be left blank!'}
                                ]}
+                               initialValue={role.name}
                     >
-                        <Input placeholder={'Enter name'} name={'name'}
-                               onChange={(event) => setGenres({...genres, name: event.target.value})}></Input>
+                        <Input name={'name'} placeholder={'Enter name'} onChange={(event) => setRole({...role, name: event.target.value})}></Input>
                     </Form.Item>
                     <Form.Item className={'button-submit'}>
                         <ConfigProvider
@@ -353,8 +316,7 @@ const Genres = () => {
                                 }
                             }}
                         >
-                            <Button htmlType={"button"} type="primary" size="large"
-                                    onClick={() => formCustom ? createGenres() : updateNewGenres()}>
+                            <Button htmlType={"button"} type="primary" size="large" onClick={() => formCustom ? createRole() : updateNewRole()}>
                                 {formCustom ? "Create" : "Update"}
                             </Button>
                         </ConfigProvider>
@@ -365,4 +327,4 @@ const Genres = () => {
     );
 }
 
-export default Genres;
+export default Role;

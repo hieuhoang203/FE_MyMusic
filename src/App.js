@@ -15,6 +15,7 @@ import PodcastArtis from "./component/pages/artis/PodcastArtis";
 import SongArtis from "./component/pages/artis/SongArtis";
 import AnalyticsArtis from "./component/pages/artis/AnalyticsArtis";
 import Album from "./component/pages/artis/Album";
+import Role from "./component/pages/admin/Role";
 
 
 function App() {
@@ -28,13 +29,14 @@ function App() {
                     <Route path={''} element={<AnalyticsAdmin/>}></Route>
                     <Route path={'user'} element={<User/>}></Route>
                     <Route path={'artis'} element={<Artis/>}></Route>
-                    <Route path={'songs'} element={<SongAdmin/>}></Route>
+                    <Route path={'song'} element={<SongAdmin/>}></Route>
                     <Route path={'podcast'} element={<PodcastAdmin/>}></Route>
                     <Route path={'genres'} element={<Genres/>}></Route>
+                    <Route path={'role'} element={<Role/>}></Route>
                 </Route>
                 <Route path={'/artis/'} element={<DashBoardArtis/>}>
                     <Route path={''} element={<AnalyticsArtis/>}></Route>
-                    <Route path={'songs'} element={<SongArtis/>}></Route>
+                    <Route path={'song'} element={<SongArtis/>}></Route>
                     <Route path={'podcast'} element={<PodcastArtis/>}></Route>
                     <Route path={'album'} element={<Album/>}></Route>
                 </Route>

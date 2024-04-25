@@ -79,7 +79,6 @@ function Home() {
     }
 
     function setSong() {
-        const audio = document.getElementById('audio')
         const currentTime = document.getElementsByClassName('current-time')[0]
         const seekSlide = document.getElementById('seek-slide')
         setPlaying(listSong.at(indexSong))
@@ -250,7 +249,7 @@ function Home() {
                     </div>
                     <div className="playing">
                         <div className="top">
-                            <img src={asset} alt=""/>
+                            <img src={asset} alt={'Can not show image'}/>
                             <h4>Grape<br/>Homepod</h4>
                         </div>
                         <div className="bottom">

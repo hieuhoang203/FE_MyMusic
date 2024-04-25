@@ -40,14 +40,14 @@ const SongArtis = () => {
                 <h2 className={'name-user'}>Add Song</h2>
                 <div className="user-list">
                     <div className="user">
-                        <img src={plus}/>
+                        <img src={plus} alt={'Can not show image'}/>
                         <h2>More</h2>
                         <p>New Song</p>
                     </div>
                 </div>
             </div>
             <div className="recent-orders">
-                <h2>Confirm</h2>
+                <h2>Wait For Confirmation</h2>
                 <table>
                     <thead>
                     <tr>
@@ -62,7 +62,7 @@ const SongArtis = () => {
                     <tbody>
                     {newSong.map((value, index) => (
                         <tr key={index}>
-                            <td><img src={value.avatar} alt=""/></td>
+                            <td><img src={value.avatar} alt={'Can not show image'}/></td>
                             <td>{value.name}</td>
                             <td>{value.duration}</td>
                             <td>{value.post_time}</td>
@@ -90,7 +90,7 @@ const SongArtis = () => {
                     <tbody>
                     {newSong.map((value, index) => (
                         <tr key={index}>
-                            <td><img src={value.avatar} alt=""/></td>
+                            <td><img src={value.avatar} alt={'Can not show image'}/></td>
                             <td>{value.name}</td>
                             <td>{value.duration}</td>
                             <td>{value.duration}</td>
