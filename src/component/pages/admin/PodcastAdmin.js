@@ -34,6 +34,10 @@ const PodcastAdmin = () => {
         }
     ]
 
+    function playPodCast(audio) {
+
+    }
+
     return (
         <>
             <div className="new-users">
@@ -68,7 +72,7 @@ const PodcastAdmin = () => {
                             <td>{value.artis}</td>
                             <td>{value.duration}</td>
                             <td>{value.post_time}</td>
-                            <td className={'success'}>Play</td>
+                            <td className={'success'} onClick={() => playPodCast(cogaim52)}>Play</td>
                             <td className={'warning'}>Accept</td>
                         </tr>
                     ))}

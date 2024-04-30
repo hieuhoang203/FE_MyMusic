@@ -75,10 +75,6 @@ const DashBoardAdmin = () => {
                             <h3>Podcast</h3>
                             <span className="message-count">13</span>
                         </Link>
-                        <Link onClick={() => changeActiveSideBar(7)} to={'/admin/role'}>
-                            <i className='bx bx-ghost'></i>
-                            <h3>Roles</h3>
-                        </Link>
                         <Link onClick={() => changeActiveSideBar(8)} to={'/setting'}>
                             <i className='bx bx-cog'></i>
                             <h3>Settings</h3>

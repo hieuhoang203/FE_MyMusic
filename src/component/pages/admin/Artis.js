@@ -1,11 +1,44 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import vanh from "../../../asset/vanhdo.PNG";
 import thuy from "../../../asset/thuydo.png";
 import truc from "../../../asset/trucdo.png";
 import thuylinh from "../../../asset/IMG_3565.JPG";
 import plus from "../../../asset/plus.png";
+import {getAllArtis, getNewUserOrArtis} from "../../../service/userService";
+import {Pagination} from "antd";
 
 const Artis = () => {
+
+    // Pagination
+    const [pagination, setPagination] = useState({
+        page: 1,
+        limit: 5,
+        totalRows: 1,
+    });
+
+    const [page, setPage] = useState(0);
+
+    // Reload page
+    const [load, setLoad] = useState(true);
+
+    // List artis
+    const [newArtis, setNewArtis] = useState([{}]);
+    const [allArtis, setAllArtis] = useState([]);
+
+    useEffect(() => {
+        getNewUserOrArtis('ARTIS').then((response) => {
+            setNewArtis(Object.values(response.data))
+        })
+    }, []);
+
+    useEffect(() => {
+        getAllArtis(page).then((response) => {
+            console.log(response.data.content)
+            setAllArtis(response.data.content)
+            setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
+        })
+    }, [load, page]);
+
     const UserList = [
         {
             avatar: vanh,
@@ -39,26 +72,23 @@ const Artis = () => {
         }
     ]
 
+    function handlePageChange(value) {
+        setPage(prevState => (value - 1))
+    }
+
     return (
         <>
             <div className="new-users">
                 <h2 className={'name-user'}>New Artis</h2>
                 <div className="user-list">
-                    <div className="user">
-                        <img src={thuy} alt={'Can not show image'}/>
-                        <h2>Thúy</h2>
-                        <p>54 Min Ago</p>
-                    </div>
-                    <div className="user">
-                        <img src={truc} alt={'Can not show image'}/>
-                        <h2>Trúc</h2>
-                        <p>3 Hours Ago</p>
-                    </div>
-                    <div className="user">
-                        <img src={vanh} alt={'Can not show image'}/>
-                        <h2>Vân Anh</h2>
-                        <p>6 Hours Ago</p>
-                    </div>
+                    {
+                        newArtis.map((value, index) => (
+                            <div className="user" key={value.id}>
+                                <img src={value.avatar} alt={'Can not show image'}/>
+                                <h2>{value.name}</h2>
+                            </div>
+                        ))
+                    }
                     <div className="user">
                         <img src={plus} alt={'Can not show image'}/>
                         <h2>More</h2>
@@ -73,30 +103,38 @@ const Artis = () => {
                     <thead>
                     <tr>
                         <th></th>
-                        <th>Name</th>
-                        <th>Sex</th>
-                        <th>Birthday</th>
+                        <th style={{textAlign: "center"}}>Name</th>
+                        <th style={{textAlign: "center"}}>Gender</th>
+                        <th style={{textAlign: "center"}}>Songs</th>
+                        <th style={{textAlign: "center"}}>Followers</th>
+                        <th style={{textAlign: "center"}}>Status</th>
                         <th></th>
                         <th></th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
-                    {UserList.map((value, index) => (
+                    {allArtis.map((value, index) => (
                         <tr key={index}>
-                            <td><img src={value.avatar} alt={'Can not show image'}/></td>
+                            <td><img src={value.avatar} alt={'Image Error'}/></td>
                             <td>{value.name}</td>
-                            <td>{value.sex}</td>
-                            <td>{value.birthday}</td>
-                            <td className={'danger'}>Delete</td>
-                            <td className={'warning'}>Update</td>
-                            <td className={'primary'}>Details</td>
+                            <td className={value.gender ? 'primary' : 'warning'}>{value.gender ? 'Male' : 'Female'}</td>
+                            <td>{value.songs}</td>
+                            <td>{value.follows}</td>
+                            <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
+                            <td className={'button danger'}>Delete</td>
+                            <td className={'button warning'}>Update</td>
+                            <td className={'button primary'}>Details</td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
-                <a href="#">Show All</a>
             </div>
+            <Pagination
+                pageSize={5}
+                total={pagination.totalRows}
+                onChange={(value) => handlePageChange(value)}
+            />
         </>
     );
 }

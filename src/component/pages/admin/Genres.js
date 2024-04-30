@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import plus from "../../../asset/plus.png";
-import {Button, ConfigProvider, Form, Input, message, Modal, Pagination} from "antd";
+import {Button, ConfigProvider, Form, Input, message, Modal, Pagination, Upload} from "antd";
 import {TinyColor} from "@ctrl/tinycolor";
 import {
     deleteGenres,
@@ -10,6 +10,7 @@ import {
     searchGenres,
     updateGenres
 } from "../../../service/genresService";
+import {UploadOutlined} from "@ant-design/icons";
 
 const Genres = () => {
 
@@ -61,7 +62,7 @@ const Genres = () => {
             setListGenres(response.data.content)
             setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
         })
-    }, [load, formCustom, page]);
+    }, [load, page]);
 
     // Hide Modal
     function closeModal() {
@@ -139,7 +140,6 @@ const Genres = () => {
         setFormCustom(false)
         form.setFieldValue('name', value.name);
         form.setFieldValue('code', value.code);
-        console.log(genres)
     }
 
     function deleteRecord(id) {
@@ -194,13 +194,13 @@ const Genres = () => {
                 <h2>Genres List</h2>
                 <table>
                     <thead>
-                    <tr key={listGenres.length + 7}>
-                        <th>Code<i className='bx bx-search-alt-2'></i></th>
-                        <th>Name<i className='bx bx-search-alt-2'></i></th>
-                        <th>Status<i className='bx bx-filter-alt'></i></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                    <tr>
+                        <th key={'code'}>Code<i className='bx bx-search-alt-2'></i></th>
+                        <th key={'name'}>Name<i className='bx bx-search-alt-2'></i></th>
+                        <th key={'status'}>Status<i className='bx bx-filter-alt'></i></th>
+                        <th key={'delete'}></th>
+                        <th key={'update'}></th>
+                        <th key={'details'}></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -242,50 +242,6 @@ const Genres = () => {
                     form={form}
                 >
                     <h2>{formCustom ? "Create Genres" : "Update Genres"}</h2>
-                    {/*<Form.Item label={'Image'} name={'avatar'}*/}
-                    {/*           valuePropName={'fileList'}*/}
-                    {/*           rules={[*/}
-                    {/*               {required: true, message: 'Avatar can not be left blank!'},*/}
-                    {/*               {*/}
-                    {/*                   validator(_, fileList) {*/}
-                    {/*                       return new Promise((resolve, reject) => {*/}
-                    {/*                           if (fileList && fileList[0].size > 5000000) {*/}
-                    {/*                               reject('File size exceeded')*/}
-                    {/*                               message.error('File size exceeded!')*/}
-                    {/*                           } else {*/}
-                    {/*                               resolve('Success')*/}
-                    {/*                               message.success('Success!')*/}
-                    {/*                           }*/}
-                    {/*                       })*/}
-                    {/*                   }*/}
-                    {/*               }*/}
-                    {/*           ]}*/}
-                    {/*           getValueFromEvent={(event) => {*/}
-                    {/*               return event?.fileList*/}
-                    {/*           }}*/}
-                    {/*>*/}
-                    {/*    <Upload*/}
-                    {/*        maxCount={1}*/}
-                    {/*        beforeUpload={(file) => {*/}
-                    {/*            return new Promise((resolve, reject) => {*/}
-                    {/*                if (file.size > 1500000) {*/}
-                    {/*                    reject('File size exceeded!')*/}
-                    {/*                } else {*/}
-                    {/*                    resolve('Success!')*/}
-                    {/*                }*/}
-                    {/*            })*/}
-                    {/*        }*/}
-                    {/*        }*/}
-                    {/*        multiple={false}*/}
-                    {/*        customRequest={(info) => {*/}
-                    {/*            setGenres({...genres, avatar: info.file})*/}
-                    {/*            console.log(info.file)*/}
-                    {/*        }}*/}
-                    {/*        fileList={genres.avatar}*/}
-                    {/*    >*/}
-                    {/*        <Button icon={<UploadOutlined/>}>Click to upload</Button>*/}
-                    {/*    </Upload>*/}
-                    {/*</Form.Item>*/}
                     <Form.Item label={'Code'} name={'code'}
                                rules={[
                                    {required: true, message: 'Code can not be left blank!'},

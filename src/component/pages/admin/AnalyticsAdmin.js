@@ -61,7 +61,7 @@ const AnalyticsAdmin = () => {
               <div className="visits">
                   <div className="status">
                       <div className="info">
-                          <h3>New Registration</h3>
+                          <h3>New Song</h3>
                           <h1>24,981</h1>
                       </div>
                       <div className="progresss">
@@ -92,43 +92,17 @@ const AnalyticsAdmin = () => {
               </div>
           </div>
 
-          <div className="new-users">
-              <h2 className={'name-user'}>New Users</h2>
-              <div className="user-list">
-                  <div className="user">
-                      <img src={thuy} alt={'Can not show image'}/>
-                      <h2>Thúy</h2>
-                      <p>54 Min Ago</p>
-                  </div>
-                  <div className="user">
-                      <img src={truc} alt={'Can not show image'}/>
-                      <h2>Trúc</h2>
-                      <p>3 Hours Ago</p>
-                  </div>
-                  <div className="user">
-                      <img src={vanh} alt={'Can not show image'}/>
-                      <h2>Vân Anh</h2>
-                      <p>6 Hours Ago</p>
-                  </div>
-                  <div className="user">
-                      <img src={plus} alt={'Can not show image'}/>
-                      <h2>More</h2>
-                      <p>New User</p>
-                  </div>
-              </div>
-          </div>
-
           <div className="recent-orders">
               <h2>Top Trending</h2>
               <table>
                   <thead>
                   <tr>
                       <th></th>
-                      <th>Name Song</th>
-                      <th>Name Artis</th>
-                      <th>Duration</th>
-                      <th>View</th>
-                      <th>Try Listening</th>
+                      <th>Name Song<i className='bx bx-search-alt-2'></i></th>
+                      <th>Name Artis<i className='bx bx-search-alt-2'></i></th>
+                      <th style={{textAlign: "center"}}>Duration</th>
+                      <th style={{textAlign: "center"}}>View</th>
+                      <th></th>
                       <th></th>
                   </tr>
                   </thead>
@@ -145,7 +119,6 @@ const AnalyticsAdmin = () => {
                   ))}
                   </tbody>
               </table>
-              <a href="#">Show All</a>
           </div>
       </>
   );

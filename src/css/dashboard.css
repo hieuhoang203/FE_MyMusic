@@ -123,7 +123,7 @@ b {
 }
 
 .body-dashboard .container main .recent-orders table thead th i {
-    margin-left: 150px;
+    margin-left: 100px;
     font-size: 20px;
 }
 
@@ -180,6 +180,11 @@ b {
 
 .modal .ant-modal-content form .button-submit{
     text-align: center;
+}
+
+.css-dev-only-do-not-override-1qfezbu.ant-input-outlined.ant-input-disabled, .css-dev-only-do-not-override-1qfezbu.ant-input-outlined:disabled {
+    background-color: #fbfbfb;
+    color: #18181d;
 }
 
 .body-dashboard .container {
@@ -453,7 +458,7 @@ b {
 }
 
 .body-dashboard .container .right-section .reminders .add-reminder:hover i {
-    color: var(--color-white);
+    color: white;
 }
 
 

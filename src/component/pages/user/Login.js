@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "../../../css/login.css";
 import {createBrowserHistory as useHistory} from "history";
 
@@ -15,6 +15,19 @@ const LoginAndRegister = () => {
             container.classList.remove('active')
         }
     }
+
+    function loadLoginPage() {
+        const container = document.getElementById("container")
+        if (window.location.href.includes('register')) {
+            container.classList.add('active')
+        } else {
+            container.classList.remove('active')
+        }
+    }
+
+    useEffect(() => {
+        loadLoginPage()
+    }, []);
 
     return (
         <div className="body-login">
