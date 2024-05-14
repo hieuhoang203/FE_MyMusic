@@ -1,12 +1,13 @@
 import React, {useState} from "react";
 import "../../../../css/dashboard.css";
 import logo from "../../../../asset/logomusic.png";
-import vanh from "../../../../asset/vanhdo.PNG";
 import {Link, Outlet, useNavigate} from "react-router-dom";
 
 const DashBoardAdmin = () => {
 
-    const navitage = useNavigate();
+    const user = JSON.parse(localStorage.getItem("account"));
+
+    const navigate = useNavigate();
 
     const [active, setActive]  = useState(3);
 
@@ -30,7 +31,12 @@ const DashBoardAdmin = () => {
     }
 
     function goHomePage() {
-        navitage('/')
+        navigate('/')
+    }
+
+    function logout() {
+        localStorage.removeItem("account")
+        localStorage.removeItem("token")
     }
 
     return (
@@ -80,7 +86,7 @@ const DashBoardAdmin = () => {
                             <h3>Settings</h3>
                         </Link>
 
-                        <Link to={'/login'}>
+                        <Link to={'/login'} onClick={() => logout()}>
                             <i className='bx bx-log-out-circle'></i>
                             <h3>Logout</h3>
                         </Link>
@@ -103,11 +109,11 @@ const DashBoardAdmin = () => {
 
                         <div className="profile">
                             <div className="info">
-                                <p>Hey, <b>Vân Anh</b></p>
-                                <small className="text-muted">Admin</small>
+                                <p>Hey, <b>{user.name}</b></p>
+                                <small className="text-muted">{user.role}</small>
                             </div>
                             <div className="profile-photo">
-                                <img src={vanh}/>
+                                <img src={user.avatar}/>
                             </div>
                         </div>
 

@@ -1,8 +1,10 @@
 import axios from "axios";
 
-export default axios.create({
+const axiosHelper = axios.create({
     baseURL: "http://localhost:8903",
     headers: {
-        "Content-Type": "application/json"
-    }
+        "content-type": "application/json"
+    },
 })
+
+export default axiosHelper;

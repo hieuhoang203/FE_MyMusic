@@ -12,6 +12,7 @@ import {Button, ConfigProvider, DatePicker, Form, Input, message, Modal, Paginat
 import {TinyColor} from "@ctrl/tinycolor";
 import {UploadOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
+import axiosHelper from "../../../api/myApi";
 
 const User = () => {
 
@@ -49,7 +50,7 @@ const User = () => {
     const [load, setLoad] = useState(true);
 
     // User list
-    const [newUser, setNewUser] = useState([{}]);
+    const [newUser, setNewUser] = useState([]);
     const [allUser, setAllUser] = useState([]);
 
     const [id, setId] = useState()
@@ -64,10 +65,14 @@ const User = () => {
         colors.map((color) => new TinyColor(color).darken(5).toString());
 
     useEffect(() => {
+        axiosHelper.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("token")}`;
+    }, []);
+
+    useEffect(() => {
         getNewUserOrArtis('USER').then((response) => {
             setNewUser(Object.values(response.data));
         })
-    }, []);
+    }, [load]);
 
     useEffect(() => {
         getAllUser(page).then((response) => {
@@ -81,6 +86,7 @@ const User = () => {
     }
 
     function closeModal() {
+        clearForm()
         setModal(false);
     }
 
@@ -105,6 +111,7 @@ const User = () => {
                 email: "",
                 role: "USER"
             })
+            clearForm()
             setLoad(!load)
         }).catch((error) => {
             console.log(error)
@@ -112,7 +119,6 @@ const User = () => {
     }
 
     function updateNewUser() {
-        console.log(user)
         updateUser(id, user).then((response) => {
             setModal(false)
             setId(undefined);
@@ -129,6 +135,7 @@ const User = () => {
                 email: "",
                 role: "USER"
             })
+            clearForm()
             setLoad(!load)
         }).catch((error) => {
             console.log(error)
@@ -145,7 +152,7 @@ const User = () => {
             form.setFieldValue('id', value.id)
             form.setFieldValue('name', value.name)
             form.setFieldValue('birthday', dayjs(value.birthday, dateFormat))
-            form.setFieldValue('gender', value.gender)
+            form.setFieldValue('gender', value.gender !== '' ? value.gender : 'true')
             form.setFieldValue('email', value.email)
             form.setFieldValue('role', value.role)
         }).catch((error) => {
@@ -163,6 +170,16 @@ const User = () => {
         }).catch((error) => {
             console.log(error)
         })
+    }
+
+    function clearForm() {
+        form.setFieldValue('id', '')
+        form.setFieldValue('avatar', null)
+        form.setFieldValue('name', '')
+        form.setFieldValue('birthday', '')
+        form.setFieldValue('gender', 'true')
+        form.setFieldValue('email', '')
+        form.setFieldValue('role', 'USER')
     }
 
     return (
@@ -193,8 +210,6 @@ const User = () => {
                         <th>Name<i className='bx bx-search-alt-2'></i></th>
                         <th>Gender<i className='bx bx-filter-alt'></i></th>
                         <th>Status<i className='bx bx-filter-alt'></i></th>
-                        <th></th>
-                        <th></th>
                         <th></th>
                     </tr>
                     </thead>
@@ -239,29 +254,6 @@ const User = () => {
                     encType="multipart/form-data"
                 >
                     <h2>{formCustom ? "Create User" : "Update User"}</h2>
-                    <Form.Item label={'Id'} name={'id'}
-                               style={{color: '#fdfdfd'}}
-                               rules={[
-                                   {required: true, message: 'Id can not be left blank!'},
-                                   {
-                                       validator: (_, value) => {
-                                           if (!value) {
-                                               return Promise.resolve();
-                                           }
-                                           const lowercaseValue = value.trim().toLowerCase();
-                                           const isDuplicate = allUser.some(
-                                               (user) => user.id.trim().toLowerCase() === lowercaseValue
-                                           )
-                                           if (isDuplicate) {
-                                               return Promise.reject('Id already exists!');
-                                           }
-                                       }
-                                   }
-                               ]}
-                    >
-                        <Input placeholder={'Enter your id'} name={'id'}
-                               onChange={(events) => setUser({...user, id: events.target.value})} disabled={!formCustom}></Input>
-                    </Form.Item>
                     <Form.Item
                         label={'Avatar'}
                         style={!formCustom ? {marginLeft: '13px'} : {marginLeft: '0px'}}
@@ -298,9 +290,9 @@ const User = () => {
                             }}
                             multiple={false}
                             onChange={(info) => {
-                                console.log(info.file)
                                 setUser({...user, avatar: info.file})
                             }}
+                            customRequest={(info) => setUser({...user, avatar: info.file})}
                             accept={'image/*'}
                         >
                             <Button icon={<UploadOutlined/>}>Click to upload</Button>
@@ -333,18 +325,16 @@ const User = () => {
                     <Form.Item label={'Email'} name={'email'}
                                rules={[
                                    {required: true, message: 'Email can not be left blank!'},
-                                   {type: "email"},
+                                   {type: 'email'},
                                    {
                                        validator: (_, value) => {
                                            if (!value) {
                                                return Promise.resolve();
                                            }
-                                           const lowercaseValue = value.trim().toLowerCase();
-                                           const isDuplicate = allUser.some(
-                                               (user) => user.email.trim().toLowerCase() === lowercaseValue
-                                           )
-                                           if (isDuplicate) {
-                                               return Promise.reject('Email already exists!');
+                                           if (!value.match(
+                                               /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                                           )) {
+                                               return Promise.reject('Invalid email!');
                                            }
                                        }
                                    }

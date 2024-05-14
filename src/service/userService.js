@@ -1,4 +1,4 @@
-import httpClient from "../api/myApi";
+import axiosHelper from "../api/myApi";
 
 const config = {
     headers: {
@@ -6,39 +6,46 @@ const config = {
     },
 };
 
-
 export const getAllUser = (page) => {
-    return httpClient.get(`/admin/user/get-all-user?page=${page}`);
+    return axiosHelper.get(`/user/admin/get-all-user?page=${page}`);
 }
 
 export const getUserByStatus = (status, page) => {
-    return httpClient.get(`/admin/user/get-all-user/${status}`, page);
+    return axiosHelper.get(`/user/admin/get-all-user/${status}`, page);
 }
 
 export const getAllArtis = (page) => {
-    return httpClient.get(`/admin/user/get-all-artis?page=${page}`);
+    return axiosHelper.get(`/user/admin/get-all-artis?page=${page}`);
 }
 
 export const getArtisByStatus = (status, page) => {
-    return httpClient.get(`/admin/user/get-all-artis/${status}`, page);
+    return axiosHelper.get(`/user/admin/get-all-artis/${status}`, page);
 }
 
 export const getNewUserOrArtis = (role) => {
-    return httpClient.get(`/admin/user/new-user/${role}`);
+    return axiosHelper.get(`/user/admin/new-user/${role}`);
 }
 
 export const saveUser = (user) => {
-    return httpClient.post(`/admin/user/save`, user, config);
+    return axiosHelper.post(`/user/admin/save`, user, config);
 }
 
 export const searchUser = (id) => {
-    return httpClient.get(`/admin/user/search/${id}`);
+    return axiosHelper.get(`/user/admin/search/${id}`);
 }
 
 export const updateStatusUser = (id, account, status) => {
-    return httpClient.get(`/admin/user/update-status?id=${id}&account=${account}&status=${status}`)
+    return axiosHelper.get(`/user/admin/update-status?id=${id}&account=${account}&status=${status}`)
 }
 
 export const updateUser = (id, user) => {
-    return httpClient.put(`/admin/user/update/${id}`, user, config);
+    return axiosHelper.put(`/user/admin/update/${id}`, user, config);
 }
+
+export const getArtisSelect = () => {
+    return axiosHelper.get(`/user/admin/get-artis-select`);
+}
+
+// export const getEmailUser = () => {
+//     return axiosHelper.get(`/admin/account/get-user-name`)
+// }

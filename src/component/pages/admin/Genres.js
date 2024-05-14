@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from "react";
 import plus from "../../../asset/plus.png";
-import {Button, ConfigProvider, Form, Input, message, Modal, Pagination, Upload} from "antd";
+import {Button, ConfigProvider, Form, Input, message, Modal, Pagination} from "antd";
 import {TinyColor} from "@ctrl/tinycolor";
+import {createBrowserHistory as useHistory} from "history";
+
 import {
     deleteGenres,
     getAllGenres,
@@ -10,9 +12,13 @@ import {
     searchGenres,
     updateGenres
 } from "../../../service/genresService";
-import {UploadOutlined} from "@ant-design/icons";
+import axiosHelper from "../../../api/myApi";
 
 const Genres = () => {
+
+    const history = useHistory();
+
+    const myAccount = JSON.parse(localStorage.getItem("account"))
 
     // Pagination
     const [pagination, setPagination] = useState({
@@ -32,7 +38,7 @@ const Genres = () => {
     const [form] = Form.useForm();
 
     // List genres
-    const [listGenres, setListGenres] = useState([{}])
+    const [listGenres, setListGenres] = useState([])
 
     // Modal's display change variable
     const [modal, setModal] = useState(false);
@@ -58,10 +64,16 @@ const Genres = () => {
     const [id, setId] = useState();
 
     useEffect(() => {
-        getAllGenres(page).then((response) => {
-            setListGenres(response.data.content)
-            setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
-        })
+        if (myAccount?.role !== 'ADMIN') {
+            history.replace("/")
+        } else {
+            axiosHelper.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("token")}`;
+            getAllGenres(page).then((response) => {
+                console.log(response)
+                setListGenres(response.data.content)
+                setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
+            })
+        }
     }, [load, page]);
 
     // Hide Modal
@@ -198,14 +210,12 @@ const Genres = () => {
                         <th key={'code'}>Code<i className='bx bx-search-alt-2'></i></th>
                         <th key={'name'}>Name<i className='bx bx-search-alt-2'></i></th>
                         <th key={'status'}>Status<i className='bx bx-filter-alt'></i></th>
-                        <th key={'delete'}></th>
-                        <th key={'update'}></th>
-                        <th key={'details'}></th>
+                        <th key={'action'}></th>
                     </tr>
                     </thead>
                     <tbody>
                     {listGenres.map((value, index) => (
-                        <tr key={value.id}>
+                        <tr key={index}>
                             <td>{value.code}</td>
                             <td>{value.name}</td>
                             <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>

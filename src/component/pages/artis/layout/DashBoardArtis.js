@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import "../../../../css/dashboard.css";
 import logo from "../../../../asset/logomusic.png";
-import vanh from "../../../../asset/vanhdo.PNG";
-import {Link, Outlet} from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import {Link, Outlet, useNavigate} from "react-router-dom";
 
 const DashBoardArtis = () => {
+
+    const user = JSON.parse(localStorage.getItem("account"));
 
     const navigate = useNavigate();
 
@@ -88,11 +88,11 @@ const DashBoardArtis = () => {
 
                         <div className="profile">
                             <div className="info">
-                                <p>Hey, <b>Vân Anh</b></p>
-                                <small className="text-muted">Admin</small>
+                                <p>Hey, <b>{user.name}</b></p>
+                                <small className="text-muted">{user.role}</small>
                             </div>
                             <div className="profile-photo">
-                                <img src={vanh} alt={'Can not show image'}/>
+                                <img src={user.avatar} alt={'Can not show image'}/>
                             </div>
                         </div>
 

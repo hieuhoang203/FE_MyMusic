@@ -1,9 +1,16 @@
-import React from "react";
+import React, {useEffect} from "react";
 import thuy from "../../../asset/thuydo.png";
 import cogaim52 from "../../../asset/song1.mp3";
 import plus from "../../../asset/plus.png";
+import axiosHelper from "../../../api/myApi";
 
 const PodcastAdmin = () => {
+
+
+    useEffect(() => {
+        axiosHelper.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("token")}`;
+    }, []);
+
     const newSong = [
         {
             id: 1,
