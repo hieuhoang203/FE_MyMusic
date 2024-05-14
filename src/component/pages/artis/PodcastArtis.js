@@ -1,7 +1,6 @@
 import React from "react";
 import thuy from "../../../asset/thuydo.png";
 import cogaim52 from "../../../asset/song1.mp3";
-import plus from "../../../asset/plus.png";
 
 const PodcastArtis = () => {
     const newSong = [
@@ -40,7 +39,7 @@ const PodcastArtis = () => {
                 <h2 className={'name-user'}>Add Podcast</h2>
                 <div className="user-list">
                     <div className="user">
-                        <img src={plus}/>
+                        <img src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704767/assetHtml/jto8qgtu80dbi7ndvg8z.png'}/>
                         <h2>More</h2>
                         <p>New Podcast</p>
                     </div>

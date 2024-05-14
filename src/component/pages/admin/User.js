@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import plus from "../../../asset/plus.png";
 import {
     getAllUser,
     getNewUserOrArtis,
@@ -194,7 +193,7 @@ const User = () => {
                         </div>
                     ))}
                     <div className="user" onClick={() => openModal()}>
-                        <img src={plus} alt={'Can not show image'}/>
+                        <img src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704767/assetHtml/jto8qgtu80dbi7ndvg8z.png'} alt={'Can not show image'}/>
                         <h2>More</h2>
                         <p>New User</p>
                     </div>

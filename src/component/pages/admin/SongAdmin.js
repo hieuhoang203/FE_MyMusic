@@ -1,10 +1,21 @@
 import React, {useEffect, useState} from "react";
-import plus from "../../../asset/plus.png";
 import {getGenresSelect} from "../../../service/genresService";
 import {getAlbumSelect} from "../../../service/albumService";
 import {getArtisSelect} from "../../../service/userService";
-import {getAllSong, getSongByStatus, saveSong} from "../../../service/songService";
-import {Button, ConfigProvider, Form, Input, InputNumber, Modal, notification, Pagination, Select, Upload} from "antd";
+import {getAllSong, getSongByStatus, saveSong, updateStatusSong} from "../../../service/songService";
+import {
+    Button,
+    ConfigProvider,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Modal,
+    notification,
+    Pagination,
+    Select,
+    Upload
+} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
 import {TinyColor} from "@ctrl/tinycolor";
 import axiosHelper from "../../../api/myApi";
@@ -96,7 +107,6 @@ const SongAdmin = () => {
     useEffect(() => {
         getAllSong(page).then((response) => {
             setSongList(response.data.content)
-            console.log(response.data.content)
             setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
         })
     }, [load, page, songWaitList]);
@@ -181,8 +191,20 @@ const SongAdmin = () => {
         setFormCustom(false)
     }
 
-    function acceptSong(id) {
-        
+    function changeStatusSong(id, status) {
+        updateStatusSong(id, status).then((response) => {
+            message.open({
+                type: "success",
+                content: "Song status changed successfully!"
+            })
+            setLoad(!load)
+        }).catch((error) => {
+            console.log(error)
+            message.open({
+                type: "error",
+                content: "Song status changed failed!"
+            })
+        })
     }
 
     return (
@@ -191,7 +213,7 @@ const SongAdmin = () => {
                 <h2 className={'name-user'}>Add Song</h2>
                 <div className="user-list">
                     <div className="user" onClick={() => openModal()}>
-                        <img src={plus} alt={'Can not show image'}/>
+                        <img src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704767/assetHtml/jto8qgtu80dbi7ndvg8z.png'} alt={'Can not show image'}/>
                         <h2>More</h2>
                         <p>New Song</p>
                     </div>
@@ -218,7 +240,7 @@ const SongAdmin = () => {
                             <td>{value.artis[0].name}</td>
                             <td>{value.duration}</td>
                             <td className={'button success'} onClick={() => playMusic(value.id)}>Play</td>
-                            <td className={'button warning'} onClick={() => acceptSong(value.id)}>Accept</td>
+                            <td className={'button warning'} onClick={() => changeStatusSong(value.id, 'Activate')}>Accept</td>
                         </tr>
                     ))}
                     </tbody>
@@ -250,7 +272,7 @@ const SongAdmin = () => {
                             <td>{value.artis[value.artis.length-1].name}</td>
                             <td>{value.duration}</td>
                             <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
-                            <td className={'button danger'}>Delete</td>
+                            <td className={'button danger'} onChange={() => changeStatusSong(value.id, 'ShutDown')}>Delete</td>
                             <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
                             <td className={'button primary'}>Detail</td>
                         </tr>

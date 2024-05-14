@@ -40,7 +40,7 @@ const SongArtis = () => {
                 <h2 className={'name-user'}>Add Song</h2>
                 <div className="user-list">
                     <div className="user">
-                        <img src={plus} alt={'Can not show image'}/>
+                        <img src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704767/assetHtml/jto8qgtu80dbi7ndvg8z.png'} alt={'Can not show image'}/>
                         <h2>More</h2>
                         <p>New Song</p>
                     </div>

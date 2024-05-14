@@ -64,10 +64,13 @@ const Genres = () => {
     const [id, setId] = useState();
 
     useEffect(() => {
+        axiosHelper.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("token")}`;
+    }, []);
+
+    useEffect(() => {
         if (myAccount?.role !== 'ADMIN') {
             history.replace("/")
         } else {
-            axiosHelper.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("token")}`;
             getAllGenres(page).then((response) => {
                 console.log(response)
                 setListGenres(response.data.content)
@@ -195,7 +198,7 @@ const Genres = () => {
                 <h2 className={'name-user'}>New Genres</h2>
                 <div className="user-list">
                     <div className="user" onClick={() => openModal(true)}>
-                        <img src={plus} alt={'Can not show image'}/>
+                        <img src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704767/assetHtml/jto8qgtu80dbi7ndvg8z.png'} alt={'Can not show image'}/>
                         <h2>More</h2>
                         <p>New Genres</p>
                     </div>

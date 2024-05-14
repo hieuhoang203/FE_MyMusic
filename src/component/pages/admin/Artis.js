@@ -8,19 +8,7 @@ import {
     updateStatusUser,
     updateUser
 } from "../../../service/userService";
-import {
-    Button,
-    ConfigProvider,
-    DatePicker,
-    Form,
-    Input,
-    message,
-    Modal,
-    notification,
-    Pagination,
-    Radio,
-    Upload
-} from "antd";
+import {Button, ConfigProvider, DatePicker, Form, Input, Modal, notification, Pagination, Radio, Upload} from "antd";
 import {TinyColor} from "@ctrl/tinycolor";
 import dayjs from "dayjs";
 import {UploadOutlined} from "@ant-design/icons";
