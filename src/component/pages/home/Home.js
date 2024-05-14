@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import "../../../css/home.css";
-import asset from "../../../asset/IMG_2954.png";
 import trending from "../../../asset/song1.jpg";
 import avatar from "../../../asset/avatar.png";
 import img1 from "../../../asset/song1.jpg";
@@ -249,7 +248,7 @@ function Home() {
                     </div>
                     <div className="playing">
                         <div className="top">
-                            <img src={asset} alt={'Can not show image'}/>
+                            <img src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715650295/assetHtml/q9h4uiwuz89nvni9a58k.png'} alt={'Can not show image'}/>
                             <h4>Grape<br/>Homepod</h4>
                         </div>
                         <div className="bottom">
