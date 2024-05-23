@@ -5,6 +5,9 @@ import {Link, Outlet, useNavigate} from "react-router-dom";
 
 const DashBoardAdmin = () => {
 
+    const [songWaits, setSongWaits] = useState(0)
+    const [podCastWaits, setPodCastWaits] = useState(0)
+
     const user = JSON.parse(localStorage.getItem("account"));
 
     const navigate = useNavigate();
@@ -74,12 +77,12 @@ const DashBoardAdmin = () => {
                         <Link onClick={() => changeActiveSideBar(5)} to={'/admin/song'}>
                             <i className='bx bx-music'></i>
                             <h3>Song</h3>
-                            <span className="message-count">27</span>
+                            <span className="message-count">{songWaits}</span>
                         </Link>
                         <Link onClick={() => changeActiveSideBar(6)} to={'/admin/podcast'}>
                             <i className='bx bx-podcast'></i>
                             <h3>Podcast</h3>
-                            <span className="message-count">13</span>
+                            <span className="message-count">{podCastWaits}</span>
                         </Link>
                         <Link onClick={() => changeActiveSideBar(8)} to={'/setting'}>
                             <i className='bx bx-cog'></i>

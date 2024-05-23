@@ -356,10 +356,10 @@ function Home() {
                         <i className='bx bxs-cog'></i>
                         <div className="user">
                             <div className="left">
-                                <img src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704740/assetHtml/goti8epje2u42ekcxaya.jpg'} alt="Can not show image!"/>
+                                <img src={'https://res.cloudinary.com/hieuhv203/image/upload/v1716471776/avatar/tjltfz0glyb8bhujquxw.jpg'} alt="Can not show image!"/>
                             </div>
                             <div className="right">
-                                Thùy Linh
+                                Thu Hằng
                             </div>
                         </div>
                     </div>
