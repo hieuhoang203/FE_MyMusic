@@ -255,7 +255,6 @@ const User = () => {
                     <h2>{formCustom ? "Create User" : "Update User"}</h2>
                     <Form.Item
                         label={'Avatar'}
-                        style={!formCustom ? {marginLeft: '13px'} : {marginLeft: '0px'}}
                         name={'avatar'}
                         valuePropName={'fileList'}
                         rules={[
@@ -305,7 +304,7 @@ const User = () => {
                         <Input placeholder={'Enter your name'} name={'name'}
                                onChange={(events) => setUser({...user, name: events.target.value})}></Input>
                     </Form.Item>
-                    <Form.Item label={'Gender'} name={'gender'} style={{marginLeft: "13px"}}>
+                    <Form.Item label={'Gender'} name={'gender'}>
                         <Radio.Group name={'gender'} defaultValue={'true'}
                                      onChange={(events) => setUser({...user, gender: events.target.value})}>
                             <Radio value={'true'} style={{color: "#fbfbfb", fontSize: "16px"}}> Male </Radio>

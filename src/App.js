@@ -34,14 +34,12 @@ function App() {
                     storedUser?.role === 'ADMIN' ?
                         <>
                             <Route path={'/admin/'} element={<DashBoardAdmin/>}>
-                                <AdminProvider>
-                                    <Route path={''} element={<AnalyticsAdmin/>}></Route>
-                                    <Route path={'user'} element={<User/>}></Route>
-                                    <Route path={'artis'} element={<Artis/>}></Route>
-                                    <Route path={'song'} element={<SongAdmin/>}></Route>
-                                    <Route path={'podcast'} element={<PodcastAdmin/>}></Route>
-                                    <Route path={'genres'} element={<Genres/>}></Route>
-                                </AdminProvider>
+                                <Route path={''} element={<AnalyticsAdmin/>}></Route>
+                                <Route path={'user'} element={<User/>}></Route>
+                                <Route path={'artis'} element={<Artis/>}></Route>
+                                <Route path={'song'} element={<SongAdmin/>}></Route>
+                                <Route path={'podcast'} element={<PodcastAdmin/>}></Route>
+                                <Route path={'genres'} element={<Genres/>}></Route>
                             </Route>
                         </>
                         : <Route path={'/admin'} element={<ErrorPage/>}></Route>
@@ -50,12 +48,10 @@ function App() {
                     storedUser?.role === 'ARTIS' ?
                         <>
                             <Route path={'/artis/'} element={<DashBoardArtis/>}>
-                                <ArtisProvider>
-                                    <Route path={''} element={<AnalyticsArtis/>}></Route>
-                                    <Route path={'song'} element={<SongArtis/>}></Route>
-                                    <Route path={'podcast'} element={<PodcastArtis/>}></Route>
-                                    <Route path={'album'} element={<Album/>}></Route>
-                                </ArtisProvider>
+                                <Route path={''} element={<AnalyticsArtis/>}></Route>
+                                <Route path={'song'} element={<SongArtis/>}></Route>
+                                <Route path={'podcast'} element={<PodcastArtis/>}></Route>
+                                <Route path={'album'} element={<Album/>}></Route>
                             </Route>
                         </>
                         : <Route path={'/artis/'} element={<ErrorPage/>}/>

@@ -3,7 +3,6 @@ import "../../../css/login.css";
 import {createBrowserHistory as useHistory} from "history";
 import {notification} from "antd";
 import {getAccount, getUserWhenLogin, saveAccount} from "../../../service/loginService";
-import axiosHelper from "../../../api/myApi";
 
 const LoginAndRegister = () => {
 

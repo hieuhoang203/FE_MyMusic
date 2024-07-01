@@ -2,9 +2,16 @@ import React, {useEffect, useState} from "react";
 import {getGenresSelect} from "../../../service/genresService";
 import {getAlbumSelect} from "../../../service/albumService";
 import {getArtisSelect} from "../../../service/userService";
-import {getAllSong, getSongByStatus, saveSong, updateStatusSong} from "../../../service/songService";
 import {
-    Button,
+    getAllSong,
+    getSongByStatus,
+    saveSong,
+    searchSong,
+    updateSong,
+    updateStatusSong
+} from "../../../service/songService";
+import {
+    Button, Checkbox,
     ConfigProvider,
     Form,
     Input,
@@ -119,6 +126,7 @@ const SongAdmin = () => {
     }
 
     function closeModal() {
+        clearForm()
         return setModal(false);
     }
 
@@ -138,8 +146,8 @@ const SongAdmin = () => {
             closeModal()
             setSong({
                 name: "",
-                avatar: {},
-                sound: {},
+                avatar: null,
+                sound: null,
                 duration: 0,
                 album: 0,
                 artis: [],
@@ -159,8 +167,33 @@ const SongAdmin = () => {
         }
     }
 
-    function updateNewSong() {
-
+     function updateNewSong() {
+         console.log(song)
+         updateSong(id, song).then((response) => {
+            closeModal()
+            setSong({
+                name: "",
+                avatar: null,
+                sound: null,
+                duration: 0,
+                album: 0,
+                artis: [],
+                genres: []
+            })
+            clearForm()
+            setLoad(!load)
+            setId(undefined)
+            notification.success({
+                message: "Update song",
+                description: "Update song successfully!",
+            })
+        }).catch((error) => {
+            console.log(error)
+            notification.error({
+                message: "Update song",
+                description: "Check the information again!",
+            })
+        })
     }
 
     function openModal() {
@@ -181,14 +214,24 @@ const SongAdmin = () => {
     }
 
     function playMusic(id) {
-        
+
     }
 
     function fillDataToForm(id) {
         setId(id)
-
         setModal(true)
         setFormCustom(false)
+        searchSong(id).then(response => {
+            const data = {...response.data}
+            setSong({...data, artis: data.artis.map(item => item.id), genres: data.genres.map(item => item.id)})
+            form.setFieldValue('name', data.name);
+            form.setFieldValue('duration', data.duration);
+            form.setFieldValue('album', data.album !== null ? data.album.id : null);
+            form.setFieldValue('artis', data.artis.map(item => item.id));
+            form.setFieldValue('genres', data.genres.map(item => item.id));
+        }).catch(error => {
+            console.log(error)
+        })
     }
 
     function changeStatusSong(id, status) {
@@ -213,7 +256,9 @@ const SongAdmin = () => {
                 <h2 className={'name-user'}>Add Song</h2>
                 <div className="user-list">
                     <div className="user" onClick={() => openModal()}>
-                        <img src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704767/assetHtml/jto8qgtu80dbi7ndvg8z.png'} alt={'Can not show image'}/>
+                        <img
+                            src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704767/assetHtml/jto8qgtu80dbi7ndvg8z.png'}
+                            alt={'Can not show image'}/>
                         <h2>More</h2>
                         <p>New Song</p>
                     </div>
@@ -224,7 +269,9 @@ const SongAdmin = () => {
                 <table>
                     <thead>
                     <tr>
-                        <th></th>
+                        <th>
+                            <Checkbox></Checkbox>
+                        </th>
                         <th>Name</th>
                         <th>Artis</th>
                         <th>Duration</th>
@@ -240,7 +287,9 @@ const SongAdmin = () => {
                             <td>{value.artis[0].name}</td>
                             <td>{value.duration}</td>
                             <td className={'button success'} onClick={() => playMusic(value.id)}>Play</td>
-                            <td className={'button warning'} onClick={() => changeStatusSong(value.id, 'Activate')}>Accept</td>
+                            <td className={'button warning'}
+                                onClick={() => changeStatusSong(value.id, 'Activate')}>Accept
+                            </td>
                         </tr>
                     ))}
                     </tbody>
@@ -269,10 +318,11 @@ const SongAdmin = () => {
                         <tr key={value.id}>
                             <td><img src={value.avatar} alt={'Can not show image'}/></td>
                             <td>{value.name}</td>
-                            <td>{value.artis[value.artis.length-1].name}</td>
+                            <td>{value.artis[value.artis.length - 1].name}</td>
                             <td>{value.duration}</td>
                             <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
-                            <td className={'button danger'} onChange={() => value.status === 'Activate' ? changeStatusSong(value.id, 'ShutDown') : changeStatusSong(value.id, 'Activate')}>{value.status === 'Activate' ? 'Delete' : 'Return'}</td>
+                            <td className={'button danger'}
+                                onChange={() => value.status === 'Activate' ? changeStatusSong(value.id, 'ShutDown') : changeStatusSong(value.id, 'Activate')}>{value.status === 'Activate' ? 'Delete' : 'Return'}</td>
                             <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
                             <td className={'button primary'}>Detail</td>
                         </tr>
@@ -307,7 +357,6 @@ const SongAdmin = () => {
                     <h2>{formCustom ? "Create User" : "Update User"}</h2>
                     <Form.Item
                         label={'Avatar'}
-                        style={!formCustom ? {marginLeft: '13px'} : {marginLeft: '0px'}}
                         name={'avatar'}
                         valuePropName={'fileList'}
                         rules={[
@@ -363,12 +412,12 @@ const SongAdmin = () => {
                                    {type: "number"}
                                ]}
                     >
-                        <InputNumber defaultValue={0} placeholder={'Enter duration'} name={'duration'} min={0} style={{width: "145px"}}
-                               onChange={(value) => setSong({...song, duration: value})}></InputNumber>
+                        <InputNumber defaultValue={0} placeholder={'Enter duration'} name={'duration'} min={0}
+                                     style={{width: "145px"}}
+                                     onChange={(value) => setSong({...song, duration: value})}></InputNumber>
                     </Form.Item>
                     <Form.Item
                         label={'Sound'}
-                        style={!formCustom ? {marginLeft: '13px'} : {marginLeft: '0px'}}
                         name={'sound'}
                         valuePropName={'fileList'}
                         rules={[
@@ -415,7 +464,6 @@ const SongAdmin = () => {
                         name={'album'}
                     >
                         <Select
-                            mode="multiple"
                             style={{
                                 width: '100%',
                             }}
@@ -427,6 +475,9 @@ const SongAdmin = () => {
                     <Form.Item
                         label={'Genres'}
                         name={'genres'}
+                        rules={[
+                            {required: true, message: 'Genres cannot be left blank!'}
+                        ]}
                     >
                         <Select
                             mode="multiple"
@@ -442,6 +493,9 @@ const SongAdmin = () => {
                     <Form.Item
                         label={'Artis'}
                         name={'artis'}
+                        rules={[
+                            {required: true, message: 'Artis cannot be left blank!'}
+                        ]}
                     >
                         <Select
                             mode="multiple"

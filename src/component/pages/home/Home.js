@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import "../../../css/home.css";
 import trending from "../../../asset/song1.jpg";
-import avatar from "../../../asset/avatar.png";
 import img1 from "../../../asset/song1.jpg";
 import song1 from "../../../asset/song1.mp3";
 import img2 from "../../../asset/song2.jpg";
@@ -13,6 +12,8 @@ import song4 from "../../../asset/song4.mp3";
 import {Link} from "react-router-dom";
 
 function Home() {
+
+    const user = JSON.parse(localStorage.getItem("account"))
 
     const [indexSong, setIndexSong] = useState(0);
     const [load, setLoad] = useState(true)
@@ -166,6 +167,10 @@ function Home() {
         const target = event.target
         audio.currentTime = target.value
         currentTime.innerHTML = formatTime(audio.currentTime)
+    }
+
+    function goToLogin() {
+        window.location.replace("/login")
     }
 
     return (
@@ -354,14 +359,21 @@ function Home() {
                     <div className="profile">
                         <i className='bx bxs-bell'></i>
                         <i className='bx bxs-cog'></i>
-                        <div className="user">
-                            <div className="left">
-                                <img src={'https://res.cloudinary.com/hieuhv203/image/upload/v1716471776/avatar/tjltfz0glyb8bhujquxw.jpg'} alt="Can not show image!"/>
-                            </div>
-                            <div className="right">
-                                Thu Hằng
-                            </div>
-                        </div>
+                        {
+                            user !== null ?
+                                <div className="user">
+                                    <div className="left">
+                                        <img src={user.avatar} alt="Can not show image!"/>
+                                    </div>
+                                    <div className="right">
+                                        {user.name}
+                                    </div>
+                                </div>
+                                :
+                                <button className={'login-button'} onClick={() => goToLogin()}>
+                                    Login
+                                </button>
+                        }
                     </div>
 
                     <div className="music-player">

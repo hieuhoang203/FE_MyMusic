@@ -369,6 +369,21 @@
     display: flex;
 }
 
+.home-container .right-section .profile button {
+    height: 20px;
+    width: 50px;
+    border-radius: 8px;
+    background-color: #464748;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fbfbfb;
+}
+
+.home-container .right-section .profile button:hover {
+    cursor: pointer;
+    background-color: #1ed760;
+}
+
 .home-container .right-section .profile .user .left {
     display: flex;
     align-items: center;

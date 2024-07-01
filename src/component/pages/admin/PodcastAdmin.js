@@ -1,44 +1,39 @@
-import React, {useEffect} from "react";
-import thuy from "../../../asset/thuydo.png";
-import cogaim52 from "../../../asset/song1.mp3";
+import React, {useEffect, useState} from "react";
 import axiosHelper from "../../../api/myApi";
 
 const PodcastAdmin = () => {
 
+    // Create podcast variable
+    const [podcast, setPodcast] = useState({
+        name: "",
+        avatar: {},
+        sound: {},
+        duration: 0,
+        album: 0,
+        artis: [],
+        genres: []
+    })
+
+    const [newPodcasts, setNewPodcasts] = useState([{}])
+
+    const [podcastList, setPodcastList] = useState([{}])
+
+    // Create pageable
+
+    const [page, setPage] = useState(0)
+    const [pageWait, setPageWait] = useState(0)
 
     useEffect(() => {
         axiosHelper.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("token")}`;
     }, []);
 
-    const newSong = [
-        {
-            id: 1,
-            avatar: thuy,
-            name: 'Cô gái M52',
-            artis: 'HuyR',
-            post_time: '17/04/2024',
-            duration: 213,
-            audio: cogaim52
-        },
-        {
-            id: 2,
-            avatar: thuy,
-            name: 'Mây Lang Thang',
-            artis: 'Tùng Tea',
-            post_time: '17/04/2024',
-            duration: 213,
-            audio: cogaim52
-        },
-        {
-            id: 3,
-            avatar: thuy,
-            name: 'Bèo dạt mây trôi',
-            artis: 'Hương Tú',
-            post_time: '17/04/2024',
-            duration: 213,
-            audio: cogaim52
-        }
-    ]
+    useEffect(() => {
+        setPodcastList()
+    }, [])
+
+    useEffect(() => {
+        setNewPodcasts()
+    }, [])
 
     function playPodCast(audio) {
 
@@ -71,14 +66,14 @@ const PodcastAdmin = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {newSong.map((value, index) => (
+                    {newPodcasts.map((value, index) => (
                         <tr key={index}>
                             <td><img src={value.avatar} alt={'Can not show image'}/></td>
                             <td>{value.name}</td>
                             <td>{value.artis}</td>
                             <td>{value.duration}</td>
                             <td>{value.post_time}</td>
-                            <td className={'success'} onClick={() => playPodCast(cogaim52)}>Play</td>
+                            <td className={'success'} onClick={() => playPodCast()}>Play</td>
                             <td className={'warning'}>Accept</td>
                         </tr>
                     ))}
@@ -101,7 +96,7 @@ const PodcastAdmin = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {newSong.map((value, index) => (
+                    {podcastList.map((value, index) => (
                         <tr key={index}>
                             <td><img src={value.avatar} alt={'Can not show image'}/></td>
                             <td>{value.name}</td>

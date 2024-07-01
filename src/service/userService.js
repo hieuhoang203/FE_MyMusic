@@ -45,7 +45,3 @@ export const updateUser = (id, user) => {
 export const getArtisSelect = () => {
     return axiosHelper.get(`/user/admin/get-artis-select`);
 }
-
-// export const getEmailUser = () => {
-//     return axiosHelper.get(`/admin/account/get-user-name`)
-// }
