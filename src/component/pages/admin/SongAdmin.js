@@ -236,6 +236,7 @@ const SongAdmin = () => {
 
     function changeStatusSong(id, status) {
         updateStatusSong(id, status).then((response) => {
+            console.log(response)
             message.open({
                 type: "success",
                 content: "Song status changed successfully!"
@@ -321,8 +322,8 @@ const SongAdmin = () => {
                             <td>{value.artis[value.artis.length - 1].name}</td>
                             <td>{value.duration}</td>
                             <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
-                            <td className={'button danger'}
-                                onChange={() => value.status === 'Activate' ? changeStatusSong(value.id, 'ShutDown') : changeStatusSong(value.id, 'Activate')}>{value.status === 'Activate' ? 'Delete' : 'Return'}</td>
+                            <td className={value.status === 'Activate' ? 'danger button' : 'success button'}
+                                onClick={() => value.status === 'Activate' ? changeStatusSong(value.id, 'ShutDown') : changeStatusSong(value.id, 'Activate')}>{value.status === 'Activate' ? 'Delete' : 'Return'}</td>
                             <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
                             <td className={'button primary'}>Detail</td>
                         </tr>

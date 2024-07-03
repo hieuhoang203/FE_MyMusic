@@ -9,7 +9,7 @@ const DashBoardArtis = () => {
 
     const navigate = useNavigate();
 
-    const [active, setActive]  = useState(4);
+    const [active, setActive]  = useState(3);
 
     function changeColorUI() {
         document.querySelector('.body-dashboard').classList.toggle('dark-mode-variables');
@@ -54,16 +54,11 @@ const DashBoardArtis = () => {
                             <h3>Song</h3>
                             <span className="message-count">27</span>
                         </Link>
-                        <Link onClick={() => changeActiveSideBar(3)} to={'/artis/podcast'}>
-                            <i className='bx bx-podcast'></i>
-                            <h3>Podcast</h3>
-                            <span className="message-count">13</span>
-                        </Link>
-                        <Link className="active" onClick={() => changeActiveSideBar(4)} to={'/artis'}>
+                        <Link className="active" onClick={() => changeActiveSideBar(3)} to={'/artis'}>
                             <i className='bx bx-line-chart-down'></i>
                             <h3>Analytics</h3>
                         </Link>
-                        <Link onClick={() => changeActiveSideBar(5)} to={'/setting'}>
+                        <Link onClick={() => changeActiveSideBar(4)} to={'/setting'}>
                             <i className='bx bx-cog'></i>
                             <h3>Settings</h3>
                         </Link>

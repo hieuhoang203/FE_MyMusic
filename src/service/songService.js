@@ -15,7 +15,7 @@ export const getAllSong = (page) => {
 }
 
 export const updateStatusSong = (id, status) => {
-    return axiosHelper.get(`/song/admin/update-song-status/${id}?status=${status}`);
+    return axiosHelper.get(`/song/admin/update-song-status?id=${id}&status=${status}`);
 }
 
 export const saveSong = (song) => {

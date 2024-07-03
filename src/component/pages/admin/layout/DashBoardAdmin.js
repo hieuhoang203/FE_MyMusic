@@ -79,12 +79,7 @@ const DashBoardAdmin = () => {
                             <h3>Song</h3>
                             <span className="message-count">{songWaits}</span>
                         </Link>
-                        <Link onClick={() => changeActiveSideBar(6)} to={'/admin/podcast'}>
-                            <i className='bx bx-podcast'></i>
-                            <h3>Podcast</h3>
-                            <span className="message-count">{podCastWaits}</span>
-                        </Link>
-                        <Link onClick={() => changeActiveSideBar(8)} to={'/setting'}>
+                        <Link onClick={() => changeActiveSideBar(6)} to={'/setting'}>
                             <i className='bx bx-cog'></i>
                             <h3>Settings</h3>
                         </Link>
