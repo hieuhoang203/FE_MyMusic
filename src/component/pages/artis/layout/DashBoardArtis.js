@@ -45,11 +45,11 @@ const DashBoardArtis = () => {
                     </div>
 
                     <div className="sidebar">
-                        <Link onClick={() => changeActiveSideBar(1)} to={'/artis/album'}>
+                        <Link onClick={() => changeActiveSideBar(1)} to={'/artis/my-album'}>
                             <i className='bx bx-album'></i>
                             <h3>Album</h3>
                         </Link>
-                        <Link onClick={() => changeActiveSideBar(2)} to={'/artis/song'}>
+                        <Link onClick={() => changeActiveSideBar(2)} to={'/artis/my-song'}>
                             <i className='bx bx-music'></i>
                             <h3>Song</h3>
                             <span className="message-count">27</span>

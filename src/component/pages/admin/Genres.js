@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import plus from "../../../asset/plus.png";
 import {Button, ConfigProvider, Form, Input, message, Modal, Pagination} from "antd";
 import {TinyColor} from "@ctrl/tinycolor";
 import {createBrowserHistory as useHistory} from "history";
@@ -72,7 +71,6 @@ const Genres = () => {
             history.replace("/")
         } else {
             getAllGenres(page).then((response) => {
-                console.log(response)
                 setListGenres(response.data.content)
                 setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
             })

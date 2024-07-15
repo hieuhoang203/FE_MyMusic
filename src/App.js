@@ -44,8 +44,8 @@ function App() {
                         <>
                             <Route path={'/artis/'} element={<DashBoardArtis/>}>
                                 <Route path={''} element={<AnalyticsArtis/>}></Route>
-                                <Route path={'song'} element={<SongArtis/>}></Route>
-                                <Route path={'album'} element={<Album/>}></Route>
+                                <Route path={'my-song'} element={<SongArtis/>}></Route>
+                                <Route path={'my-album'} element={<Album/>}></Route>
                             </Route>
                         </>
                         : <Route path={'/artis/'} element={<ErrorPage/>}/>
