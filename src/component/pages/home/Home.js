@@ -58,6 +58,7 @@ function Home() {
 
     useEffect(() => {
         setTrendingSong(listSong.at(0))
+        console.log(user)
     }, [])
 
     useEffect(() => {
@@ -363,7 +364,7 @@ function Home() {
                             user !== null ?
                                 <div className="user">
                                     <div className="left">
-                                        <img src={user.avatar} alt="Can not show image!"/>
+                                        <img src={`${user.avatar}`}/>
                                     </div>
                                     <div className="right">
                                         {user.name}

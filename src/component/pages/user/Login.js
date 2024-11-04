@@ -12,13 +12,13 @@ const LoginAndRegister = () => {
 
     const [account, setAccount] = useState({
         name: '',
-        user_name: '',
-        pass_word: ''
+        login: '',
+        pass: ''
     })
 
     const [login, setLogin] = useState({
-        login: "",
-        pass: ""
+        login: '',
+        pass: ''
     })
 
 
@@ -28,16 +28,16 @@ const LoginAndRegister = () => {
             history.replace('/register')
             setAccount({
                 name: '',
-                user_name: '',
-                pass_word: ''
+                login: '',
+                pass: ''
             })
             container.classList.add('active')
         } else {
             history.replace('/login')
             setAccount({
                 name: '',
-                user_name: '',
-                pass_word: ''
+                login: '',
+                pass: ''
             })
             container.classList.remove('active')
         }
@@ -118,7 +118,7 @@ const LoginAndRegister = () => {
         const value = target.value
         if (name === 'name') {
             checkName(value)
-        } else if (name === 'user_name') {
+        } else if (name === 'login') {
             checkEmail(value)
         } else {
             checkPassWord(value)
@@ -211,9 +211,9 @@ const LoginAndRegister = () => {
                         <span>or use email for registration</span>
                         <input name={'name'} type="text" placeholder={'Name'}
                                onChange={(event) => handleChangeAccount(event)}/>
-                        <input name={'user_name'} type="email" placeholder={'Email'}
+                        <input name={'login'} type="email" placeholder={'Email'}
                                onChange={(event) => handleChangeAccount(event)}/>
-                        <input name={'pass_word'} type="password" placeholder={'Password'}
+                        <input name={'pass'} type="password" placeholder={'Password'}
                                onChange={(event) => handleChangeAccount(event)}/>
                         <button onClick={(event) => createAccount(event)}>Sign up</button>
                     </form>

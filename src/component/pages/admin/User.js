@@ -213,7 +213,7 @@ const User = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {allUser.map((value, index) => (
+                    {allUser != null ? allUser.map((value, index) => (
                         <tr key={index}>
                             <td><img src={value.avatar} alt={'Image Error'}/></td>
                             <td>{value.name}</td>
@@ -224,7 +224,7 @@ const User = () => {
                             <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
                             <td className={'button primary'} onClick={() => fillDataToForm(value.id)}>Details</td>
                         </tr>
-                    ))}
+                    )) : <tr></tr>}
                     </tbody>
                 </table>
             </div>
