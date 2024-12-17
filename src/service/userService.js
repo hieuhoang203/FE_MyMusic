@@ -45,3 +45,7 @@ export const updateUser = (id, user) => {
 export const getArtisSelect = () => {
     return axiosHelper.get(`/user/admin/get-artis-select`);
 }
+
+export const changeStatusUser = (id, status) => {
+    return axiosHelper.put(`/user/admin/change-status/${id}&status=${status}`)
+}
