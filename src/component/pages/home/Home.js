@@ -58,7 +58,6 @@ function Home() {
 
     useEffect(() => {
         setTrendingSong(listSong.at(0))
-        console.log(user)
     }, [])
 
     useEffect(() => {

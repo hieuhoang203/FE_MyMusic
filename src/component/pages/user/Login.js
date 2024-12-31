@@ -164,13 +164,14 @@ const LoginAndRegister = () => {
         event.preventDefault()
         if (validate) {
             try {
+                const user = await getUserWhenLogin(login.login);
                 const response = await getAccount(login);
-                const user = await getUserWhenLogin(response.data.login)
-                localStorage.setItem("account", JSON.stringify(user.data));
-                localStorage.setItem("token", response.data.accessToken);
-                if (user.data.role === 'ADMIN') {
+                
+                localStorage.setItem("account", JSON.stringify(user.data.data));
+                localStorage.setItem("token", response.data.data.accessToken);
+                if (user.data.data.role === 'ADMIN') {
                     window.location.replace("/admin")
-                } else if (user.data.role === 'ARTIS') {
+                } else if (user.data.data.role === 'ARTIS') {
                     window.location.replace("/artis")
                 } else {
                     window.location.replace("/")
