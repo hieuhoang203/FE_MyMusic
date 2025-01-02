@@ -97,7 +97,7 @@ const DashBoardArtis = () => {
                         <div className="logo" onClick={() => goHome()}>
                             <img src={logo} alt={'Can not show image'}/>
                             <h2>Sublime</h2>
-                            <p>Hoàng Văn Hiếu 🫅</p>
+                            <p>Hoàng Văn Hiếu 🤴</p>
                         </div>
                     </div>
 

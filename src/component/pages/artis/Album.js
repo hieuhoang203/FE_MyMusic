@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import thuy from "../../../asset/thuydo.png";
+import love from "../../../asset/IMG_0174.PNG";
 import cogaim52 from "../../../asset/song1.mp3";
 import {createBrowserHistory as useHistory} from "history";
 import axiosHelper from "../../../api/myApi";
@@ -52,10 +52,10 @@ const Album = () => {
     }
 
     const newSong = [{
-        id: 1, avatar: thuy, name: 'Cô gái M52', artis: 'HuyR', post_time: '17/04/2024', duration: 213, audio: cogaim52
+        id: 1, avatar: love, name: 'Cô gái M52', artis: 'HuyR', post_time: '17/04/2024', duration: 213, audio: cogaim52
     }, {
         id: 2,
-        avatar: thuy,
+        avatar: love,
         name: 'Mây Lang Thang',
         artis: 'Tùng Tea',
         post_time: '17/04/2024',
@@ -63,7 +63,7 @@ const Album = () => {
         audio: cogaim52
     }, {
         id: 3,
-        avatar: thuy,
+        avatar: love,
         name: 'Bèo dạt mây trôi',
         artis: 'Hương Tú',
         post_time: '17/04/2024',
@@ -71,7 +71,7 @@ const Album = () => {
         audio: cogaim52
     }, {
         id: 2,
-        avatar: thuy,
+        avatar: love,
         name: 'Mây Lang Thang',
         artis: 'Tùng Tea',
         post_time: '17/04/2024',
@@ -79,7 +79,7 @@ const Album = () => {
         audio: cogaim52
     }, {
         id: 3,
-        avatar: thuy,
+        avatar: love,
         name: 'Bèo dạt mây trôi',
         artis: 'Hương Tú',
         post_time: '17/04/2024',

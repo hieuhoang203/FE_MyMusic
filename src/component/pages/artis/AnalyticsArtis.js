@@ -1,8 +1,5 @@
 import React from "react";
-import thuy from "../../../asset/thuydo.png";
-import truc from "../../../asset/trucdo.png";
-import vanh from "../../../asset/vanhdo.PNG";
-import thuylinh from "../../../asset/IMG_3565.JPG";
+import love from "../../../asset/IMG_0174.PNG";
 import "../../../css/analytics.css";
 
 const AnalyticsArtis = () => {
@@ -86,23 +83,23 @@ const AnalyticsArtis = () => {
               <h2 className={'name-user'}>New Followers</h2>
               <div className="user-list">
                   <div className="user">
-                      <img src={thuy} alt={'Can not show image'}/>
-                      <h2>Thúy</h2>
+                      <img src={love} alt={'Can not show image'}/>
+                      <h2>Hòa</h2>
                       <p>54 Min Ago</p>
                   </div>
                   <div className="user">
-                      <img src={truc} alt={'Can not show image'}/>
-                      <h2>Trúc</h2>
+                      <img src={love} alt={'Can not show image'}/>
+                      <h2>Hòa</h2>
                       <p>3 Hours Ago</p>
                   </div>
                   <div className="user">
-                      <img src={vanh} alt={'Can not show image'}/>
-                      <h2>Vân Anh</h2>
+                      <img src={love} alt={'Can not show image'}/>
+                      <h2>Hòa</h2>
                       <p>6 Hours Ago</p>
                   </div>
                   <div className="user">
-                      <img src={thuylinh} alt={'Can not show image'}/>
-                      <h2>Thùy Linh</h2>
+                      <img src={love} alt={'Can not show image'}/>
+                      <h2>Hòa</h2>
                       <p>12 Hours Ago</p>
                   </div>
               </div>

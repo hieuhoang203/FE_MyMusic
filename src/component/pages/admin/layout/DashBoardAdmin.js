@@ -121,7 +121,7 @@ const DashBoardAdmin = () => {
                         <div className="logo" onClick={() => goHomePage()}>
                             <img src={logo}/>
                             <h2>Sublime</h2>
-                            <p>Hoàng Văn Hiếu 🫅</p>
+                            <p>Hoàng Văn Hiếu 🤴</p>
                         </div>
                     </div>
 

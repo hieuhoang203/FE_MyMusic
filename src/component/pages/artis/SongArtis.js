@@ -1,5 +1,5 @@
 import React from "react";
-import thuy from "../../../asset/thuydo.png";
+import love from "../../../asset/IMG_0174.PNG";
 import cogaim52 from "../../../asset/song1.mp3";
 import plus from "../../../asset/plus.png";
 
@@ -7,7 +7,7 @@ const SongArtis = () => {
     const newSong = [
         {
             id: 1,
-            avatar: thuy,
+            avatar: love,
             name: 'Cô gái M52',
             artis: 'HuyR',
             post_time: '17/04/2024',
@@ -16,7 +16,7 @@ const SongArtis = () => {
         },
         {
             id: 2,
-            avatar: thuy,
+            avatar: love,
             name: 'Mây Lang Thang',
             artis: 'Tùng Tea',
             post_time: '17/04/2024',
@@ -25,7 +25,7 @@ const SongArtis = () => {
         },
         {
             id: 3,
-            avatar: thuy,
+            avatar: love,
             name: 'Bèo dạt mây trôi',
             artis: 'Hương Tú',
             post_time: '17/04/2024',
