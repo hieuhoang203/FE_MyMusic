@@ -71,7 +71,8 @@ const Genres = () => {
             history.replace("/")
         } else {
             getAllGenres(page).then((response) => {
-                setListGenres(response.data.content)
+                console.log(response)
+                setListGenres(response.data.data.content)
                 setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
             })
         }
@@ -215,7 +216,7 @@ const Genres = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {listGenres.map((value, index) => (
+                    { listGenres.length > 0 ? listGenres.map((value, index) => (
                         <tr key={index}>
                             <td>{value.code}</td>
                             <td>{value.name}</td>
@@ -225,7 +226,7 @@ const Genres = () => {
                             <td className={'button warning'} onClick={() => fillDataUpdate(value.id)}>Update</td>
                             <td className={'button primary'} onClick={() => fillDataUpdate(value.id)}>Details</td>
                         </tr>
-                    ))}
+                    )) : <tr><td colSpan={5} style={{textAlign: 'center'}}>No data</td></tr>}
                     </tbody>
                 </table>
             </div>

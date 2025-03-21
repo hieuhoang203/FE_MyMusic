@@ -146,12 +146,15 @@ const LoginAndRegister = () => {
         event.preventDefault()
         if (validate) {
             saveAccount(account).then((response) => {
+                console.log(response)
                 notification.error({
                     message: "Register",
                     description: "Create account successfully!",
                 });
             })
-            window.location.replace("/login")
+            setTimeout(() => {
+                window.location.replace("/login")
+            }, 1000)
         } else {
             notification.error({
                 message: "Register",
@@ -164,23 +167,34 @@ const LoginAndRegister = () => {
         event.preventDefault()
         if (validate) {
             try {
-                const user = await getUserWhenLogin(login.login);
                 const response = await getAccount(login);
-                
-                localStorage.setItem("account", JSON.stringify(user.data.data));
-                localStorage.setItem("token", response.data.data.accessToken);
-                if (user.data.data.role === 'ADMIN') {
-                    window.location.replace("/admin")
-                } else if (user.data.data.role === 'ARTIS') {
-                    window.location.replace("/artis")
+                if (response === null) {
+                    console.log(response)
+                    notification.error({
+                        message: "Login",
+                        description: "Wrong email or password!",
+                    });
                 } else {
-                    window.location.replace("/")
+                    const user = await getUserWhenLogin(login.login);
+                    notification.success({
+                        message: "Login",
+                        description: "Login successfully!",
+                    });
+                    localStorage.setItem("account", JSON.stringify(user.data.data));
+                    localStorage.setItem("token", response.data.data.accessToken);
+                    
+                    setTimeout(() => {
+                        if (user.data.data.role === 'ADMIN') {
+                            window.location.replace("/admin")
+                        } else if (user.data.data.role === 'ARTIS') {
+                            window.location.replace("/artis")
+                        } else {
+                            window.location.replace("/")
+                        }
+                    }, 1000)
                 }
-                notification.success({
-                    message: "Login",
-                    description: "Login successfully!",
-                });
             } catch (error) {
+                console.log(error)
                 notification.error({
                     message: "Login",
                     description: "Wrong email or password!",
