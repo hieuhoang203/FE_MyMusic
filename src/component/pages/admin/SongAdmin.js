@@ -106,15 +106,16 @@ const SongAdmin = () => {
 
     useEffect(() => {
         getSongByStatus(pageWait, 'Wait').then((response) => {
-            setSongWaitList(response.data.content)
-            setPaginationWait((prevState) => ({...paginationWait, totalRows: response.data.totalElements}))
+            console.log(response)
+            setSongWaitList(response.data.data.content)
+            setPaginationWait((prevState) => ({...paginationWait, totalRows: response.data.data.totalElements}))
         })
     }, [pageWait]);
 
     useEffect(() => {
         getAllSong(page).then((response) => {
-            setSongList(response.data.content)
-            setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
+            setSongList(response.data.data.content)
+            setPagination((prevState) => ({...pagination, totalRows: response.data.data.totalElements}))
         })
     }, [load, page, songWaitList]);
 
@@ -281,7 +282,7 @@ const SongAdmin = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {songWaitList.map((value, index) => (
+                    {songWaitList != null ? songWaitList.map((value, index) => (
                         <tr key={index}>
                             <td><img src={value.avatar} alt={'Can not show image'}/></td>
                             <td>{value.name}</td>
@@ -292,7 +293,7 @@ const SongAdmin = () => {
                                 onClick={() => changeStatusSong(value.id, 'Activate')}>Accept
                             </td>
                         </tr>
-                    ))}
+                    )) : <tr><td colSpan={5} style={{textAlign: 'center'}}>No data</td></tr>}
                     </tbody>
                 </table>
             </div>
@@ -315,7 +316,7 @@ const SongAdmin = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {songList.map((value, index) => (
+                    {songList != null ? songList.map((value, index) => (
                         <tr key={value.id}>
                             <td><img src={value.avatar} alt={'Can not show image'}/></td>
                             <td>{value.name}</td>
@@ -327,7 +328,7 @@ const SongAdmin = () => {
                             <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
                             <td className={'button primary'}>Detail</td>
                         </tr>
-                    ))}
+                    )) : <tr><td colSpan={5} style={{textAlign: 'center'}}>No data</td></tr>}
                     </tbody>
                 </table>
             </div>

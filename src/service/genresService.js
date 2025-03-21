@@ -12,12 +12,8 @@ export const updateGenres = (id, genres) => {
     return httpClient.put(`/genres/update/${id}`, genres);
 }
 
-export const deleteGenres = (id) => {
-    return httpClient.delete(`/genres/delete/${id}`);
-}
-
-export const returnStatus = (id) => {
-    return httpClient.get(`/genres/return/${id}`);
+export const deleteGenres = (id, status) => {
+    return httpClient.delete(`/genres/change-status/${id}?status=${status}`);
 }
 
 export const searchGenres = (id) => {

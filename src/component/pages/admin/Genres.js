@@ -6,7 +6,6 @@ import {createBrowserHistory as useHistory} from "history";
 import {
     deleteGenres,
     getAllGenres,
-    returnStatus,
     saveGenres,
     searchGenres,
     updateGenres
@@ -73,7 +72,7 @@ const Genres = () => {
             getAllGenres(page).then((response) => {
                 console.log(response)
                 setListGenres(response.data.data.content)
-                setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
+                setPagination((prevState) => ({...pagination, totalRows: response.data.data.totalElements}))
             })
         }
     }, [load, page]);
@@ -93,17 +92,24 @@ const Genres = () => {
     // Create genres
     function createGenres() {
         saveGenres(genres).then((response) => {
-            setModal(false)
-            message.open({
-                type: "success",
+            if (response.data.result.responseCode == 200) {
+                setModal(false)
+                message.open({
+                    type: "success",
                 content: "Genres added successfully!"
             })
             setLoad(!load)
             setGenres({
                 code: "",
                 name: ""
-            })
-            clearForm()
+                })
+                clearForm()
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage
+                })
+            }
         }).catch((error) => {
             message.open({
                 type: "error",
@@ -122,17 +128,24 @@ const Genres = () => {
     // Update genres
     function updateNewGenres() {
         updateGenres(id, genres).then((response) => {
-            setModal(false)
-            message.open({
-                type: "success",
-                content: "Genres update successfully!"
-            })
-            setLoad(!load)
-            setGenres({
-                code: "",
-                name: ""
-            })
-            clearForm()
+            if (response.data.result.responseCode == 200) {
+                setModal(false)
+                message.open({
+                    type: "success",
+                    content: "Genres update successfully!"
+                })
+                setLoad(!load)
+                setGenres({
+                    code: "",
+                    name: ""
+                })
+                clearForm()
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage
+                })
+            }
         }).catch((error) => {
             message.open({
                 type: "error",
@@ -142,28 +155,41 @@ const Genres = () => {
         })
     }
 
+    // Fill data update
     async function fillDataUpdate(id) {
-        setId(id)
-        const newValue = await searchGenres(id)
-        const value = {
-            code: newValue.data.code,
-            name: newValue.data.name,
+        try {
+            setId(id)
+            const newValue = await searchGenres(id)
+            const value = {
+                code: newValue.data.data.code,
+                name: newValue.data.data.name,
+            }
+            setGenres((prevState) => ({...prevState, ...value}))
+            setModal(true)
+            setFormCustom(false)
+            form.setFieldValue('name', value.name);
+            form.setFieldValue('code', value.code);
+        } catch (error) {
+            console.log(error)
         }
-        setGenres((prevState) => ({...prevState, ...value}))
-        setModal(true)
-        setFormCustom(false)
-        form.setFieldValue('name', value.name);
-        form.setFieldValue('code', value.code);
     }
 
-    function deleteRecord(id) {
-        deleteGenres(id).then((response) => {
-            message.open({
-                type: "success",
-                content: "Delete successfully!"
-            })
-            setLoad(!load)
-            console.log(response)
+    // Change status Genres
+    function deleteRecord(id, status) {
+        deleteGenres(id, status).then((response) => {
+            if (response.data.result.responseCode == 200) {
+                message.open({
+                    type: "success",
+                    content: status === 'ShutDown' ? "Delete successfully!" : "Return successfully!"
+                })
+                setLoad(!load)
+                console.log(response)
+            } else {
+                message.open({
+                    type: "error",
+                    content: "Cannot delete genres!"
+                })
+            }
         }).catch((error) => {
             console.log(error)
         })
@@ -172,23 +198,6 @@ const Genres = () => {
     // Check status ShutDown
     function checkStatus(value) {
         return value.status === 'ShutDown';
-    }
-
-    // Return status Genres
-    function returnStatusRecord(id) {
-        returnStatus(id).then((response) => {
-            message.open({
-                type: "success",
-                content: "Return status successfully!"
-            })
-            setLoad(!load)
-        }).catch((error) => {
-            message.open({
-                type: "error",
-                content: "Cannot return status successfully!"
-            })
-            console.log(error)
-        })
     }
 
     return (
@@ -222,7 +231,7 @@ const Genres = () => {
                             <td>{value.name}</td>
                             <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
                             <td className={checkStatus(value) ? 'success button' : 'danger button'}
-                                onClick={() => checkStatus(value) ? returnStatusRecord(value.id) : deleteRecord(value.id)}>{checkStatus(value) ? 'Return' : 'Delete'}</td>
+                                onClick={() => checkStatus(value) ? deleteRecord(value.id, 'Activate') : deleteRecord(value.id, 'ShutDown')}>{checkStatus(value) ? 'Return' : 'Delete'}</td>
                             <td className={'button warning'} onClick={() => fillDataUpdate(value.id)}>Update</td>
                             <td className={'button primary'} onClick={() => fillDataUpdate(value.id)}>Details</td>
                         </tr>
