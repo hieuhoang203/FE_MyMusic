@@ -8,7 +8,7 @@ import {
     updateStatusUser,
     updateUser
 } from "../../../service/userService";
-import {Button, ConfigProvider, DatePicker, Form, Input, Modal, notification, Pagination, Radio, Upload} from "antd";
+import {Button, ConfigProvider, DatePicker, Form, Input, message, Modal, notification, Pagination, Radio, Upload} from "antd";
 import {TinyColor} from "@ctrl/tinycolor";
 import dayjs from "dayjs";
 import {UploadOutlined} from "@ant-design/icons";
@@ -70,14 +70,28 @@ const Artis = () => {
 
     useEffect(() => {
         getNewUserOrArtis('ARTIS').then((response) => {
-            setNewArtis(Object.values(response.data))
+            if (response.data.result.responseCode === '200') {
+                setNewArtis(Object.values(response.data.data))
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage
+                })
+            }
         })
     }, [load]);
 
     useEffect(() => {
         getAllArtis(page).then((response) => {
-            setAllArtis(response.data.content)
-            setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
+            if (response.data.result.responseCode === '200') {  
+                setAllArtis(response.data.data.content)
+                setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage
+                })
+            }
         })
     }, [load, page]);
 
@@ -223,7 +237,7 @@ const Artis = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {allArtis.map((value, index) => (
+                    {allArtis.length > 0 ? allArtis.map((value, index) => (
                         <tr key={index}>
                             <td><img src={value.avatar} alt={'Image Error'}/></td>
                             <td>{value.name}</td>
@@ -236,7 +250,7 @@ const Artis = () => {
                             <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
                             <td className={'button primary'} onClick={() => fillDataToForm(value.id)}>Details</td>
                         </tr>
-                    ))}
+                    )) : <tr><td colSpan={10} style={{textAlign: 'center'}}>No data</td></tr>}
                     </tbody>
                 </table>
             </div>
