@@ -26,16 +26,16 @@ export const getNewUserOrArtis = (role) => {
     return axiosHelper.get(`/user/new-user/${role}`);
 }
 
-export const saveUser = (user) => {
-    return axiosHelper.post(`/user/save`, user, config);
+export const saveUser = (type, user) => {
+    return axiosHelper.post(`/user/save?type=${type}`, user, config);
 }
 
 export const searchUser = (id) => {
     return axiosHelper.get(`/user/search/${id}`);
 }
 
-export const updateStatusUser = (id, account, status) => {
-    return axiosHelper.get(`/user/update-status?id=${id}&account=${account}&status=${status}`)
+export const updateStatusUser = (id, status) => {
+    return axiosHelper.get(`/user/update-status?id=${id}&status=${status}`)
 }
 
 export const updateUser = (id, user) => {

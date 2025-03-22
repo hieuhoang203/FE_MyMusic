@@ -69,14 +69,29 @@ const User = () => {
 
     useEffect(() => {
         getNewUserOrArtis('USER').then((response) => {
-            setNewUser(Object.values(response.data));
+            if (response.data.result.responseCode === '200') {
+                setNewUser(Object.values(response.data.data));
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage
+                })
+            }
         })
     }, [load]);
 
     useEffect(() => {
         getAllUser(page).then((response) => {
-            setAllUser(response.data.content)
-            setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
+            if (response.data.result.responseCode === '200') {
+                console.log(response.data.data)
+                setAllUser(Object.values(response.data.data.content));
+                setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage
+                })
+            }
         })
     }, [load, page]);
 
@@ -95,23 +110,30 @@ const User = () => {
     }
 
     async function createUser() {
-        saveUser(user).then((response) => {
-            setModal(false)
-            message.open({
-                type: "success",
-                content: "User added successfully!"
-            })
-            setUser({
-                id: "",
-                name: "",
-                gender: true,
-                birthday: "",
-                avatar: {},
-                email: "",
-                role: "USER"
-            })
-            clearForm()
-            setLoad(!load)
+        saveUser(2, user).then((response) => {
+            if (response.data.result.responseCode === '200') {
+                setModal(false)
+                message.open({
+                    type: "success",
+                    content: "User added successfully!"
+                })
+                setUser({
+                    id: "",
+                    name: "",
+                    gender: true,
+                    birthday: "",
+                    avatar: {},
+                    email: "",
+                    role: "USER"
+                })
+                clearForm()
+                    setLoad(!load)
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage
+                })
+            }
         }).catch((error) => {
             console.log(error)
         })
@@ -163,8 +185,8 @@ const User = () => {
         return value.status === 'Activate';
     }
 
-    function updateStatus(id, email, status) {
-        updateStatusUser(id, email, status).then((response) => {
+    function updateStatus(id, status) {
+        updateStatusUser(id, status).then((response) => {
             setLoad(!load)
         }).catch((error) => {
             console.log(error)
@@ -176,7 +198,7 @@ const User = () => {
         form.setFieldValue('avatar', null)
         form.setFieldValue('name', '')
         form.setFieldValue('birthday', '')
-        form.setFieldValue('gender', 'true')
+        form.setFieldValue('gender', true)
         form.setFieldValue('email', '')
         form.setFieldValue('role', 'USER')
     }
@@ -220,11 +242,11 @@ const User = () => {
                             <td className={value.gender ? 'primary' : 'warning'}>{value.gender ? 'Male' : 'Female'}</td>
                             <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
                             <td className={checkStatus(value) ? 'danger button' : 'success button'}
-                                onClick={() => checkStatus(value) ? updateStatus(value.id, value.email, 'ShutDown') : updateStatus(value.id, value.email, 'Activate')}>{checkStatus(value) ? 'Delete' : 'Return'}</td>
+                                onClick={() => checkStatus(value) ? updateStatus(value.id, 'ShutDown') : updateStatus(value.id, 'Activate')}>{checkStatus(value) ? 'Delete' : 'Return'}</td>
                             <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
                             <td className={'button primary'} onClick={() => fillDataToForm(value.id)}>Details</td>
                         </tr>
-                    )) : <tr></tr>}
+                    )) : <tr><td colSpan={5} style={{textAlign: 'center'}}>No data</td></tr>}
                     </tbody>
                 </table>
             </div>
@@ -249,7 +271,14 @@ const User = () => {
                     wrapperCol={{flex: 1}}
                     colon={false}
                     style={{maxWidth: 600, marginTop: '60px'}}
-                    initialValues={{remember: true}}
+                    initialValues={
+                        {
+                            remember: true,
+                            avatar: null,
+                            gender: true,
+                            role: 'USER'
+                        }
+                    }
                     encType="multipart/form-data"
                 >
                     <h2>{formCustom ? "Create User" : "Update User"}</h2>
@@ -305,10 +334,10 @@ const User = () => {
                                onChange={(events) => setUser({...user, name: events.target.value})}></Input>
                     </Form.Item>
                     <Form.Item label={'Gender'} name={'gender'}>
-                        <Radio.Group name={'gender'} defaultValue={'true'}
+                        <Radio.Group name={'gender'}
                                      onChange={(events) => setUser({...user, gender: events.target.value})}>
-                            <Radio value={'true'} style={{color: "#fbfbfb", fontSize: "16px"}}> Male </Radio>
-                            <Radio value={'false'} style={{color: "#fbfbfb", fontSize: "16px"}}> Female </Radio>
+                            <Radio value={true} style={{color: "#fbfbfb", fontSize: "16px"}}> Male </Radio>
+                            <Radio value={false} style={{color: "#fbfbfb", fontSize: "16px"}}> Female </Radio>
                         </Radio.Group>
                     </Form.Item>
                     <Form.Item label={'Birth Day'} name={'birthday'}
@@ -342,7 +371,7 @@ const User = () => {
                                onChange={(events) => setUser({...user, email: events.target.value})}></Input>
                     </Form.Item>
                     <Form.Item label={'Role'} name={'role'} style={{marginLeft: "13px"}}>
-                        <Radio.Group defaultValue={'USER'} name={'role'}
+                        <Radio.Group name={'role'}
                                      onChange={(events) => setUser({...user, role: events.target.value})}>
                             <Radio name={'role'} value={'USER'}
                                    style={{color: "#fbfbfb", fontSize: "16px"}}> User </Radio>

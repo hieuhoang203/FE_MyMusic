@@ -92,7 +92,7 @@ const Genres = () => {
     // Create genres
     function createGenres() {
         saveGenres(genres).then((response) => {
-            if (response.data.result.responseCode == 200) {
+            if (response.data.result.responseCode === '200') {
                 setModal(false)
                 message.open({
                     type: "success",
@@ -128,7 +128,7 @@ const Genres = () => {
     // Update genres
     function updateNewGenres() {
         updateGenres(id, genres).then((response) => {
-            if (response.data.result.responseCode == 200) {
+            if (response.data.result.responseCode === '200') {
                 setModal(false)
                 message.open({
                     type: "success",
@@ -177,7 +177,7 @@ const Genres = () => {
     // Change status Genres
     function deleteRecord(id, status) {
         deleteGenres(id, status).then((response) => {
-            if (response.data.result.responseCode == 200) {
+            if (response.data.result.responseCode === '200') {
                 message.open({
                     type: "success",
                     content: status === 'ShutDown' ? "Delete successfully!" : "Return successfully!"
@@ -187,7 +187,7 @@ const Genres = () => {
             } else {
                 message.open({
                     type: "error",
-                    content: "Cannot delete genres!"
+                    content: response.data.result.responseMessage
                 })
             }
         }).catch((error) => {
@@ -225,7 +225,7 @@ const Genres = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    { listGenres.length > 0 ? listGenres.map((value, index) => (
+                    { listGenres != null ? listGenres.map((value, index) => (
                         <tr key={index}>
                             <td>{value.code}</td>
                             <td>{value.name}</td>
@@ -267,19 +267,19 @@ const Genres = () => {
                                rules={[
                                    {required: true, message: 'Code can not be left blank!'},
                                    {
-                                       validator: (_, value) => {
-                                           if (!value) {
-                                               return Promise.resolve();
-                                           }
-                                           const lowercaseValue = value.trim().toLowerCase();
-                                           const isDuplicate = listGenres.some(
-                                               (genres) => genres.code.trim().toLowerCase() === lowercaseValue
-                                           )
-                                           if (isDuplicate) {
-                                               return Promise.reject('Code already exists!');
-                                           }
-                                       }
-                                   }
+                                    validator: (_, value) => {
+                                            if (listGenres != null) {
+                                                const lowercaseValue = value.trim().toLowerCase();
+                                                const isDuplicate = listGenres.some(
+                                                    (genres) => genres.code.trim().toLowerCase() === lowercaseValue
+                                                );
+                                                if (isDuplicate) {
+                                                    return Promise.reject('Code already exists!');
+                                                }
+                                                return Promise.resolve();
+                                            }
+                                        }
+                                    }
                                ]}
                     >
                         <Input placeholder={'Enter code'}
@@ -290,17 +290,16 @@ const Genres = () => {
                                    {required: true, message: 'Name can not be left blank!'},
                                    {
                                        validator: (_, value) => {
-                                           if (!value) {
-                                               return Promise.resolve();
-                                           }
-                                           const lowercaseValue = value.trim().toLowerCase();
-                                           const isDuplicate = listGenres.some(
-                                               (genres) => genres.name.trim().toLowerCase() === lowercaseValue
-                                           )
-                                           if (isDuplicate) {
-                                               return Promise.reject('Name already exists!');
-                                           }
-                                           return Promise.resolve();
+                                            if (listGenres != null) {
+                                                const lowercaseValue = value.trim().toLowerCase();
+                                                const isDuplicate = listGenres.some(
+                                                    (genres) => genres.name.trim().toLowerCase() === lowercaseValue
+                                                )
+                                                if (isDuplicate) {
+                                                    return Promise.reject('Name already exists!');
+                                                }
+                                                return Promise.resolve();
+                                            }
                                        }
                                    }
                                ]}
