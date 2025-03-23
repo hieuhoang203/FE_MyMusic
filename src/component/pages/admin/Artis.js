@@ -78,6 +78,12 @@ const Artis = () => {
                     content: response.data.result.responseMessage
                 })
             }
+        }).catch((error) => {
+            message.open({
+                type: "error", 
+                content: "Failed to fetch new artists"
+            })
+            console.error(error)
         })
     }, [load]);
 
@@ -85,13 +91,22 @@ const Artis = () => {
         getAllArtis(page).then((response) => {
             if (response.data.result.responseCode === '200') {  
                 setAllArtis(response.data.data.content)
-                setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
+                setPagination((prevState) => ({
+                    ...prevState,
+                    totalRows: response.data.data.totalElements
+                }))
             } else {
                 message.open({
                     type: "error",
                     content: response.data.result.responseMessage
                 })
             }
+        }).catch((error) => {
+            message.open({
+                type: "error",
+                content: "Failed to fetch artists list"
+            })
+            console.error(error)
         })
     }, [load, page]);
 
@@ -108,39 +123,46 @@ const Artis = () => {
         setFormCustom((prevState) => true)
     }
 
-    async function createArtis() {
-        try {
-            const response = await saveUser(artis)
-            setModal(false)
-            setArtis({
-                id: "",
-                name: "",
-                gender: true,
-                birthday: "",
-                avatar: {},
-                email: "",
-                role: "ARTIS"
+    function createArtis() {
+        saveUser(2, artis).then((response) => {
+            if (response.data.result.responseCode === '200') {
+                setModal(false)
+                setArtis({
+                    id: "",
+                    name: "",
+                    gender: true,
+                    birthday: "",
+                    avatar: {},
+                    email: "",
+                    role: "ARTIS"
+                })
+                clearForm()
+                setLoad(!load)
+                message.open({
+                    type: "success",
+                    content: "Create artis successfully!",
+                });
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage
+                })
+            }
+        }).catch((error) => {
+            message.open({
+                type: "error",
+                content: "Can not create artis!"
             })
-            clearForm()
-            setLoad(!load)
-            notification.success({
-                message: "New artis",
-                description: "Create artis successfully!",
-            })
-        } catch (error) {
-            notification.error({
-                message: "New artis",
-                description: "Email already exists!",
-            })
-        }
+            console.log(error)
+        })
     }
 
-    async function updateNewArtis() {
-        try {
-            const response = await updateUser(id, artis)
-            setModal(false)
-            setId(undefined);
-            setArtis({
+    function updateNewArtis() {
+        updateUser(id, artis).then((response) => {
+            if (response.data.result.responseCode === '200') {
+                setModal(false)
+                setId(undefined);
+                setArtis({
                 id: "",
                 name: "",
                 gender: true,
@@ -151,16 +173,23 @@ const Artis = () => {
             })
             clearForm()
             setLoad(!load)
-            notification.success({
-                message: "Update artis",
-                description: "Update artis successfully!",
+            message.open({
+                type: "success",
+                content: "Update artis successfully!",
             })
-        } catch (error) {
-            notification.error({
-                message: "New artis",
-                description: "Can't update artis!",
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage
+                })
+            }
+        }).catch((error) => {
+            message.open({
+                type: "error",
+                content: "Can not update artis!"
             })
-        }
+            console.log(error)
+        })
     }
 
     function fillDataToForm(id) {
@@ -184,8 +213,8 @@ const Artis = () => {
         return value.status === 'Activate';
     }
 
-    function updateStatus(id, email, status) {
-        updateStatusUser(id, email, status).then((response) => {
+    function updateStatus(id, status) {
+        updateStatusUser(id, status).then((response) => {
             setLoad(!load)
         }).catch((error) => {
             console.log(error)
@@ -246,7 +275,7 @@ const Artis = () => {
                             <td>{value.follows}</td>
                             <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
                             <td className={checkStatus(value) ? 'danger button' : 'success button'}
-                                onClick={() => checkStatus(value) ? updateStatus(value.id, value.email, 'ShutDown') : updateStatus(value.id, value.email, 'Activate')}>{checkStatus(value) ? 'Delete' : 'Return'}</td>
+                                onClick={() => checkStatus(value) ? updateStatus(value.id, 'ShutDown') : updateStatus(value.id, 'Activate')}>{checkStatus(value) ? 'Delete' : 'Return'}</td>
                             <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
                             <td className={'button primary'} onClick={() => fillDataToForm(value.id)}>Details</td>
                         </tr>
@@ -275,7 +304,12 @@ const Artis = () => {
                     wrapperCol={{flex: 1}}
                     colon={false}
                     style={{maxWidth: 600, marginTop: '60px'}}
-                    initialValues={{remember: true}}
+                    initialValues={
+                        {
+                            remember: true,
+                            gender: true
+                        }
+                    }
                     encType="multipart/form-data"
                 >
                     <h2>{formCustom ? "Create Artis" : "Update Artis"}</h2>
@@ -332,10 +366,10 @@ const Artis = () => {
                                onChange={(events) => setArtis({...artis, name: events.target.value})}></Input>
                     </Form.Item>
                     <Form.Item label={'Gender'} name={'gender'} style={{marginLeft: "13px"}}>
-                        <Radio.Group name={'gender'} defaultValue={'true'}
+                        <Radio.Group name={'gender'}
                                      onChange={(events) => setArtis({...artis, gender: events.target.value})}>
-                            <Radio value={'true'} style={{color: "#fbfbfb", fontSize: "16px"}}> Male </Radio>
-                            <Radio value={'false'} style={{color: "#fbfbfb", fontSize: "16px"}}> Female </Radio>
+                            <Radio value={true} style={{color: "#fbfbfb", fontSize: "16px"}}> Male </Radio>
+                            <Radio value={false} style={{color: "#fbfbfb", fontSize: "16px"}}> Female </Radio>
                         </Radio.Group>
                     </Form.Item>
                     <Form.Item label={'Birth Day'} name={'birthday'}

@@ -96,8 +96,8 @@ const Genres = () => {
                 setModal(false)
                 message.open({
                     type: "success",
-                content: "Genres added successfully!"
-            })
+                    content: "Genres added successfully!"
+                })
             setLoad(!load)
             setGenres({
                 code: "",
