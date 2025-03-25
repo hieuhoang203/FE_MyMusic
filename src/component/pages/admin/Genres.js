@@ -66,15 +66,34 @@ const Genres = () => {
     }, []);
 
     useEffect(() => {
-        if (myAccount?.role !== 'ADMIN') {
-            history.replace("/")
-        } else {
-            getAllGenres(page).then((response) => {
-                console.log(response)
+        getAllGenres(page).then((response) => {
+            if (response.data.result.responseCode === '200') {  
                 setListGenres(response.data.data.content)
                 setPagination((prevState) => ({...pagination, totalRows: response.data.data.totalElements}))
-            })
-        }
+            } else {
+                console.log(response)
+                if (response.data.result.responseCode !== '401') {
+                    message.open({
+                        type: "error",
+                        content: response.data.result.responseMessage,
+                        style: {
+                            animation: "fadeInOut 2s ease-in-out forwards",
+                        },
+                    })
+                }
+            }
+        }).catch((error) => {
+            if (error.response.status !== 401) {
+                message.open({
+                    type: "error",
+                    content: "Cannot get genres!",
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
+                })
+            }
+        })
+        
     }, [load, page]);
 
     // Hide Modal
@@ -107,13 +126,19 @@ const Genres = () => {
             } else {
                 message.open({
                     type: "error",
-                    content: response.data.result.responseMessage
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
                 })
             }
         }).catch((error) => {
             message.open({
                 type: "error",
-                content: "Cannot add new genres!"
+                content: "Cannot add new genres!",
+                style: {
+                    animation: "fadeInOut 2s ease-in-out forwards",
+                },
             })
             console.log(error)
         })
@@ -143,13 +168,19 @@ const Genres = () => {
             } else {
                 message.open({
                     type: "error",
-                    content: response.data.result.responseMessage
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
                 })
             }
         }).catch((error) => {
             message.open({
                 type: "error",
-                content: "Cannot update genres!"
+                content: "Cannot update genres!",
+                style: {
+                    animation: "fadeInOut 2s ease-in-out forwards",
+                },
             })
             console.log(error)
         })
@@ -187,7 +218,10 @@ const Genres = () => {
             } else {
                 message.open({
                     type: "error",
-                    content: response.data.result.responseMessage
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
                 })
             }
         }).catch((error) => {

@@ -18,8 +18,8 @@ export const updateStatusSong = (id, status) => {
     return axiosHelper.get(`/song/update-song-status?id=${id}&status=${status}`);
 }
 
-export const saveSong = (song) => {
-    return axiosHelper.post(`/song/save`, song, config);
+export const saveSong = (song, type) => {
+    return axiosHelper.post(`/song/save?type=${type}`, song, config);
 }
 
 export const updateSong = (id, song) => {

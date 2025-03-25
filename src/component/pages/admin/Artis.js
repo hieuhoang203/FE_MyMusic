@@ -75,13 +75,19 @@ const Artis = () => {
             } else {
                 message.open({
                     type: "error",
-                    content: response.data.result.responseMessage
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
                 })
             }
         }).catch((error) => {
             message.open({
                 type: "error", 
-                content: "Failed to fetch new artists"
+                content: "Failed to fetch new artists",
+                style: {
+                    animation: "fadeInOut 2s ease-in-out forwards",
+                },
             })
             console.error(error)
         })
@@ -98,13 +104,19 @@ const Artis = () => {
             } else {
                 message.open({
                     type: "error",
-                    content: response.data.result.responseMessage
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
                 })
             }
         }).catch((error) => {
             message.open({
                 type: "error",
-                content: "Failed to fetch artists list"
+                content: "Failed to fetch artists list",
+                style: {
+                    animation: "fadeInOut 2s ease-in-out forwards",
+                },
             })
             console.error(error)
         })
@@ -141,17 +153,26 @@ const Artis = () => {
                 message.open({
                     type: "success",
                     content: "Create artis successfully!",
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
                 });
             } else {
                 message.open({
                     type: "error",
-                    content: response.data.result.responseMessage
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
                 })
             }
         }).catch((error) => {
             message.open({
                 type: "error",
-                content: "Can not create artis!"
+                content: "Can not create artis!",
+                style: {
+                    animation: "fadeInOut 2s ease-in-out forwards",
+                },
             })
             console.log(error)
         })
@@ -176,17 +197,26 @@ const Artis = () => {
             message.open({
                 type: "success",
                 content: "Update artis successfully!",
+                style: {
+                    animation: "fadeInOut 2s ease-in-out forwards",
+                },
             })
             } else {
                 message.open({
                     type: "error",
-                    content: response.data.result.responseMessage
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
                 })
             }
         }).catch((error) => {
             message.open({
                 type: "error",
-                content: "Can not update artis!"
+                content: "Can not update artis!",
+                style: {
+                    animation: "fadeInOut 2s ease-in-out forwards",
+                },
             })
             console.log(error)
         })
@@ -197,7 +227,8 @@ const Artis = () => {
         setModal(true)
         setFormCustom(false)
         searchUser(id).then((response) => {
-            const value = {...response.data}
+            console.log(response)
+            const value = {...response.data.data}
             setArtis({...value, birthday: value.birthday.replaceAll('-', '/')})
             form.setFieldValue('id', value.id)
             form.setFieldValue('name', value.name)
@@ -226,7 +257,7 @@ const Artis = () => {
         form.setFieldValue('id', '')
         form.setFieldValue('name', '')
         form.setFieldValue('birthday', '')
-        form.setFieldValue('gender', 'true')
+        form.setFieldValue('gender', true)
         form.setFieldValue('email', '')
     }
 

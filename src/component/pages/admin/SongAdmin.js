@@ -65,13 +65,13 @@ const SongAdmin = () => {
 
     function setDateSelect() {
         getGenresSelect().then((response) => {
-            setGenresSelect(response.data)
+            setGenresSelect(response.data.data)
         })
         getAlbumSelect().then((response) => {
-            setAlbumSelect(response.data)
+            setAlbumSelect(response.data.data)
         })
         getArtisSelect().then((response) => {
-            setArtisSelect(response.data)
+            setArtisSelect(response.data.data)
         })
     }
 
@@ -104,19 +104,87 @@ const SongAdmin = () => {
 
     const [pageWait, setPageWait] = useState(0)
 
+    // Hàm lấy thời gian từ file âm thanh
+  const getAudioDuration = (file) => {
+    const audio = new Audio();
+    audio.src = URL.createObjectURL(file);
+
+    audio.onloadedmetadata = () => {
+      const durationInSeconds = Math.floor(audio.duration); // Làm tròn thành số nguyên
+      setSong((prev) => ({ ...prev, duration: durationInSeconds }));
+      form.setFieldsValue({ duration: durationInSeconds }); // Cập nhật giá trị số vào form
+      URL.revokeObjectURL(audio.src); // Giải phóng URL
+    };
+  };
+
     useEffect(() => {
         getSongByStatus(pageWait, 'Wait').then((response) => {
-            console.log(response)
-            setSongWaitList(response.data.data.content)
-            setPaginationWait((prevState) => ({...paginationWait, totalRows: response.data.data.totalElements}))
+            if (response.data.result.responseCode === '200') {
+                if (response.data.data.content !== null) {
+                    setSongWaitList(response.data.data.content)
+                    setPaginationWait((prevState) => ({...paginationWait, totalRows: response.data.data.totalElements}))
+                } else {
+                    setSongWaitList([])
+                    setPaginationWait((prevState) => ({...paginationWait, totalRows: 0}))
+                }
+            } else {
+                if (response.data.result.responseCode !== '401') {
+                    message.open({
+                        type: "error",
+                        content: response.data.result.responseMessage,
+                        style: {
+                            animation: "fadeInOut 2s ease-in-out forwards",
+                        },
+                    })
+                }
+            }
+        }).catch((error) => {
+            if (error.response.status !== '401') {
+                message.open({
+                    type: "error",
+                    content: "Cannot get song wait list!",
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
+                })
+            }
         })
     }, [pageWait]);
 
     useEffect(() => {
         getAllSong(page).then((response) => {
-            setSongList(response.data.data.content)
-            setPagination((prevState) => ({...pagination, totalRows: response.data.data.totalElements}))
+            if (response.data.result.responseCode === '200') {
+                if (response.data.data.content !== null) {
+                    console.log(response.data.data.content)
+                    setSongList(response.data.data.content)
+                    setPagination((prevState) => ({...pagination, totalRows: response.data.data.totalElements}))
+                } else {
+                    setSongList([])
+                    setPagination((prevState) => ({...pagination, totalRows: 0}))
+                }
+            } else {
+                if (response.data.result.responseCode !== '401') {
+                    message.open({
+                        type: "error",
+                        content: response.data.result.responseMessage,
+                        style: {
+                            animation: "fadeInOut 2s ease-in-out forwards",
+                        },
+                    })
+                }
+            }
+        }).catch((error) => {
+            if (error.response.status !== 401) {
+                message.open({
+                    type: "error",
+                    content: "Cannot get song list!",
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
+                })
+            }
         })
+
     }, [load, page, songWaitList]);
 
     // Modal
@@ -143,7 +211,7 @@ const SongAdmin = () => {
 
     async function createSong() {
         try {
-            const response = await saveSong(song)
+            const response = await saveSong(song, 1)
             closeModal()
             setSong({
                 name: "",
@@ -240,14 +308,20 @@ const SongAdmin = () => {
             console.log(response)
             message.open({
                 type: "success",
-                content: "Song status changed successfully!"
+                content: "Song status changed successfully!",
+                style: {
+                    animation: "fadeInOut 2s ease-in-out forwards",
+                },
             })
             setLoad(!load)
         }).catch((error) => {
             console.log(error)
             message.open({
                 type: "error",
-                content: "Song status changed failed!"
+                content: "Song status changed failed!",
+                style: {
+                    animation: "fadeInOut 2s ease-in-out forwards",
+                },
             })
         })
     }
@@ -353,7 +427,12 @@ const SongAdmin = () => {
                     wrapperCol={{flex: 1}}
                     colon={false}
                     style={{maxWidth: 600, marginTop: '60px'}}
-                    initialValues={{remember: true}}
+                    initialValues={
+                        {
+                            remember: true,
+                            duration: 0,
+                        }
+                    }
                     encType="multipart/form-data"
                 >
                     <h2>{formCustom ? "Create User" : "Update User"}</h2>
@@ -366,7 +445,7 @@ const SongAdmin = () => {
                             {
                                 validator(_, fileList) {
                                     return new Promise((resolve, reject) => {
-                                        if (fileList && fileList[0].size > 9000000) {
+                                        if (fileList && fileList[0].size > 1000000) {
                                             reject('File size exceeded')
                                         } else {
                                             resolve()
@@ -383,7 +462,7 @@ const SongAdmin = () => {
                             maxCount={1}
                             beforeUpload={(file) => {
                                 return new Promise((resolve, reject) => {
-                                    if (file.size > 1500000) {
+                                    if (file.size > 1000000) {
                                         reject('File size exceeded!')
                                     } else {
                                         resolve('Success!')
@@ -409,56 +488,69 @@ const SongAdmin = () => {
                                onChange={(events) => setSong({...song, name: events.target.value})}></Input>
                     </Form.Item>
                     <Form.Item label={'Duration'} name={'duration'}
-                               rules={[
-                                   {required: true, message: 'Duration can not be left blank!'},
-                                   {type: "number"}
-                               ]}
+                                rules={[
+                                { required: true, message: 'Duration can not be left blank!' },
+                                { type: 'number', message: 'Duration must be a number!' },
+                                ]}
                     >
-                        <InputNumber defaultValue={0} placeholder={'Enter duration'} name={'duration'} min={0}
-                                     style={{width: "145px"}}
-                                     onChange={(value) => setSong({...song, duration: value})}></InputNumber>
+                        <InputNumber
+                        placeholder={'Duration will be auto-filled'}
+                        min={0}
+                        style={{ width: '145px' , backgroundColor: 'white', color: 'black'}}
+                        disabled
+                        />
                     </Form.Item>
+
+                    {/* Trường Sound */}
                     <Form.Item
                         label={'Sound'}
                         name={'sound'}
                         valuePropName={'fileList'}
                         rules={[
-                            formCustom ? {required: true, message: 'Sound cannot be left blank!'} : null,
-                            {
-                                validator(_, fileList) {
-                                    return new Promise((resolve, reject) => {
-                                        if (fileList && fileList[0].size > 9000000) {
-                                            reject('File size exceeded')
-                                        } else {
-                                            resolve()
-                                        }
-                                    })
+                        formCustom ? { required: true, message: 'Sound cannot be left blank!' } : null,
+                        {
+                            validator(_, fileList) {
+                            return new Promise((resolve, reject) => {
+                                if (fileList && fileList[0].size > 19000000) {
+                                    reject('File size exceeded');
+                                } else {
+                                    resolve();
                                 }
-                            }
+                            });
+                            },
+                        },
                         ]}
-                        getValueFromEvent={(event) => {
-                            return event?.fileList
-                        }}
+                        getValueFromEvent={(event) => event?.fileList}
                     >
                         <Upload
-                            maxCount={1}
-                            beforeUpload={(file) => {
-                                return new Promise((resolve, reject) => {
-                                    if (file.size > 1500000) {
-                                        reject('File sound size exceeded!')
-                                    } else {
-                                        resolve('Success!')
-                                    }
-                                })
-                            }}
-                            multiple={false}
-                            onChange={(info) => {
-                                setSong({...song, sound: info.file})
-                            }}
-                            customRequest={(info) => setSong({...song, sound: info.file})}
-                            accept={'audio/*'}
+                        maxCount={1}
+                        beforeUpload={(file) => {
+                            return new Promise((resolve, reject) => {
+                            if (file.size > 19000000) {
+                                reject('File sound size exceeded!');
+                            } else {
+                                resolve('Success!');
+                            }
+                            });
+                        }}
+                        multiple={false}
+                        onChange={(info) => {
+                            const file = info.file.originFileObj;
+                            setSong({ ...song, sound: file });
+                            if (file.status === 'removed') {
+                                form.setFieldsValue({ duration: null });
+                                setSong({ ...song, duration: 0 });
+                            } else {
+                                getAudioDuration(file);
+                            }
+                        }}
+                        customRequest={(info) => {
+                            setSong({ ...song, sound: info.file });
+                            getAudioDuration(info.file);
+                        }}
+                        accept={'audio/*'}
                         >
-                            <Button icon={<UploadOutlined/>}>Click to upload</Button>
+                        <Button icon={<UploadOutlined />}>Click to upload</Button>
                         </Upload>
                     </Form.Item>
                     <Form.Item

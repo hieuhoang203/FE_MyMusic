@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import "../../../css/login.css";
+import "../../../css/animation.css";
 import {createBrowserHistory as useHistory} from "history";
 import {notification} from "antd";
 import {getAccount, getUserWhenLogin, saveAccount} from "../../../service/loginService";
@@ -147,25 +148,25 @@ const LoginAndRegister = () => {
         if (validate) {
             saveAccount(account).then((response) => {
                 console.log(response)
-                if (response.data.result.responseCode == 200) {
+                if (response.data.result.responseCode === '200') {
                     notification.success({
                         message: "Register",
                         description: "Create account successfully!",
                         duration: 3,
-                            style: {
-                            animation: 'fadeInOut 0.5s ease-in-out',
+                        style: {
+                            animation: 'fadeInOut 5s ease-in-out',
                         },
                     });
                     setTimeout(() => {
                         window.location.replace("/login")
-                    }, 500)
+                    }, 1000)
                 } else {
                     notification.error({
                         message: "Register",
                         description: response.data.result.responseMessage,
                         duration: 3,
                         style: {
-                            animation: 'fadeInOut 0.5s ease-in-out',
+                            animation: 'fadeInOut 5s ease-in-out',
                         },
                     });
                 }
@@ -184,13 +185,13 @@ const LoginAndRegister = () => {
         if (validate) {
             try {
                 const response = await getAccount(login);
-                if (response.data.result.responseCode != 200) {
+                if (response.data.result.responseCode != '200') {
                     notification.error({
                         message: "Login",
                         description: "Wrong email or password!",
                         duration: 3,
                         style: {
-                            animation: 'fadeInOut 0.5s ease-in-out',
+                            animation: 'fadeInOut 5s ease-in-out',
                         },
                     });
                 } else {
@@ -200,7 +201,7 @@ const LoginAndRegister = () => {
                         description: "Login successfully!",
                         duration: 3, 
                         style: {
-                            animation: 'fadeInOut 0.5s ease-in-out',
+                            animation: 'fadeInOut 5s ease-in-out',
                         },
                     });
                     localStorage.setItem("account", JSON.stringify(user.data.data));
@@ -215,7 +216,7 @@ const LoginAndRegister = () => {
                         } else {
                             window.location.replace("/")
                         }
-                    }, 500)
+                    }, 1000)
                 }
             } catch (error) {
                 console.log(error)
@@ -224,7 +225,7 @@ const LoginAndRegister = () => {
                     description: "Wrong email or password!",
                     duration: 3,
                     style: {
-                        animation: 'fadeInOut 0.5s ease-in-out',
+                        animation: 'fadeInOut 5s ease-in-out',
                     },
                 });
             }
@@ -234,7 +235,7 @@ const LoginAndRegister = () => {
                 description: "Check login information!",
                 duration: 3,
                 style: {
-                    animation: 'fadeInOut 0.5s ease-in-out',
+                    animation: 'fadeInOut 5s ease-in-out',
                 },
             });
         }

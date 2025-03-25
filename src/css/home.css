@@ -477,7 +477,7 @@
 
 .home-container .right-section .music-player .song-info .progress .active-line input {
     left: 4px;
-    -webkit-appearance: none;
+    appearance: none;
     position: absolute;
     border-radius: 5px;
     border: none;
@@ -488,7 +488,7 @@
 }
 
 .home-container .right-section .music-player .song-info .progress .active-line input::-webkit-slider-thumb {
-    -webkit-appearance: none;
+    appearance: none;
     width: 10px;
     height: 2px;
     border-radius: 50%;

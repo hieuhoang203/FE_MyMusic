@@ -72,9 +72,24 @@ const User = () => {
             if (response.data.result.responseCode === '200') {
                 setNewUser(Object.values(response.data.data));
             } else {
+                if (response.data.result.responseCode !== '401') {
+                    message.open({
+                        type: "error",
+                        content: response.data.result.responseMessage,
+                        style: {
+                            animation: "fadeInOut 2s ease-in-out forwards",
+                        },
+                    })
+                }
+            }
+        }).catch((error) => {
+            if (error.response.status !== 401) {
                 message.open({
                     type: "error",
-                    content: response.data.result.responseMessage
+                    content: "Cannot get new user or artist!",
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
                 })
             }
         })
@@ -89,7 +104,10 @@ const User = () => {
             } else {
                 message.open({
                     type: "error",
-                    content: response.data.result.responseMessage
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
                 })
             }
         })
@@ -115,7 +133,10 @@ const User = () => {
                 setModal(false)
                 message.open({
                     type: "success",
-                    content: "User added successfully!"
+                    content: "User added successfully!",
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
                 })
                 setUser({
                     id: "",
@@ -131,7 +152,10 @@ const User = () => {
             } else {
                 message.open({
                     type: "error",
-                    content: response.data.result.responseMessage
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
                 })
             }
         }).catch((error) => {
@@ -145,7 +169,10 @@ const User = () => {
             setId(undefined);
             message.open({
                 type: "success",
-                content: "User updated successfully!"
+                content: "User updated successfully!",
+                style: {
+                    animation: "fadeInOut 2s ease-in-out forwards",
+                },
             })
             setUser({
                 id: "",
