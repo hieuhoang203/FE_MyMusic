@@ -155,7 +155,6 @@ const SongAdmin = () => {
         getAllSong(page).then((response) => {
             if (response.data.result.responseCode === '200') {
                 if (response.data.data.content !== null) {
-                    console.log(response.data.data.content)
                     setSongList(response.data.data.content)
                     setPagination((prevState) => ({...pagination, totalRows: response.data.data.totalElements}))
                 } else {
@@ -360,7 +359,7 @@ const SongAdmin = () => {
                         <tr key={index}>
                             <td><img src={value.avatar} alt={'Can not show image'}/></td>
                             <td>{value.name}</td>
-                            <td>{value.artis[0].name}</td>
+                            <td>{value.artists[0].name}</td>
                             <td>{value.duration}</td>
                             <td className={'button success'} onClick={() => playMusic(value.id)}>Play</td>
                             <td className={'button warning'}
@@ -394,7 +393,7 @@ const SongAdmin = () => {
                         <tr key={value.id}>
                             <td><img src={value.avatar} alt={'Can not show image'}/></td>
                             <td>{value.name}</td>
-                            <td>{value.artis[value.artis.length - 1].name}</td>
+                            <td>{value.artists[value.artists.length - 1].name}</td>
                             <td>{value.duration}</td>
                             <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
                             <td className={value.status === 'Activate' ? 'danger button' : 'success button'}
