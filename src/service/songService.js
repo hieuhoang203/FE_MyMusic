@@ -22,8 +22,8 @@ export const saveSong = (song, type) => {
     return axiosHelper.post(`/song/save?type=${type}`, song, config);
 }
 
-export const updateSong = (id, song) => {
-    return axiosHelper.put(`/song/update/${id}`, song, config);
+export const updateSong = (id, song, type) => {
+    return axiosHelper.put(`/song/update/${id}?type=${type}`, song, config);
 }
 
 export const searchSong = (id) => {

@@ -7,7 +7,7 @@ import {
     updateStatusUser,
     updateUser
 } from "../../../service/userService";
-import {Button, ConfigProvider, DatePicker, Form, Input, message, Modal, Pagination, Radio, Upload} from "antd";
+import {Button, ConfigProvider, DatePicker, Form, Input, message, Modal, Pagination, Radio, Upload, Spin} from "antd";
 import {TinyColor} from "@ctrl/tinycolor";
 import {UploadOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -47,6 +47,7 @@ const User = () => {
 
     // Reload page
     const [load, setLoad] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     // User list
     const [newUser, setNewUser] = useState([]);
@@ -68,7 +69,9 @@ const User = () => {
     }, []);
 
     useEffect(() => {
+        setIsLoading(true)
         getNewUserOrArtis('USER').then((response) => {
+            setIsLoading(false)
             if (response.data.result.responseCode === '200') {
                 setNewUser(Object.values(response.data.data));
             } else {
@@ -83,7 +86,8 @@ const User = () => {
                 }
             }
         }).catch((error) => {
-            if (error.response.status !== 401) {
+            setIsLoading(false)
+            if (error.response.status !== '401') {
                 message.open({
                     type: "error",
                     content: "Cannot get new user or artist!",
@@ -96,7 +100,9 @@ const User = () => {
     }, [load]);
 
     useEffect(() => {
+        setIsLoading(true)
         getAllUser(page).then((response) => {
+            setIsLoading(false)
             if (response.data.result.responseCode === '200') {
                 console.log(response.data.data)
                 setAllUser(Object.values(response.data.data.content));
@@ -105,6 +111,17 @@ const User = () => {
                 message.open({
                     type: "error",
                     content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
+                })
+            }
+        }).catch((error) => {
+            setIsLoading(false)
+            if (error.response.status !== '401') {
+                message.open({
+                    type: "error",
+                    content: "Cannot get user list!",
                     style: {
                         animation: "fadeInOut 2s ease-in-out forwards",
                     },
@@ -128,7 +145,9 @@ const User = () => {
     }
 
     async function createUser() {
+        setIsLoading(true)
         saveUser(2, user).then((response) => {
+            setIsLoading(false)
             if (response.data.result.responseCode === '200') {
                 setModal(false)
                 message.open({
@@ -159,12 +178,23 @@ const User = () => {
                 })
             }
         }).catch((error) => {
-            console.log(error)
+            setIsLoading(false)
+            if (error.response.status !== '401') {
+                message.open({
+                    type: "error",
+                    content: "Cannot create user!",
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
+                })
+            }
         })
     }
 
     function updateNewUser() {
+        setIsLoading(true)
         updateUser(id, user).then((response) => {
+            setIsLoading(false)
             setModal(false)
             setId(undefined);
             message.open({
@@ -186,7 +216,16 @@ const User = () => {
             clearForm()
             setLoad(!load)
         }).catch((error) => {
-            console.log(error)
+            setIsLoading(false)
+            if (error.response.status !== '401') {
+                message.open({
+                    type: "error",
+                    content: "Cannot update user!",
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
+                })
+            }
         })
     }
 
@@ -205,6 +244,15 @@ const User = () => {
             form.setFieldValue('role', value.role)
         }).catch((error) => {
             console.log(error)
+            if (error.response.status !== '401') {
+                message.open({
+                    type: "error",
+                    content: "Cannot fill data to form!",
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards", 
+                    },
+                })
+            }
         })
     }
 
@@ -213,10 +261,34 @@ const User = () => {
     }
 
     function updateStatus(id, status) {
+        setIsLoading(true)
         updateStatusUser(id, status).then((response) => {
-            setLoad(!load)
+            if (response.data.result.responseCode === '200') {
+                setIsLoading(false)
+                setLoad(!load)
+                message.open({
+                    type: "success",
+                    content: status === 'ShutDown' ? "Delete user successfully!" : "Return user successfully!",
+                })
+            } else {
+                if (response.data.result.responseCode !== '401') {
+                    message.open({
+                        type: "error",
+                        content: response.data.result.responseMessage,
+                    })
+                }
+            }
         }).catch((error) => {
-            console.log(error)
+            setIsLoading(false)
+            if (error.response.status !== '401') {
+                message.open({
+                    type: "error",
+                    content: "Cannot update status!",
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
+                })
+            }
         })
     }
 
@@ -232,56 +304,58 @@ const User = () => {
 
     return (
         <>
-            <div className="new-users">
-                <h2 className={'name-user'}>New Users</h2>
-                <div className="user-list">
-                    {newUser.map((value, index) => (
-                        <div className="user" key={value.id}>
-                            <img src={value.avatar} alt={'Image Error'}/>
-                            <h2>{value.name}</h2>
+            <Spin size='large' tip='Loading...' spinning={!modal ? isLoading : null}>
+                <div className="new-users">
+                    <h2 className={'name-user'}>New Users</h2>
+                    <div className="user-list">
+                        {newUser.map((value, index) => (
+                            <div className="user" key={value.id}>
+                                <img src={value.avatar} alt={'Image Error'}/>
+                                <h2>{value.name}</h2>
+                            </div>
+                        ))}
+                        <div className="user" onClick={() => openModal()}>
+                            <img src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704767/assetHtml/jto8qgtu80dbi7ndvg8z.png'} alt={'Can not show image'}/>
+                            <h2>More</h2>
+                            <p>New User</p>
                         </div>
-                    ))}
-                    <div className="user" onClick={() => openModal()}>
-                        <img src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704767/assetHtml/jto8qgtu80dbi7ndvg8z.png'} alt={'Can not show image'}/>
-                        <h2>More</h2>
-                        <p>New User</p>
                     </div>
                 </div>
-            </div>
 
-            <div className="recent-orders">
-                <h2>User List</h2>
-                <table>
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>Name<i className='bx bx-search-alt-2'></i></th>
-                        <th>Gender<i className='bx bx-filter-alt'></i></th>
-                        <th>Status<i className='bx bx-filter-alt'></i></th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {allUser != null ? allUser.map((value, index) => (
-                        <tr key={index}>
-                            <td><img src={value.avatar} alt={'Image Error'}/></td>
-                            <td>{value.name}</td>
-                            <td className={value.gender ? 'primary' : 'warning'}>{value.gender ? 'Male' : 'Female'}</td>
-                            <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
-                            <td className={checkStatus(value) ? 'danger button' : 'success button'}
-                                onClick={() => checkStatus(value) ? updateStatus(value.id, 'ShutDown') : updateStatus(value.id, 'Activate')}>{checkStatus(value) ? 'Delete' : 'Return'}</td>
-                            <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
-                            <td className={'button primary'} onClick={() => fillDataToForm(value.id)}>Details</td>
+                <div className="recent-orders">
+                    <h2>User List</h2>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name<i className='bx bx-search-alt-2'></i></th>
+                            <th>Gender<i className='bx bx-filter-alt'></i></th>
+                            <th>Status<i className='bx bx-filter-alt'></i></th>
+                            <th></th>
                         </tr>
-                    )) : <tr><td colSpan={5} style={{textAlign: 'center'}}>No data</td></tr>}
-                    </tbody>
-                </table>
-            </div>
-            <Pagination
-                pageSize={5}
-                total={pagination.totalRows}
-                onChange={(value) => handlePageChange(value)}
-            />
+                        </thead>
+                        <tbody>
+                        {allUser != null ? allUser.map((value, index) => (
+                            <tr key={index}>
+                                <td><img src={value.avatar} alt={'Image Error'}/></td>
+                                <td>{value.name}</td>
+                                <td className={value.gender ? 'primary' : 'warning'}>{value.gender ? 'Male' : 'Female'}</td>
+                                <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
+                                <td className={checkStatus(value) ? 'danger button' : 'success button'}
+                                    onClick={() => checkStatus(value) ? updateStatus(value.id, 'ShutDown') : updateStatus(value.id, 'Activate')}>{checkStatus(value) ? 'Delete' : 'Return'}</td>
+                                <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
+                                <td className={'button primary'} onClick={() => fillDataToForm(value.id)}>Details</td>
+                            </tr>
+                        )) : <tr><td colSpan={5} style={{textAlign: 'center'}}>No data</td></tr>}
+                        </tbody>
+                    </table>
+                </div>
+                <Pagination
+                    pageSize={5}
+                    total={pagination.totalRows}
+                    onChange={(value) => handlePageChange(value)}
+                />
+            </Spin>
             <Modal
                 open={modal}
                 onCancel={() => closeModal()}
@@ -289,153 +363,159 @@ const User = () => {
                 footer={null}
                 className={'modal'}
             >
-                <Form
-                    name="wrap"
-                    labelCol={{flex: '100px'}}
-                    labelAlign="left"
-                    labelWrap
-                    form={form}
-                    wrapperCol={{flex: 1}}
-                    colon={false}
-                    style={{maxWidth: 600, marginTop: '60px'}}
-                    initialValues={
-                        {
-                            remember: true,
-                            avatar: null,
-                            gender: true,
-                            role: 'USER'
-                        }
-                    }
-                    encType="multipart/form-data"
-                >
-                    <h2>{formCustom ? "Create User" : "Update User"}</h2>
-                    <Form.Item
-                        label={'Avatar'}
-                        name={'avatar'}
-                        valuePropName={'fileList'}
-                        rules={[
-                            formCustom ? {required: true, message: 'Avatar cannot be left blank!'} : null,
+                <Spin size='large' tip='Loading...' spinning={ modal ? isLoading : null}>
+                    <Form
+                        name="wrap"
+                        labelCol={{flex: '100px'}}
+                        labelAlign="left"
+                        labelWrap
+                        form={form}
+                        wrapperCol={{flex: 1}}
+                        colon={false}
+                        style={{maxWidth: 600, marginTop: '60px'}}
+                        initialValues={
                             {
-                                validator(_, fileList) {
+                                remember: true,
+                                avatar: null,
+                                gender: true,
+                                role: 'USER'
+                            }
+                        }
+                        encType="multipart/form-data"
+                        disabled={isLoading}
+                    >
+                        <h2>{formCustom ? "Create User" : "Update User"}</h2>
+                        <Form.Item
+                            label={'Avatar'}
+                            name={'avatar'}
+                            valuePropName={'fileList'}
+                            rules={[
+                                formCustom ? {required: true, message: 'Avatar cannot be left blank!'} : null,
+                                {
+                                    validator(_, fileList) {
+                                        return new Promise((resolve, reject) => {
+                                            if (fileList && fileList[0].size > 9000000) {
+                                                reject('File size exceeded')
+                                            } else {
+                                                resolve()
+                                            }
+                                        })
+                                    }
+                                }
+                            ]}
+                            getValueFromEvent={(event) => {
+                                return event?.fileList
+                            }}
+                        >
+                            <Upload
+                                maxCount={1}
+                                beforeUpload={(file) => {
                                     return new Promise((resolve, reject) => {
-                                        if (fileList && fileList[0].size > 9000000) {
-                                            reject('File size exceeded')
+                                        if (file.size > 1500000) {
+                                            reject('File size exceeded!')
                                         } else {
-                                            resolve()
+                                            resolve('Success!')
                                         }
                                     })
-                                }
-                            }
-                        ]}
-                        getValueFromEvent={(event) => {
-                            return event?.fileList
-                        }}
-                    >
-                        <Upload
-                            maxCount={1}
-                            beforeUpload={(file) => {
-                                return new Promise((resolve, reject) => {
-                                    if (file.size > 1500000) {
-                                        reject('File size exceeded!')
-                                    } else {
-                                        resolve('Success!')
-                                    }
-                                })
-                            }}
-                            multiple={false}
-                            onChange={(info) => {
-                                setUser({...user, avatar: info.file})
-                            }}
-                            customRequest={(info) => setUser({...user, avatar: info.file})}
-                            accept={'image/*'}
-                        >
-                            <Button icon={<UploadOutlined/>}>Click to upload</Button>
-                        </Upload>
-                    </Form.Item>
-                    <Form.Item label={'Name'} name={'name'}
-                               rules={[
-                                   {required: true, message: 'Name can not be left blank!'}
-                               ]}
-                    >
-                        <Input placeholder={'Enter your name'} name={'name'}
-                               onChange={(events) => setUser({...user, name: events.target.value})}></Input>
-                    </Form.Item>
-                    <Form.Item label={'Gender'} name={'gender'}>
-                        <Radio.Group name={'gender'}
-                                     onChange={(events) => setUser({...user, gender: events.target.value})}>
-                            <Radio value={true} style={{color: "#fbfbfb", fontSize: "16px"}}> Male </Radio>
-                            <Radio value={false} style={{color: "#fbfbfb", fontSize: "16px"}}> Female </Radio>
-                        </Radio.Group>
-                    </Form.Item>
-                    <Form.Item label={'Birth Day'} name={'birthday'}
-                               rules={[
-                                   {required: true},
-                               ]}
-                    >
-                        <DatePicker format={dateFormat}
-                                    onChange={(date, dateString) => setUser({...user, birthday: dateString})}
-                                    name={'birthday'}/>
-                    </Form.Item>
-                    <Form.Item label={'Email'} name={'email'}
-                               rules={[
-                                   {required: true, message: 'Email can not be left blank!'},
-                                   {type: 'email'},
-                                   {
-                                       validator: (_, value) => {
-                                           if (!value) {
-                                               return Promise.resolve();
-                                           }
-                                           if (!value.match(
-                                               /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                                           )) {
-                                               return Promise.reject('Invalid email!');
-                                           }
-                                       }
-                                   }
-                               ]}
-                    >
-                        <Input placeholder={'Enter your login name'} name={'email'} disabled={!formCustom}
-                               onChange={(events) => setUser({...user, email: events.target.value})}></Input>
-                    </Form.Item>
-                    <Form.Item label={'Role'} name={'role'} style={{marginLeft: "13px"}}>
-                        <Radio.Group name={'role'}
-                                     onChange={(events) => setUser({...user, role: events.target.value})}>
-                            <Radio name={'role'} value={'USER'}
-                                   style={{color: "#fbfbfb", fontSize: "16px"}}> User </Radio>
-                            <Radio name={'role'} value={'ADMIN'}
-                                   style={{color: "#fbfbfb", fontSize: "16px"}}> Admin </Radio>
-                        </Radio.Group>
-                    </Form.Item>
-                    <Form.Item className={'button-submit'}>
-                        <ConfigProvider
-                            theme={formCustom ? {
-                                components: {
-                                    Button: {
-                                        colorPrimary: `linear-gradient(116deg,  ${colors3.join(', ')})`,
-                                        colorPrimaryHover: `linear-gradient(116deg, ${getHoverColors(colors3).join(', ')})`,
-                                        colorPrimaryActive: `linear-gradient(116deg, ${getActiveColors(colors3).join(', ')})`,
-                                        lineWidth: 0,
-                                    }
-                                }
-                            } : {
-                                components: {
-                                    Button: {
-                                        colorPrimary: `linear-gradient(116deg,  ${colors2.join(', ')})`,
-                                        colorPrimaryHover: `linear-gradient(116deg, ${getHoverColors(colors2).join(', ')})`,
-                                        colorPrimaryActive: `linear-gradient(116deg, ${getActiveColors(colors2).join(', ')})`,
-                                        lineWidth: 0,
-                                    }
-                                }
-                            }}
-                        >
-                            <Button htmlType={"button"} type="primary" size="large"
-                                    onClick={() => formCustom ? createUser() : updateNewUser()}
+                                }}
+                                multiple={false}
+                                onChange={(info) => {
+                                    setUser({...user, avatar: info.file})
+                                }}
+                                customRequest={(info) => {
+                                    setUser({...user, avatar: info.file})
+                                    info.onSuccess('done')
+                                }}
+                                accept={'image/*'}
                             >
-                                {formCustom ? "Create" : "Update"}
-                            </Button>
-                        </ConfigProvider>
-                    </Form.Item>
-                </Form>
+                                <Button icon={<UploadOutlined/>}>Click to upload</Button>
+                            </Upload>
+                        </Form.Item>
+                        <Form.Item label={'Name'} name={'name'}
+                                rules={[
+                                    {required: true, message: 'Name can not be left blank!'}
+                                ]}
+                        >
+                            <Input placeholder={'Enter your name'} name={'name'}
+                                onChange={(events) => setUser({...user, name: events.target.value})}></Input>
+                        </Form.Item>
+                        <Form.Item label={'Gender'} name={'gender'}>
+                            <Radio.Group name={'gender'}
+                                        onChange={(events) => setUser({...user, gender: events.target.value})}>
+                                <Radio value={true} style={{color: "#fbfbfb", fontSize: "16px"}}> Male </Radio>
+                                <Radio value={false} style={{color: "#fbfbfb", fontSize: "16px"}}> Female </Radio>
+                            </Radio.Group>
+                        </Form.Item>
+                        <Form.Item label={'Birth Day'} name={'birthday'}
+                                rules={[
+                                    {required: true},
+                                ]}
+                        >
+                            <DatePicker format={dateFormat}
+                                        onChange={(date, dateString) => setUser({...user, birthday: dateString})}
+                                        name={'birthday'}/>
+                        </Form.Item>
+                        <Form.Item label={'Email'} name={'email'}
+                                rules={[
+                                    {required: true, message: 'Email can not be left blank!'},
+                                    {type: 'email'},
+                                    {
+                                        validator: (_, value) => {
+                                            if (!value) {
+                                                return Promise.resolve();
+                                            }
+                                            if (!value.match(
+                                                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                                            )) {
+                                                return Promise.reject('Invalid email!');
+                                            }
+                                        }
+                                    }
+                                ]}
+                        >
+                            <Input placeholder={'Enter your login name'} name={'email'} disabled={!formCustom}
+                                onChange={(events) => setUser({...user, email: events.target.value})}></Input>
+                        </Form.Item>
+                        <Form.Item label={'Role'} name={'role'} style={{marginLeft: "13px"}}>
+                            <Radio.Group name={'role'}
+                                        onChange={(events) => setUser({...user, role: events.target.value})}>
+                                <Radio name={'role'} value={'USER'}
+                                    style={{color: "#fbfbfb", fontSize: "16px"}}> User </Radio>
+                                <Radio name={'role'} value={'ADMIN'}
+                                    style={{color: "#fbfbfb", fontSize: "16px"}}> Admin </Radio>
+                            </Radio.Group>
+                        </Form.Item>
+                        <Form.Item className={'button-submit'}>
+                            <ConfigProvider
+                                theme={formCustom ? {
+                                    components: {
+                                        Button: {
+                                            colorPrimary: `linear-gradient(116deg,  ${colors3.join(', ')})`,
+                                            colorPrimaryHover: `linear-gradient(116deg, ${getHoverColors(colors3).join(', ')})`,
+                                            colorPrimaryActive: `linear-gradient(116deg, ${getActiveColors(colors3).join(', ')})`,
+                                            lineWidth: 0,
+                                        }
+                                    }
+                                } : {
+                                    components: {
+                                        Button: {
+                                            colorPrimary: `linear-gradient(116deg,  ${colors2.join(', ')})`,
+                                            colorPrimaryHover: `linear-gradient(116deg, ${getHoverColors(colors2).join(', ')})`,
+                                            colorPrimaryActive: `linear-gradient(116deg, ${getActiveColors(colors2).join(', ')})`,
+                                            lineWidth: 0,
+                                        }
+                                    }
+                                }}
+                            >
+                                <Button htmlType={"button"} type="primary" size="large"
+                                        onClick={() => formCustom ? createUser() : updateNewUser()}
+                                >
+                                    {formCustom ? "Create" : "Update"}
+                                </Button>
+                            </ConfigProvider>
+                        </Form.Item>
+                    </Form>
+                </Spin>
             </Modal>
         </>
     );

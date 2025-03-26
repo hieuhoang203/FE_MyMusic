@@ -24,6 +24,7 @@ import {
     Upload
 } from "antd";
 import {UploadOutlined} from "@ant-design/icons";
+import {Spin} from "antd";
 import {TinyColor} from "@ctrl/tinycolor";
 import axiosHelper from "../../../api/myApi";
 
@@ -36,6 +37,8 @@ const SongAdmin = () => {
     // Form custom
     const colors3 = ['#40e495', '#30dd8a', '#2bb673'];
     const colors2 = ['#dd528d', '#ff8c79', '#fbae52'];
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const getHoverColors = (colors) =>
         colors.map((color) => new TinyColor(color).lighten(5).toString());
@@ -65,13 +68,40 @@ const SongAdmin = () => {
 
     function setDateSelect() {
         getGenresSelect().then((response) => {
-            setGenresSelect(response.data.data)
+            if (response.data.result.responseCode === '200') {
+                setGenresSelect(response.data.data)
+            } else {
+                if (response.data.result.responseCode !== '401') {
+                    message.open({
+                        type: "error",
+                        content: response.data.result.responseMessage,
+                    })
+                }
+            }
         })
         getAlbumSelect().then((response) => {
-            setAlbumSelect(response.data.data)
+            if (response.data.result.responseCode === '200') {
+                setAlbumSelect(response.data.data)
+            } else {    
+                if (response.data.result.responseCode !== '401') {
+                    message.open({
+                        type: "error",
+                        content: response.data.result.responseMessage,
+                    })
+                }
+            }
         })
         getArtisSelect().then((response) => {
-            setArtisSelect(response.data.data)
+            if (response.data.result.responseCode === '200') {
+                setArtisSelect(response.data.data)
+            } else {
+                if (response.data.result.responseCode !== '401') {
+                    message.open({
+                        type: "error",
+                        content: response.data.result.responseMessage,
+                    })
+                }
+            }
         })
     }
 
@@ -118,7 +148,9 @@ const SongAdmin = () => {
   };
 
     useEffect(() => {
+        setIsLoading(true)
         getSongByStatus(pageWait, 'Wait').then((response) => {
+            setIsLoading(false)
             if (response.data.result.responseCode === '200') {
                 if (response.data.data.content !== null) {
                     setSongWaitList(response.data.data.content)
@@ -139,6 +171,7 @@ const SongAdmin = () => {
                 }
             }
         }).catch((error) => {
+            setIsLoading(false)
             if (error.response.status !== '401') {
                 message.open({
                     type: "error",
@@ -152,7 +185,9 @@ const SongAdmin = () => {
     }, [pageWait]);
 
     useEffect(() => {
+        setIsLoading(true)
         getAllSong(page).then((response) => {
+            setIsLoading(false)
             if (response.data.result.responseCode === '200') {
                 if (response.data.data.content !== null) {
                     setSongList(response.data.data.content)
@@ -173,7 +208,8 @@ const SongAdmin = () => {
                 }
             }
         }).catch((error) => {
-            if (error.response.status !== 401) {
+            setIsLoading(false)
+            if (error.response.status !== '401') {
                 message.open({
                     type: "error",
                     content: "Cannot get song list!",
@@ -209,57 +245,99 @@ const SongAdmin = () => {
     }
 
     async function createSong() {
-        try {
-            const response = await saveSong(song, 1)
-            closeModal()
-            setSong({
-                name: "",
-                avatar: null,
-                sound: null,
-                duration: 0,
-                album: 0,
-                artis: [],
-                genres: []
-            })
-            clearForm()
-            setLoad(!load)
-            notification.success({
-                message: "New song",
-                description: "Create song successfully!",
-            })
-        } catch (error) {
+        setIsLoading(true)
+        await saveSong(song, 1).then((response) => {
+            setIsLoading(false)
+            if (response.data.result.responseCode === '200') {
+                closeModal()
+                setSong({
+                    name: "",
+                    avatar: null,
+                    sound: null,
+                    duration: 0,
+                    album: 0,
+                    artis: [],
+                    genres: []
+                })
+                clearForm()
+                setLoad(!load)
+                message.open({
+                    type: "success",
+                    content: "New song created successfully!",
+                })
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage,
+                })
+            }
+        }).catch((error) => {
+            setIsLoading(false)
             notification.error({
                 message: "New song",
                 description: "Check the information again!",
             })
-        }
+        })
+        // try {
+        //     const response = await saveSong(song, 1)
+        //     closeModal()
+        //     setSong({
+        //         name: "",
+        //         avatar: null,
+        //         sound: null,
+        //         duration: 0,
+        //         album: 0,
+        //         artis: [],
+        //         genres: []
+        //     })
+        //     clearForm()
+        //     setLoad(!load)
+        //     notification.success({
+        //         message: "New song",
+        //         description: "Create song successfully!",
+        //     })
+        // } catch (error) {
+        //     notification.error({
+        //         message: "New song",
+        //         description: "Check the information again!",
+        //     })
+        // }
     }
 
      function updateNewSong() {
          console.log(song)
+         setIsLoading(true)
          updateSong(id, song).then((response) => {
-            closeModal()
-            setSong({
-                name: "",
-                avatar: null,
-                sound: null,
-                duration: 0,
-                album: 0,
-                artis: [],
-                genres: []
-            })
-            clearForm()
-            setLoad(!load)
-            setId(undefined)
-            notification.success({
-                message: "Update song",
-                description: "Update song successfully!",
-            })
+            setIsLoading(false)
+            if (response.data.result.responseCode === '200') {
+                    closeModal()
+                    setSong({
+                    name: "",
+                    avatar: null,
+                    sound: null,
+                    duration: 0,
+                    album: 0,
+                    artis: [],
+                    genres: []
+                })
+                clearForm()
+                setLoad(!load)
+                setId(undefined)
+                message.open({
+                    type: "success",
+                    content: "Update song successfully!",
+                })
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage,
+                })
+            }
         }).catch((error) => {
-            console.log(error)
-            notification.error({
-                message: "Update song",
-                description: "Check the information again!",
+            setIsLoading(false)
+            message.open({
+                type: "error",
+                content: "Check the information again!",
             })
         })
     }
@@ -290,12 +368,13 @@ const SongAdmin = () => {
         setModal(true)
         setFormCustom(false)
         searchSong(id).then(response => {
-            const data = {...response.data}
-            setSong({...data, artis: data.artis.map(item => item.id), genres: data.genres.map(item => item.id)})
+            console.log(response.data.data)
+            const data = {...response.data.data}
+            setSong({...data, artis: data.artists.map(item => item.id), genres: data.genres.map(item => item.id)})
             form.setFieldValue('name', data.name);
             form.setFieldValue('duration', data.duration);
             form.setFieldValue('album', data.album !== null ? data.album.id : null);
-            form.setFieldValue('artis', data.artis.map(item => item.id));
+            form.setFieldValue('artis', data.artists.map(item => item.id));
             form.setFieldValue('genres', data.genres.map(item => item.id));
         }).catch(error => {
             console.log(error)
@@ -303,17 +382,27 @@ const SongAdmin = () => {
     }
 
     function changeStatusSong(id, status) {
+        setIsLoading(true)
         updateStatusSong(id, status).then((response) => {
-            console.log(response)
-            message.open({
-                type: "success",
-                content: "Song status changed successfully!",
-                style: {
-                    animation: "fadeInOut 2s ease-in-out forwards",
-                },
-            })
+            setIsLoading(false)
+            if (response.data.result.responseCode === '200') {
+                message.open({
+                    type: "success",
+                    content: status === 'ShutDown' ? "Delete song successfully!" : "Return song successfully!"
+                })
+                setLoad(!load)
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
+                })
+            }
             setLoad(!load)
         }).catch((error) => {
+            setIsLoading(false)
             console.log(error)
             message.open({
                 type: "error",
@@ -327,89 +416,91 @@ const SongAdmin = () => {
 
     return (
         <>
-            <div className="new-users">
-                <h2 className={'name-user'}>Add Song</h2>
-                <div className="user-list">
-                    <div className="user" onClick={() => openModal()}>
-                        <img
-                            src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704767/assetHtml/jto8qgtu80dbi7ndvg8z.png'}
-                            alt={'Can not show image'}/>
-                        <h2>More</h2>
-                        <p>New Song</p>
+            <Spin size='large' tip='Loading...' spinning={!modal ? isLoading : null}>
+                <div className="new-users">
+                    <h2 className={'name-user'}>Add Song</h2>
+                    <div className="user-list">
+                        <div className="user" onClick={() => openModal()}>
+                            <img
+                                src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704767/assetHtml/jto8qgtu80dbi7ndvg8z.png'}
+                                alt={'Can not show image'}/>
+                            <h2>More</h2>
+                            <p>New Song</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="recent-orders">
-                <h2>Confirm</h2>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>
-                            <Checkbox></Checkbox>
-                        </th>
-                        <th>Name</th>
-                        <th>Artis</th>
-                        <th>Duration</th>
-                        <th>Try Listening</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {songWaitList != null ? songWaitList.map((value, index) => (
-                        <tr key={index}>
-                            <td><img src={value.avatar} alt={'Can not show image'}/></td>
-                            <td>{value.name}</td>
-                            <td>{value.artists[0].name}</td>
-                            <td>{value.duration}</td>
-                            <td className={'button success'} onClick={() => playMusic(value.id)}>Play</td>
-                            <td className={'button warning'}
-                                onClick={() => changeStatusSong(value.id, 'Activate')}>Accept
-                            </td>
+                <div className="recent-orders">
+                    <h2>Confirm</h2>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>
+                                <Checkbox></Checkbox>
+                            </th>
+                            <th>Name</th>
+                            <th>Artis</th>
+                            <th>Duration</th>
+                            <th>Try Listening</th>
+                            <th></th>
                         </tr>
-                    )) : <tr><td colSpan={5} style={{textAlign: 'center'}}>No data</td></tr>}
-                    </tbody>
-                </table>
-            </div>
-            <Pagination
-                pageSize={3}
-                total={paginationWait.totalRows}
-                onChange={(value) => handlePageChange(value, 1)}
-            />
-            <div className="recent-orders">
-                <h2>All Songs</h2>
-                <table>
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th style={{textAlign: "center"}}>Name</th>
-                        <th style={{textAlign: "center"}}>Artis</th>
-                        <th style={{textAlign: "center"}}>Duration</th>
-                        <th style={{textAlign: "center"}}>Status</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {songList != null ? songList.map((value, index) => (
-                        <tr key={value.id}>
-                            <td><img src={value.avatar} alt={'Can not show image'}/></td>
-                            <td>{value.name}</td>
-                            <td>{value.artists[value.artists.length - 1].name}</td>
-                            <td>{value.duration}</td>
-                            <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
-                            <td className={value.status === 'Activate' ? 'danger button' : 'success button'}
-                                onClick={() => value.status === 'Activate' ? changeStatusSong(value.id, 'ShutDown') : changeStatusSong(value.id, 'Activate')}>{value.status === 'Activate' ? 'Delete' : 'Return'}</td>
-                            <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
-                            <td className={'button primary'}>Detail</td>
+                        </thead>
+                        <tbody>
+                        {songWaitList != null ? songWaitList.map((value, index) => (
+                            <tr key={index}>
+                                <td><img src={value.avatar} alt={'Can not show image'}/></td>
+                                <td>{value.name}</td>
+                                <td>{value.artists[0].name}</td>
+                                <td>{value.duration}</td>
+                                <td className={'button success'} onClick={() => playMusic(value.id)}>Play</td>
+                                <td className={'button warning'}
+                                    onClick={() => changeStatusSong(value.id, 'Activate')}>Accept
+                                </td>
+                            </tr>
+                        )) : <tr><td colSpan={5} style={{textAlign: 'center'}}>No data</td></tr>}
+                        </tbody>
+                    </table>
+                </div>
+                <Pagination
+                    pageSize={3}
+                    total={paginationWait.totalRows}
+                    onChange={(value) => handlePageChange(value, 1)}
+                />
+                <div className="recent-orders">
+                    <h2>All Songs</h2>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th style={{textAlign: "center"}}>Name</th>
+                            <th style={{textAlign: "center"}}>Artis</th>
+                            <th style={{textAlign: "center"}}>Duration</th>
+                            <th style={{textAlign: "center"}}>Status</th>
+                            <th></th>
                         </tr>
-                    )) : <tr><td colSpan={5} style={{textAlign: 'center'}}>No data</td></tr>}
-                    </tbody>
-                </table>
-            </div>
-            <Pagination
-                pageSize={3}
-                total={pagination.totalRows}
-                onChange={(value) => handlePageChange(value, 2)}
-            />
+                        </thead>
+                        <tbody>
+                        {songList != null ? songList.map((value, index) => (
+                            <tr key={value.id}>
+                                <td><img src={value.avatar} alt={'Can not show image'}/></td>
+                                <td>{value.name}</td>
+                                <td>{value.artists[value.artists.length - 1].name}</td>
+                                <td>{value.duration}</td>
+                                <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
+                                <td className={value.status === 'Activate' ? 'danger button' : 'success button'}
+                                    onClick={() => value.status === 'Activate' ? changeStatusSong(value.id, 'ShutDown') : changeStatusSong(value.id, 'Activate')}>{value.status === 'Activate' ? 'Delete' : 'Return'}</td>
+                                <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
+                                <td className={'button primary'}>Detail</td>
+                            </tr>
+                        )) : <tr><td colSpan={5} style={{textAlign: 'center'}}>No data</td></tr>}
+                        </tbody>
+                    </table>
+                </div>
+                <Pagination
+                    pageSize={3}
+                    total={pagination.totalRows}
+                    onChange={(value) => handlePageChange(value, 2)}
+                />
+            </Spin>
             <Modal
                 open={modal}
                 onCancel={() => closeModal()}
@@ -417,219 +508,225 @@ const SongAdmin = () => {
                 footer={null}
                 className={'modal'}
             >
-                <Form
-                    name="wrap"
-                    labelCol={{flex: '100px'}}
-                    labelAlign="left"
-                    labelWrap
-                    form={form}
-                    wrapperCol={{flex: 1}}
-                    colon={false}
-                    style={{maxWidth: 600, marginTop: '60px'}}
-                    initialValues={
-                        {
-                            remember: true,
-                            duration: 0,
-                        }
-                    }
-                    encType="multipart/form-data"
-                >
-                    <h2>{formCustom ? "Create User" : "Update User"}</h2>
-                    <Form.Item
-                        label={'Avatar'}
-                        name={'avatar'}
-                        valuePropName={'fileList'}
-                        rules={[
-                            formCustom ? {required: true, message: 'Avatar cannot be left blank!'} : null,
+                <Spin size='large' tip='Loading...' spinning={modal ? isLoading : null}>
+                    <Form
+                        name="wrap"
+                        labelCol={{flex: '100px'}}
+                        labelAlign="left"
+                        labelWrap
+                        form={form}
+                        wrapperCol={{flex: 1}}
+                        colon={false}
+                        style={{maxWidth: 600, marginTop: '60px'}}
+                        initialValues={
                             {
-                                validator(_, fileList) {
+                                remember: true,
+                                duration: 0,
+                            }
+                        }
+                        encType="multipart/form-data"
+                        disabled={isLoading}
+                    >
+                        <h2>{formCustom ? "Create User" : "Update User"}</h2>
+                        <Form.Item
+                            label={'Avatar'}
+                            name={'avatar'}
+                            valuePropName={'fileList'}
+                            rules={[
+                                formCustom ? { required: true, message: 'Avatar cannot be left blank!' } : null,
+                                {
+                                    validator(_, fileList) {
+                                        return new Promise((resolve, reject) => {
+                                            if (fileList && fileList.length && fileList[0].size > 1000000) {
+                                                reject('File size exceeded');
+                                            } else {
+                                                resolve();
+                                            }
+                                        });
+                                    },
+                                },
+                            ]}
+                            getValueFromEvent={(event) => event?.fileList}
+                        >
+                            <Upload
+                                maxCount={1}
+                                beforeUpload={(file) => {
                                     return new Promise((resolve, reject) => {
-                                        if (fileList && fileList[0].size > 1000000) {
-                                            reject('File size exceeded')
+                                        if (file.size > 1000000) {
+                                            reject('File size exceeded!');
                                         } else {
-                                            resolve()
+                                            resolve('Success!');
                                         }
-                                    })
-                                }
-                            }
-                        ]}
-                        getValueFromEvent={(event) => {
-                            return event?.fileList
-                        }}
-                    >
-                        <Upload
-                            maxCount={1}
-                            beforeUpload={(file) => {
-                                return new Promise((resolve, reject) => {
-                                    if (file.size > 1000000) {
-                                        reject('File size exceeded!')
-                                    } else {
-                                        resolve('Success!')
-                                    }
-                                })
-                            }}
-                            multiple={false}
-                            onChange={(info) => {
-                                setSong({...song, avatar: info.file})
-                            }}
-                            customRequest={(info) => setSong({...song, avatar: info.file})}
-                            accept={'image/*'}
-                        >
-                            <Button icon={<UploadOutlined/>}>Click to upload</Button>
-                        </Upload>
-                    </Form.Item>
-                    <Form.Item label={'Name'} name={'name'}
-                               rules={[
-                                   {required: true, message: 'Name can not be left blank!'}
-                               ]}
-                    >
-                        <Input placeholder={'Enter your name'} name={'name'}
-                               onChange={(events) => setSong({...song, name: events.target.value})}></Input>
-                    </Form.Item>
-                    <Form.Item label={'Duration'} name={'duration'}
-                                rules={[
-                                { required: true, message: 'Duration can not be left blank!' },
-                                { type: 'number', message: 'Duration must be a number!' },
-                                ]}
-                    >
-                        <InputNumber
-                        placeholder={'Duration will be auto-filled'}
-                        min={0}
-                        style={{ width: '145px' , backgroundColor: 'white', color: 'black'}}
-                        disabled
-                        />
-                    </Form.Item>
-
-                    {/* Trường Sound */}
-                    <Form.Item
-                        label={'Sound'}
-                        name={'sound'}
-                        valuePropName={'fileList'}
-                        rules={[
-                        formCustom ? { required: true, message: 'Sound cannot be left blank!' } : null,
-                        {
-                            validator(_, fileList) {
-                            return new Promise((resolve, reject) => {
-                                if (fileList && fileList[0].size > 19000000) {
-                                    reject('File size exceeded');
-                                } else {
-                                    resolve();
-                                }
-                            });
-                            },
-                        },
-                        ]}
-                        getValueFromEvent={(event) => event?.fileList}
-                    >
-                        <Upload
-                        maxCount={1}
-                        beforeUpload={(file) => {
-                            return new Promise((resolve, reject) => {
-                            if (file.size > 19000000) {
-                                reject('File sound size exceeded!');
-                            } else {
-                                resolve('Success!');
-                            }
-                            });
-                        }}
-                        multiple={false}
-                        onChange={(info) => {
-                            const file = info.file.originFileObj;
-                            setSong({ ...song, sound: file });
-                            if (file.status === 'removed') {
-                                form.setFieldsValue({ duration: null });
-                                setSong({ ...song, duration: 0 });
-                            } else {
-                                getAudioDuration(file);
-                            }
-                        }}
-                        customRequest={(info) => {
-                            setSong({ ...song, sound: info.file });
-                            getAudioDuration(info.file);
-                        }}
-                        accept={'audio/*'}
-                        >
-                        <Button icon={<UploadOutlined />}>Click to upload</Button>
-                        </Upload>
-                    </Form.Item>
-                    <Form.Item
-                        label={'Album'}
-                        name={'album'}
-                    >
-                        <Select
-                            style={{
-                                width: '100%',
-                            }}
-                            placeholder="Choose the album for the song"
-                            onChange={handleChangeAlbum}
-                            options={albumSelect}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label={'Genres'}
-                        name={'genres'}
-                        rules={[
-                            {required: true, message: 'Genres cannot be left blank!'}
-                        ]}
-                    >
-                        <Select
-                            mode="multiple"
-                            allowClear
-                            style={{
-                                width: '100%',
-                            }}
-                            placeholder="Choose the genres for the song"
-                            onChange={handleChangeGenres}
-                            options={genresSelect}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label={'Artis'}
-                        name={'artis'}
-                        rules={[
-                            {required: true, message: 'Artis cannot be left blank!'}
-                        ]}
-                    >
-                        <Select
-                            mode="multiple"
-                            style={{
-                                width: '100%',
-                            }}
-                            placeholder="Choose the artis for the song"
-                            onChange={handleChangeArtis}
-                            options={artisSelect}
-                        />
-                    </Form.Item>
-                    <Form.Item className={'button-submit'}>
-                        <ConfigProvider
-                            theme={formCustom ? {
-                                components: {
-                                    Button: {
-                                        colorPrimary: `linear-gradient(116deg,  ${colors3.join(', ')})`,
-                                        colorPrimaryHover: `linear-gradient(116deg, ${getHoverColors(colors3).join(', ')})`,
-                                        colorPrimaryActive: `linear-gradient(116deg, ${getActiveColors(colors3).join(', ')})`,
-                                        lineWidth: 0,
-                                    }
-                                }
-                            } : {
-                                components: {
-                                    Button: {
-                                        colorPrimary: `linear-gradient(116deg,  ${colors2.join(', ')})`,
-                                        colorPrimaryHover: `linear-gradient(116deg, ${getHoverColors(colors2).join(', ')})`,
-                                        colorPrimaryActive: `linear-gradient(116deg, ${getActiveColors(colors2).join(', ')})`,
-                                        lineWidth: 0,
-                                    }
-                                }
-                            }}
-                        >
-                            <Button htmlType={"button"} type="primary" size="large"
-                                    onClick={() => formCustom ? createSong() : updateNewSong()}
+                                    });
+                                }}
+                                multiple={false}
+                                onChange={(info) => {
+                                    const file = info.fileList.length ? info.file : null;
+                                    setSong({ ...song, avatar: file });
+                                }}
+                                customRequest={(info) => {
+                                    setSong({ ...song, avatar: info.file })
+                                    info.onSuccess('done')
+                                }}
+                                accept={'image/*'}
                             >
-                                {formCustom ? "Create" : "Update"}
-                            </Button>
-                        </ConfigProvider>
-                    </Form.Item>
-                </Form>
+                                <Button icon={<UploadOutlined />}>Click to upload</Button>
+                            </Upload>
+                        </Form.Item>
+                        <Form.Item label={'Name'} name={'name'}
+                                rules={[
+                                    {required: true, message: 'Name can not be left blank!'}
+                                ]}
+                        >
+                            <Input placeholder={'Enter your name'} name={'name'}
+                                onChange={(events) => setSong({...song, name: events.target.value})}></Input>
+                        </Form.Item>
+                        <Form.Item label={'Duration'} name={'duration'}
+                                    rules={[
+                                    { required: true, message: 'Duration can not be left blank!' },
+                                    { type: 'number', message: 'Duration must be a number!' },
+                                    ]}
+                        >
+                            <InputNumber
+                            placeholder={'Duration will be auto-filled'}
+                            min={0}
+                            style={{ width: '145px' , backgroundColor: 'white', color: 'black'}}
+                            disabled
+                            />
+                        </Form.Item>
+
+                        {/* Trường Sound */}
+                        <Form.Item
+                            label={'Sound'}
+                            name={'sound'}
+                            valuePropName={'fileList'}
+                            rules={[
+                                formCustom ? { required: true, message: 'Sound cannot be left blank!' } : null,
+                                {
+                                    validator(_, fileList) {
+                                        return new Promise((resolve, reject) => {
+                                            if (fileList && fileList.length && fileList[0].size > 19000000) {
+                                                reject('File size exceeded');
+                                            } else {
+                                                resolve();
+                                            }
+                                        });
+                                    },
+                                },
+                            ]}
+                            getValueFromEvent={(event) => event?.fileList}
+                        >
+                            <Upload
+                                maxCount={1}
+                                beforeUpload={(file) => {
+                                    return new Promise((resolve, reject) => {
+                                        if (file.size > 19000000) {
+                                            reject('File sound size exceeded!');
+                                        } else {
+                                            resolve('Success!');
+                                        }
+                                    });
+                                }}
+                                multiple={false}
+                                onChange={(info) => {
+                                    const file = info.fileList.length ? info.file : null;
+                                    setSong({ ...song, sound: file });
+                                    if (info.file.status === 'removed') {
+                                        form.setFieldsValue({ duration: null });
+                                        setSong({ ...song, duration: 0 });
+                                    } else if (info.file.originFileObj) {
+                                        getAudioDuration(info.file.originFileObj);
+                                    }
+                                }}
+                                customRequest={(info) => {
+                                    setSong({ ...song, sound: info.file });
+                                    getAudioDuration(info.file);
+                                    info.onSuccess('done')
+                                }}
+                                accept={'audio/*'}
+                            >
+                                <Button icon={<UploadOutlined />}>Click to upload</Button>
+                            </Upload>
+                        </Form.Item>
+                        <Form.Item
+                            label={'Album'}
+                            name={'album'}
+                        >
+                            <Select
+                                style={{
+                                    width: '100%',
+                                }}
+                                placeholder="Choose the album for the song"
+                                onChange={handleChangeAlbum}
+                                options={albumSelect}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label={'Genres'}
+                            name={'genres'}
+                            rules={[
+                                {required: true, message: 'Genres cannot be left blank!'}
+                            ]}
+                        >
+                            <Select
+                                mode="multiple"
+                                allowClear
+                                style={{
+                                    width: '100%',
+                                }}
+                                placeholder="Choose the genres for the song"
+                                onChange={handleChangeGenres}
+                                options={genresSelect}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label={'Artis'}
+                            name={'artis'}
+                            rules={[
+                                {required: true, message: 'Artis cannot be left blank!'}
+                            ]}
+                        >
+                            <Select
+                                mode="multiple"
+                                style={{
+                                    width: '100%',
+                                }}
+                                placeholder="Choose the artis for the song"
+                                onChange={handleChangeArtis}
+                                options={artisSelect}
+                            />
+                        </Form.Item>
+                        <Form.Item className={'button-submit'}>
+                            <ConfigProvider
+                                theme={formCustom ? {
+                                    components: {
+                                        Button: {
+                                            colorPrimary: `linear-gradient(116deg,  ${colors3.join(', ')})`,
+                                            colorPrimaryHover: `linear-gradient(116deg, ${getHoverColors(colors3).join(', ')})`,
+                                            colorPrimaryActive: `linear-gradient(116deg, ${getActiveColors(colors3).join(', ')})`,
+                                            lineWidth: 0,
+                                        }
+                                    }
+                                } : {
+                                    components: {
+                                        Button: {
+                                            colorPrimary: `linear-gradient(116deg,  ${colors2.join(', ')})`,
+                                            colorPrimaryHover: `linear-gradient(116deg, ${getHoverColors(colors2).join(', ')})`,
+                                            colorPrimaryActive: `linear-gradient(116deg, ${getActiveColors(colors2).join(', ')})`,
+                                            lineWidth: 0,
+                                        }
+                                    }
+                                }}
+                            >
+                                <Button htmlType={"button"} type="primary" size="large"
+                                        onClick={() => formCustom ? createSong() : updateNewSong()}
+                                >
+                                    {formCustom ? "Create" : "Update"}
+                                </Button>
+                            </ConfigProvider>
+                        </Form.Item>
+                    </Form>
+                </Spin>
             </Modal>
         </>
     );

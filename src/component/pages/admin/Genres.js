@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, ConfigProvider, Form, Input, message, Modal, Pagination} from "antd";
+import {Button, ConfigProvider, Form, Input, message, Modal, Pagination, Spin} from "antd";
 import {TinyColor} from "@ctrl/tinycolor";
 import {createBrowserHistory as useHistory} from "history";
 
@@ -34,6 +34,7 @@ const Genres = () => {
     // Variable reloads the page
     const [load, setLoad] = useState(true);
     const [form] = Form.useForm();
+    const [isLoading, setIsLoading] = useState(false);
 
     // List genres
     const [listGenres, setListGenres] = useState([])
@@ -66,7 +67,9 @@ const Genres = () => {
     }, []);
 
     useEffect(() => {
+        setIsLoading(true)
         getAllGenres(page).then((response) => {
+            setIsLoading(false)
             if (response.data.result.responseCode === '200') {  
                 setListGenres(response.data.data.content)
                 setPagination((prevState) => ({...pagination, totalRows: response.data.data.totalElements}))
@@ -83,7 +86,8 @@ const Genres = () => {
                 }
             }
         }).catch((error) => {
-            if (error.response.status !== 401) {
+            setIsLoading(false)
+            if (error.response.status !== '401') {
                 message.open({
                     type: "error",
                     content: "Cannot get genres!",
@@ -110,7 +114,9 @@ const Genres = () => {
 
     // Create genres
     function createGenres() {
+        setIsLoading(true)
         saveGenres(genres).then((response) => {
+            setIsLoading(false)
             if (response.data.result.responseCode === '200') {
                 setModal(false)
                 message.open({
@@ -133,6 +139,7 @@ const Genres = () => {
                 })
             }
         }).catch((error) => {
+            setIsLoading(false)
             message.open({
                 type: "error",
                 content: "Cannot add new genres!",
@@ -152,7 +159,9 @@ const Genres = () => {
 
     // Update genres
     function updateNewGenres() {
+        setIsLoading(true)
         updateGenres(id, genres).then((response) => {
+            setIsLoading(false)
             if (response.data.result.responseCode === '200') {
                 setModal(false)
                 message.open({
@@ -175,6 +184,7 @@ const Genres = () => {
                 })
             }
         }).catch((error) => {
+            setIsLoading(false)
             message.open({
                 type: "error",
                 content: "Cannot update genres!",
@@ -211,7 +221,7 @@ const Genres = () => {
             if (response.data.result.responseCode === '200') {
                 message.open({
                     type: "success",
-                    content: status === 'ShutDown' ? "Delete successfully!" : "Return successfully!"
+                    content: status === 'ShutDown' ? "Delete genres successfully!" : "Return genres successfully!"
                 })
                 setLoad(!load)
                 console.log(response)
@@ -247,6 +257,7 @@ const Genres = () => {
                 </div>
             </div>
 
+            <Spin size='large' tip='Loading...' spinning={isLoading}>
             <div className="recent-orders">
                 <h2>Genres List</h2>
                 <table>
@@ -273,6 +284,7 @@ const Genres = () => {
                     </tbody>
                 </table>
             </div>
+            </Spin>
             <Pagination
                 pageSize={5}
                 total={pagination.totalRows}
@@ -295,12 +307,13 @@ const Genres = () => {
                     style={{maxWidth: 600, marginTop: '60px'}}
                     initialValues={genres}
                     form={form}
+                    disabled={isLoading}
                 >
                     <h2>{formCustom ? "Create Genres" : "Update Genres"}</h2>
                     <Form.Item label={'Code'} name={'code'}
-                               rules={[
-                                   {required: true, message: 'Code can not be left blank!'},
-                                   {
+                            rules={[
+                                {required: true, message: 'Code can not be left blank!'},
+                                {
                                     validator: (_, value) => {
                                             if (listGenres != null) {
                                                 const lowercaseValue = value.trim().toLowerCase();
@@ -314,16 +327,16 @@ const Genres = () => {
                                             }
                                         }
                                     }
-                               ]}
+                            ]}
                     >
                         <Input placeholder={'Enter code'}
-                               onChange={(event) => setGenres({...genres, code: event.target.value})} name={'code'}></Input>
+                            onChange={(event) => setGenres({...genres, code: event.target.value})} name={'code'}></Input>
                     </Form.Item>
                     <Form.Item label={'Name'} name={'name'}
-                               rules={[
-                                   {required: true, message: 'Name can not be left blank!'},
-                                   {
-                                       validator: (_, value) => {
+                            rules={[
+                                {required: true, message: 'Name can not be left blank!'},
+                                {
+                                    validator: (_, value) => {
                                             if (listGenres != null) {
                                                 const lowercaseValue = value.trim().toLowerCase();
                                                 const isDuplicate = listGenres.some(
@@ -334,12 +347,12 @@ const Genres = () => {
                                                 }
                                                 return Promise.resolve();
                                             }
-                                       }
-                                   }
-                               ]}
+                                    }
+                                }
+                            ]}
                     >
                         <Input placeholder={'Enter name'} name={'name'}
-                               onChange={(event) => setGenres({...genres, name: event.target.value})}></Input>
+                            onChange={(event) => setGenres({...genres, name: event.target.value})}></Input>
                     </Form.Item>
                     <Form.Item className={'button-submit'}>
                         <ConfigProvider

@@ -35,7 +35,7 @@ export const searchUser = (id) => {
 }
 
 export const updateStatusUser = (id, status) => {
-    return axiosHelper.get(`/user/update-status?id=${id}&status=${status}`)
+    return axiosHelper.put(`/user/update-status?id=${id}&status=${status}`)
 }
 
 export const updateUser = (id, user) => {
