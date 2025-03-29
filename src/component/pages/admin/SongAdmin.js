@@ -278,36 +278,12 @@ const SongAdmin = () => {
                 description: "Check the information again!",
             })
         })
-        // try {
-        //     const response = await saveSong(song, 1)
-        //     closeModal()
-        //     setSong({
-        //         name: "",
-        //         avatar: null,
-        //         sound: null,
-        //         duration: 0,
-        //         album: 0,
-        //         artis: [],
-        //         genres: []
-        //     })
-        //     clearForm()
-        //     setLoad(!load)
-        //     notification.success({
-        //         message: "New song",
-        //         description: "Create song successfully!",
-        //     })
-        // } catch (error) {
-        //     notification.error({
-        //         message: "New song",
-        //         description: "Check the information again!",
-        //     })
-        // }
     }
 
      function updateNewSong() {
          console.log(song)
          setIsLoading(true)
-         updateSong(id, song).then((response) => {
+         updateSong(id, song, 2).then((response) => {
             setIsLoading(false)
             if (response.data.result.responseCode === '200') {
                     closeModal()
@@ -363,23 +339,59 @@ const SongAdmin = () => {
 
     }
 
-    function fillDataToForm(id) {
-        setId(id)
-        setModal(true)
-        setFormCustom(false)
-        searchSong(id).then(response => {
-            console.log(response.data.data)
-            const data = {...response.data.data}
-            setSong({...data, artis: data.artists.map(item => item.id), genres: data.genres.map(item => item.id)})
+    const urlToFile = async (url, fileName, mimeType) => {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        return new File([blob], fileName, { type: mimeType });
+    };
+
+    async function fillDataToForm(id) {  // ✅ Đánh dấu hàm là async
+        setId(id);
+        setModal(true);
+        setFormCustom(false);
+    
+        try {
+            const response = await searchSong(id);
+            console.log(response.data.data);
+            const data = { ...response.data.data };
+    
+            // Chờ convertSongData trả về file
+            const fileHandle = await convertSongData(data);
+    
+            console.log(fileHandle.avatar); // ✅ Bây giờ avatar sẽ có giá trị
+    
+            setSong({
+                name: data.name,
+                album: data.album,
+                duration: data.duration,
+                avatar: fileHandle.avatar,
+                sound: fileHandle.sound,
+                artis: data.artists.map(item => item.id),
+                genres: data.genres.map(item => item.id)
+            });
+    
             form.setFieldValue('name', data.name);
             form.setFieldValue('duration', data.duration);
             form.setFieldValue('album', data.album !== null ? data.album.id : null);
             form.setFieldValue('artis', data.artists.map(item => item.id));
             form.setFieldValue('genres', data.genres.map(item => item.id));
-        }).catch(error => {
-            console.log(error)
-        })
+            form.setFieldValue('avatar', [fileHandle.avatar]);
+            form.setFieldValue('sound', [fileHandle.sound]);
+        } catch (error) {
+            console.log(error);
+        }
     }
+    
+
+    const convertSongData = async (songData) => {
+        const avatarFile = await urlToFile(songData.avatar, "avatar.jpg", "image/jpeg");
+        const soundFile = await urlToFile(songData.url, "sound.mp3", "audio/mpeg");
+    
+        return {
+            avatar: avatarFile,
+            sound: soundFile
+        }
+    };
 
     function changeStatusSong(id, status) {
         setIsLoading(true)
@@ -562,10 +574,10 @@ const SongAdmin = () => {
                                 multiple={false}
                                 onChange={(info) => {
                                     const file = info.fileList.length ? info.file : null;
-                                    setSong({ ...song, avatar: file });
+                                    setSong({ ...song, avatar: file.originFileObj });
                                 }}
                                 customRequest={(info) => {
-                                    setSong({ ...song, avatar: info.file })
+                                    setSong({ ...song, avatar: info.file.originFileObj })
                                     info.onSuccess('done')
                                 }}
                                 accept={'image/*'}
@@ -630,7 +642,7 @@ const SongAdmin = () => {
                                 multiple={false}
                                 onChange={(info) => {
                                     const file = info.fileList.length ? info.file : null;
-                                    setSong({ ...song, sound: file });
+                                    setSong({ ...song, sound: file.originFileObj });
                                     if (info.file.status === 'removed') {
                                         form.setFieldsValue({ duration: null });
                                         setSong({ ...song, duration: 0 });
@@ -639,7 +651,7 @@ const SongAdmin = () => {
                                     }
                                 }}
                                 customRequest={(info) => {
-                                    setSong({ ...song, sound: info.file });
+                                    setSong({ ...song, sound: info.file.originFileObj });
                                     getAudioDuration(info.file);
                                     info.onSuccess('done')
                                 }}
