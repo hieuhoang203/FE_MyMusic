@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Button, ConfigProvider, Form, Input, message, Modal, Pagination} from "antd";
+import {Button, ConfigProvider, Form, Input, message, Modal, Pagination, Spin} from "antd";
 import {TinyColor} from "@ctrl/tinycolor";
 import {createBrowserHistory as useHistory} from "history";
 
 import {
     deleteGenres,
     getAllGenres,
-    returnStatus,
     saveGenres,
     searchGenres,
     updateGenres
@@ -35,6 +34,7 @@ const Genres = () => {
     // Variable reloads the page
     const [load, setLoad] = useState(true);
     const [form] = Form.useForm();
+    const [isLoading, setIsLoading] = useState(false);
 
     // List genres
     const [listGenres, setListGenres] = useState([])
@@ -67,15 +67,37 @@ const Genres = () => {
     }, []);
 
     useEffect(() => {
-        if (myAccount?.role !== 'ADMIN') {
-            history.replace("/")
-        } else {
-            getAllGenres(page).then((response) => {
-                console.log(response)
+        setIsLoading(true)
+        getAllGenres(page).then((response) => {
+            setIsLoading(false)
+            if (response.data.result.responseCode === '200') {  
                 setListGenres(response.data.data.content)
-                setPagination((prevState) => ({...pagination, totalRows: response.data.totalElements}))
-            })
-        }
+                setPagination((prevState) => ({...pagination, totalRows: response.data.data.totalElements}))
+            } else {
+                console.log(response)
+                if (response.data.result.responseCode !== '401') {
+                    message.open({
+                        type: "error",
+                        content: response.data.result.responseMessage,
+                        style: {
+                            animation: "fadeInOut 2s ease-in-out forwards",
+                        },
+                    })
+                }
+            }
+        }).catch((error) => {
+            setIsLoading(false)
+            if (error.response.status !== '401') {
+                message.open({
+                    type: "error",
+                    content: "Cannot get genres!",
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
+                })
+            }
+        })
+        
     }, [load, page]);
 
     // Hide Modal
@@ -92,22 +114,38 @@ const Genres = () => {
 
     // Create genres
     function createGenres() {
+        setIsLoading(true)
         saveGenres(genres).then((response) => {
-            setModal(false)
-            message.open({
-                type: "success",
-                content: "Genres added successfully!"
-            })
+            setIsLoading(false)
+            if (response.data.result.responseCode === '200') {
+                setModal(false)
+                message.open({
+                    type: "success",
+                    content: "Genres added successfully!"
+                })
             setLoad(!load)
             setGenres({
                 code: "",
                 name: ""
-            })
-            clearForm()
+                })
+                clearForm()
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
+                })
+            }
         }).catch((error) => {
+            setIsLoading(false)
             message.open({
                 type: "error",
-                content: "Cannot add new genres!"
+                content: "Cannot add new genres!",
+                style: {
+                    animation: "fadeInOut 2s ease-in-out forwards",
+                },
             })
             console.log(error)
         })
@@ -121,49 +159,81 @@ const Genres = () => {
 
     // Update genres
     function updateNewGenres() {
+        setIsLoading(true)
         updateGenres(id, genres).then((response) => {
-            setModal(false)
-            message.open({
-                type: "success",
-                content: "Genres update successfully!"
-            })
-            setLoad(!load)
-            setGenres({
-                code: "",
-                name: ""
-            })
-            clearForm()
+            setIsLoading(false)
+            if (response.data.result.responseCode === '200') {
+                setModal(false)
+                message.open({
+                    type: "success",
+                    content: "Genres update successfully!"
+                })
+                setLoad(!load)
+                setGenres({
+                    code: "",
+                    name: ""
+                })
+                clearForm()
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
+                })
+            }
         }).catch((error) => {
+            setIsLoading(false)
             message.open({
                 type: "error",
-                content: "Cannot update genres!"
+                content: "Cannot update genres!",
+                style: {
+                    animation: "fadeInOut 2s ease-in-out forwards",
+                },
             })
             console.log(error)
         })
     }
 
+    // Fill data update
     async function fillDataUpdate(id) {
-        setId(id)
-        const newValue = await searchGenres(id)
-        const value = {
-            code: newValue.data.code,
-            name: newValue.data.name,
+        try {
+            setId(id)
+            const newValue = await searchGenres(id)
+            const value = {
+                code: newValue.data.data.code,
+                name: newValue.data.data.name,
+            }
+            setGenres((prevState) => ({...prevState, ...value}))
+            setModal(true)
+            setFormCustom(false)
+            form.setFieldValue('name', value.name);
+            form.setFieldValue('code', value.code);
+        } catch (error) {
+            console.log(error)
         }
-        setGenres((prevState) => ({...prevState, ...value}))
-        setModal(true)
-        setFormCustom(false)
-        form.setFieldValue('name', value.name);
-        form.setFieldValue('code', value.code);
     }
 
-    function deleteRecord(id) {
-        deleteGenres(id).then((response) => {
-            message.open({
-                type: "success",
-                content: "Delete successfully!"
-            })
-            setLoad(!load)
-            console.log(response)
+    // Change status Genres
+    function deleteRecord(id, status) {
+        deleteGenres(id, status).then((response) => {
+            if (response.data.result.responseCode === '200') {
+                message.open({
+                    type: "success",
+                    content: status === 'ShutDown' ? "Delete genres successfully!" : "Return genres successfully!"
+                })
+                setLoad(!load)
+                console.log(response)
+            } else {
+                message.open({
+                    type: "error",
+                    content: response.data.result.responseMessage,
+                    style: {
+                        animation: "fadeInOut 2s ease-in-out forwards",
+                    },
+                })
+            }
         }).catch((error) => {
             console.log(error)
         })
@@ -172,23 +242,6 @@ const Genres = () => {
     // Check status ShutDown
     function checkStatus(value) {
         return value.status === 'ShutDown';
-    }
-
-    // Return status Genres
-    function returnStatusRecord(id) {
-        returnStatus(id).then((response) => {
-            message.open({
-                type: "success",
-                content: "Return status successfully!"
-            })
-            setLoad(!load)
-        }).catch((error) => {
-            message.open({
-                type: "error",
-                content: "Cannot return status successfully!"
-            })
-            console.log(error)
-        })
     }
 
     return (
@@ -204,6 +257,7 @@ const Genres = () => {
                 </div>
             </div>
 
+            <Spin size='large' tip='Loading...' spinning={isLoading}>
             <div className="recent-orders">
                 <h2>Genres List</h2>
                 <table>
@@ -216,13 +270,13 @@ const Genres = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    { listGenres.length > 0 ? listGenres.map((value, index) => (
+                    { listGenres != null ? listGenres.map((value, index) => (
                         <tr key={index}>
                             <td>{value.code}</td>
                             <td>{value.name}</td>
                             <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
                             <td className={checkStatus(value) ? 'success button' : 'danger button'}
-                                onClick={() => checkStatus(value) ? returnStatusRecord(value.id) : deleteRecord(value.id)}>{checkStatus(value) ? 'Return' : 'Delete'}</td>
+                                onClick={() => checkStatus(value) ? deleteRecord(value.id, 'Activate') : deleteRecord(value.id, 'ShutDown')}>{checkStatus(value) ? 'Return' : 'Delete'}</td>
                             <td className={'button warning'} onClick={() => fillDataUpdate(value.id)}>Update</td>
                             <td className={'button primary'} onClick={() => fillDataUpdate(value.id)}>Details</td>
                         </tr>
@@ -230,6 +284,7 @@ const Genres = () => {
                     </tbody>
                 </table>
             </div>
+            </Spin>
             <Pagination
                 pageSize={5}
                 total={pagination.totalRows}
@@ -252,52 +307,52 @@ const Genres = () => {
                     style={{maxWidth: 600, marginTop: '60px'}}
                     initialValues={genres}
                     form={form}
+                    disabled={isLoading}
                 >
                     <h2>{formCustom ? "Create Genres" : "Update Genres"}</h2>
                     <Form.Item label={'Code'} name={'code'}
-                               rules={[
-                                   {required: true, message: 'Code can not be left blank!'},
-                                   {
-                                       validator: (_, value) => {
-                                           if (!value) {
-                                               return Promise.resolve();
-                                           }
-                                           const lowercaseValue = value.trim().toLowerCase();
-                                           const isDuplicate = listGenres.some(
-                                               (genres) => genres.code.trim().toLowerCase() === lowercaseValue
-                                           )
-                                           if (isDuplicate) {
-                                               return Promise.reject('Code already exists!');
-                                           }
-                                       }
-                                   }
-                               ]}
+                            rules={[
+                                {required: true, message: 'Code can not be left blank!'},
+                                {
+                                    validator: (_, value) => {
+                                            if (listGenres != null) {
+                                                const lowercaseValue = value.trim().toLowerCase();
+                                                const isDuplicate = listGenres.some(
+                                                    (genres) => genres.code.trim().toLowerCase() === lowercaseValue
+                                                );
+                                                if (isDuplicate) {
+                                                    return Promise.reject('Code already exists!');
+                                                }
+                                                return Promise.resolve();
+                                            }
+                                        }
+                                    }
+                            ]}
                     >
                         <Input placeholder={'Enter code'}
-                               onChange={(event) => setGenres({...genres, code: event.target.value})} name={'code'}></Input>
+                            onChange={(event) => setGenres({...genres, code: event.target.value})} name={'code'}></Input>
                     </Form.Item>
                     <Form.Item label={'Name'} name={'name'}
-                               rules={[
-                                   {required: true, message: 'Name can not be left blank!'},
-                                   {
-                                       validator: (_, value) => {
-                                           if (!value) {
-                                               return Promise.resolve();
-                                           }
-                                           const lowercaseValue = value.trim().toLowerCase();
-                                           const isDuplicate = listGenres.some(
-                                               (genres) => genres.name.trim().toLowerCase() === lowercaseValue
-                                           )
-                                           if (isDuplicate) {
-                                               return Promise.reject('Name already exists!');
-                                           }
-                                           return Promise.resolve();
-                                       }
-                                   }
-                               ]}
+                            rules={[
+                                {required: true, message: 'Name can not be left blank!'},
+                                {
+                                    validator: (_, value) => {
+                                            if (listGenres != null) {
+                                                const lowercaseValue = value.trim().toLowerCase();
+                                                const isDuplicate = listGenres.some(
+                                                    (genres) => genres.name.trim().toLowerCase() === lowercaseValue
+                                                )
+                                                if (isDuplicate) {
+                                                    return Promise.reject('Name already exists!');
+                                                }
+                                                return Promise.resolve();
+                                            }
+                                    }
+                                }
+                            ]}
                     >
                         <Input placeholder={'Enter name'} name={'name'}
-                               onChange={(event) => setGenres({...genres, name: event.target.value})}></Input>
+                            onChange={(event) => setGenres({...genres, name: event.target.value})}></Input>
                     </Form.Item>
                     <Form.Item className={'button-submit'}>
                         <ConfigProvider

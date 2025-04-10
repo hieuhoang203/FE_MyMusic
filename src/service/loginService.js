@@ -5,9 +5,19 @@ export const saveAccount = (account) => {
 }
 
 export const getAccount = (account) => {
-    return axiosHelper.post(`/api/auth/login`, account)
+    return axiosHelper.post(`/api/auth/login`, account, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': ''
+        }
+    })
 }
 
 export const getUserWhenLogin = (login) => {
-    return axiosHelper.get(`/api/auth/get-account-by-user-name?login=${login}`)
+    return axiosHelper.get(`/api/auth/get-account-by-user-name?login=${login}`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': ''
+        }
+    })
 }

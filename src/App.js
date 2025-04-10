@@ -14,7 +14,7 @@ import SongArtis from "./component/pages/artis/SongArtis";
 import AnalyticsArtis from "./component/pages/artis/AnalyticsArtis";
 import Album from "./component/pages/artis/Album";
 import ErrorPage from "./component/pages/home/ErrorPage";
-
+import AxiosInterceptor from "./component/AxiosInterceptor";
 
 const storedUser = JSON.parse(localStorage.getItem("account"));
 
@@ -22,6 +22,7 @@ function App() {
 
     return (
         <>
+            <AxiosInterceptor/>
             <Routes>
                 <Route path={'/'} element={<Home/>}></Route>
                 <Route path={'/login'} element={<LoginAndRegister/>}></Route>
