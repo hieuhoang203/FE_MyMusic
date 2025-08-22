@@ -1,0 +1,286 @@
+/* Performance Optimization CSS */
+
+/* GPU Acceleration for smooth animations */
+.gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform;
+}
+
+/* Lazy Loading Animations */
+.lazy-load {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.lazy-load.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Intersection Observer Animations */
+.fade-in-observer {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in-observer.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.slide-in-left-observer {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.slide-in-left-observer.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.slide-in-right-observer {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.slide-in-right-observer.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.scale-in-observer {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.scale-in-observer.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Optimized Table Performance */
+.optimized-table {
+    contain: layout style paint;
+    transform: translateZ(0);
+}
+
+.optimized-table tbody tr {
+    contain: layout style;
+}
+
+.optimized-table tbody tr:hover {
+    will-change: transform, box-shadow;
+}
+
+.optimized-table tbody tr:not(:hover) {
+    will-change: auto;
+}
+
+/* Optimized Modal Performance */
+.optimized-modal {
+    contain: layout style paint;
+    transform: translateZ(0);
+}
+
+.optimized-modal .ant-modal-content {
+    will-change: transform, opacity;
+}
+
+/* Reduce Motion for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Critical CSS for Above-the-fold Content */
+.critical-content {
+    contain: layout style paint;
+}
+
+/* Non-critical CSS that can be lazy loaded */
+.non-critical {
+    contain: layout style;
+}
+
+/* Optimized Image Loading */
+.optimized-image {
+    object-fit: cover;
+    will-change: transform;
+    transition: transform var(--transition-normal);
+}
+
+.optimized-image:hover {
+    transform: scale(1.05);
+}
+
+/* Debounced Hover Effects */
+.debounced-hover {
+    transition: all var(--transition-normal);
+}
+
+.debounced-hover:hover {
+    transition-delay: 0.1s;
+}
+
+/* Memory Efficient Animations */
+.memory-efficient {
+    animation-fill-mode: both;
+    animation-play-state: paused;
+}
+
+.memory-efficient.active {
+    animation-play-state: running;
+}
+
+/* Optimized Scrolling */
+.smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Container Queries Support */
+@supports (container-type: inline-size) {
+    .responsive-container {
+        container-type: inline-size;
+    }
+    
+    @container (min-width: 400px) {
+        .responsive-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+}
+
+/* Modern CSS Features */
+@supports (backdrop-filter: blur(10px)) {
+    .modern-backdrop {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.8);
+    }
+}
+
+@supports (display: grid) {
+    .modern-grid {
+        display: grid;
+        gap: var(--space-md);
+    }
+}
+
+/* Performance Monitoring */
+.performance-monitor {
+    contain: strict;
+    content-visibility: auto;
+    contain-intrinsic-size: 200px;
+}
+
+/* Efficient Transforms */
+.efficient-transform {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+}
+
+/* Optimized Shadows */
+.optimized-shadow {
+    box-shadow: var(--shadow-lg);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+/* CSS Containment for Performance */
+.contained-layout {
+    contain: layout;
+}
+
+.contained-style {
+    contain: style;
+}
+
+.contained-paint {
+    contain: paint;
+}
+
+.contained-size {
+    contain: size;
+}
+
+.contained-strict {
+    contain: strict;
+}
+
+/* Viewport Units Optimization */
+.viewport-optimized {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height */
+}
+
+/* Modern Color Functions */
+@supports (color: oklch(0.7 0.15 180)) {
+    .modern-colors {
+        --color-primary-modern: oklch(0.65 0.15 240);
+        --color-success-modern: oklch(0.6 0.15 150);
+    }
+}
+
+/* Efficient Gradients */
+.efficient-gradient {
+    background: conic-gradient(from 0deg, var(--color-primary), var(--color-success), var(--color-primary));
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Optimized Focus States */
+.optimized-focus:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .high-contrast {
+        border: 2px solid;
+        background: ButtonFace;
+        color: ButtonText;
+    }
+}
+
+/* Dark Mode Optimizations */
+@media (prefers-color-scheme: dark) {
+    .auto-dark {
+        color-scheme: dark;
+        background: var(--color-dark);
+        color: var(--color-white);
+    }
+}
+
+/* Print Optimizations */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-optimized {
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+    }
+}
