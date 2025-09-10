@@ -1,188 +1,109 @@
-import React, {useEffect, useState} from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Button, Spin, Alert } from "antd";
+import { PlayCircleOutlined, HeartOutlined, SearchOutlined } from "@ant-design/icons";
 import "../../../css/home.css";
-import trending from "../../../asset/song1.jpg";
-import img1 from "../../../asset/song1.jpg";
-import song1 from "../../../asset/song1.mp3";
-import img2 from "../../../asset/song2.jpg";
-import song2 from "../../../asset/song2.mp3";
-import img3 from "../../../asset/song3.jpg";
-import song3 from "../../../asset/song3.mp3";
-import img4 from "../../../asset/song4.jpg";
-import song4 from "../../../asset/song4.mp3";
-import {Link} from "react-router-dom";
+import useMusicPlayer from "../../../hooks/useMusicPlayer";
+import useAuth from "../../../hooks/useAuth";
+import { ROUTES } from "../../../constants";
+import { isMobile } from "../../../utils/helpers";
 
 function Home() {
+    const { user, isAuthenticated } = useAuth();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isMobileView, setIsMobileView] = useState(isMobile());
 
-    const user = JSON.parse(localStorage.getItem("account"))
+    const {
+        songs,
+        currentSong,
+        isPlaying,
+        currentTime,
+        duration,
+        volume,
+        isLoading: playerLoading,
+        error: playerError,
+        audioRef,
+        togglePlayPause,
+        playSong,
+        nextSong,
+        previousSong,
+        seekTo,
+        setVolumeLevel,
+        formatTime,
+    } = useMusicPlayer();
 
-    const [indexSong, setIndexSong] = useState(0);
-    const [load, setLoad] = useState(true)
-    const [trendingSong, setTrendingSong] = useState({})
-
-    const [listSong, setListSong] = useState([
-        {
-            id: 1,
-            name: 'Cô gái M52',
-            artist: 'HuyR',
-            image: img1,
-            audio: song1,
-            duration: 213
-        },
-        {
-            id: 2,
-            name: 'Mây lang thang',
-            image: img2,
-            artist: 'Tùng Tea',
-            audio: song2,
-            duration: 197
-        },
-        {
-            id: 3,
-            name: 'Bèo dạt mây trôi',
-            image: img3,
-            artist: 'Hương Tú',
-            audio: song3,
-            duration: 207
-        },
-        {
-            id: 4,
-            name: 'Yume Tourou',
-            image: img4,
-            artist: 'RADWIMPS',
-            audio: song4,
-            duration: 129
-        }
-    ])
-
-    const [playing, setPlaying] = useState(listSong.at(indexSong));
-
+    // Handle responsive design
     useEffect(() => {
-        setTrendingSong(listSong.at(0))
-    }, [])
+        const handleResize = () => {
+            setIsMobileView(isMobile());
+        };
 
-    useEffect(() => {
-        setSong()
-    }, [load]);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
-    const [play, setPlay] = useState(true);
+    // Get trending song (first song)
+    const trendingSong = songs[0] || null;
 
-    function formatTime(value) {
-        let min = Math.floor(value/60);
-        if (min<10){
-            min = `0${min}`
-        }
-        let sec = Math.floor(value%60)
-        if (sec<10){
-            sec = `0${sec}`
-        }
-        return `${min}:${sec}`
-    }
+    // Event handlers
+    const handleSidebarToggle = useCallback(() => {
+        setIsSidebarOpen(prev => !prev);
+    }, []);
 
-    function setSong() {
-        const currentTime = document.getElementsByClassName('current-time')[0]
-        const seekSlide = document.getElementById('seek-slide')
-        setPlaying(listSong.at(indexSong))
-        setTimeout(() => {
-            currentTime.innerHTML = "00:00"
-            seekSlide.max = playing.duration
-        }, 50)
-    }
+    const handleSearchChange = useCallback((e) => {
+        setSearchQuery(e.target.value);
+    }, []);
 
-    function changePlaying(index) {
-        const playIcon = document.getElementById('play')
-        const audio = document.querySelector('audio');
-        setIndexSong(index)
-        setPlaying(listSong.at(index))
-        if (play === true) {
-            playIcon.classList.remove('bxs-right-arrow')
-            playIcon.classList.add('bx-pause')
-            setPlay(!play)
-        }
-        setLoad(!load)
-        setTimeout(() => {
-            audio.src = listSong.at(index).audio
-            audio.play()
-            console.log(audio)
-        }, 1000)
-    }
+    const handleSongSelect = useCallback((index) => {
+        playSong(index);
+    }, [playSong]);
 
-    function OpenOrCloseMenu(value) {
-        const sidebar = document.getElementById('.container .sidebar');
-        value === true ? sidebar.style.left = '0' : sidebar.style.left = '-100%';
-    }
+    const handleSeekChange = useCallback((e) => {
+        const newTime = parseFloat(e.target.value);
+        seekTo(newTime);
+    }, [seekTo]);
 
-    function playMusic(value) {
-        const audio = document.querySelector('audio');
-        const playIcon = document.getElementById('play')
-        if (value === true) {
-            audio.play()
-            playIcon.classList.remove('bxs-right-arrow')
-            playIcon.classList.add('bx-pause')
-        } else {
-            audio.pause()
-            playIcon.classList.remove('bx-pause')
-            playIcon.classList.add('bxs-right-arrow')
-        }
-        setPlay(!play)
-    }
+    const handleVolumeChange = useCallback((e) => {
+        const newVolume = parseFloat(e.target.value);
+        setVolumeLevel(newVolume);
+    }, [setVolumeLevel]);
 
-    setInterval(() => {
-        const currentTime = document.getElementsByClassName('current-time')[0]
-        const seekSlide = document.getElementById('seek-slide')
-        const audio =  document.querySelector('audio')
-        seekSlide.value = audio.currentTime
-        currentTime.innerHTML = formatTime(audio.currentTime)
-        if (audio.ended) {
-            nextSong()
-            setTimeout(() => {
-                audio.play()
-            }, 100)
-        }
-    }, 1000)
+    const handleGoToLogin = useCallback(() => {
+        window.location.href = ROUTES.LOGIN;
+    }, []);
 
-    function previousSong() {
-        if (indexSong >= 0) {
-            setIndexSong(indexSong - 1)
-        } else {
-            setIndexSong(listSong.length - 1)
-        }
-        setPlaying(listSong.at(indexSong))
-        setLoad(!load)
-    }
-
-    function nextSong() {
-        if (indexSong < listSong.length - 1) {
-            setIndexSong(indexSong + 1)
-        } else {
-            setIndexSong(0)
-        }
-        setPlaying(listSong.at(indexSong))
-        setLoad(!load)
-    }
-
-    function seekChange(event) {
-        event.preventDefault()
-        const currentTime = document.getElementsByClassName('current-time')[0]
-        const audio =  document.getElementById('audio')
-        const target = event.target
-        audio.currentTime = target.value
-        currentTime.innerHTML = formatTime(audio.currentTime)
-    }
-
-    function goToLogin() {
-        window.location.replace("/login")
-    }
+    // Filter songs based on search query
+    const filteredSongs = songs.filter(song => 
+        song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        song.artist.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div className="body-home">
-            <div className={'home-container'}>
-                <aside className="sidebar">
+            {playerError && (
+                <Alert
+                    message="Player Error"
+                    description={playerError}
+                    type="error"
+                    closable
+                    style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999 }}
+                />
+            )}
+            
+            <div className={`home-container ${isMobileView ? 'mobile' : ''}`}>
+                <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
                     <div className="logo">
-                        <button className="menu-btn" id="menu-close" onClick={() => OpenOrCloseMenu(false)}>
+                        <button 
+                            className="menu-btn" 
+                            id="menu-close" 
+                            onClick={() => setIsSidebarOpen(false)}
+                            aria-label="Close menu"
+                        >
                             <i className='bx bx-x'></i>
                         </button>
                         <i className='bx bx-pulse'></i>
-                        <Link to={'#'}>My Music</Link>
+                        <Link to={ROUTES.HOME}>My Music</Link>
                     </div>
                     <div className="menu">
                         <h5>Menu</h5>
@@ -265,33 +186,62 @@ function Home() {
                 <main>
                     <header>
                         <div className="nav-links">
-                            <button className="menu-btn" id="menu-open" onClick={() => OpenOrCloseMenu(true)}>
+                            <button 
+                                className="menu-btn" 
+                                id="menu-open" 
+                                onClick={handleSidebarToggle}
+                                aria-label="Open menu"
+                            >
                                 <i className='bx bx-menu'></i>
                             </button>
-                            <Link to={'#'}>Music</Link>
+                            <Link to={ROUTES.HOME}>Music</Link>
                             <Link to={'#'}>Live</Link>
                             <Link to={'#'}>Podcast</Link>
                         </div>
                         <div className="search">
-                            <i className='bx bx-search'></i>
-                            <input type="text" placeholder={'Type here to search'}/>
+                            <SearchOutlined />
+                            <input 
+                                type="text" 
+                                placeholder="Type here to search"
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                            />
                         </div>
                     </header>
 
                     <div className="trending">
                         <div className="left">
                             <h5>Trending New Song</h5>
-                            <div className="info">
-                                <h2>{trendingSong.name}</h2>
-                                <h4>{trendingSong.artist}</h4>
-                                <h5>63 Thousand Plays</h5>
-                                <div className="buttons">
-                                    <button onClick={() => changePlaying(0)}>Listen Now</button>
-                                    <button className={'heart-button'}><i className='bx bxs-heart'></i></button>
+                            {trendingSong ? (
+                                <div className="info">
+                                    <h2>{trendingSong.name}</h2>
+                                    <h4>{trendingSong.artist}</h4>
+                                    <h5>63 Thousand Plays</h5>
+                                    <div className="buttons">
+                                        <Button 
+                                            type="primary" 
+                                            icon={<PlayCircleOutlined />}
+                                            onClick={() => handleSongSelect(0)}
+                                            loading={playerLoading}
+                                        >
+                                            Listen Now
+                                        </Button>
+                                        <Button 
+                                            className="heart-button" 
+                                            icon={<HeartOutlined />}
+                                            shape="circle"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="info">
+                                    <h2>No songs available</h2>
+                                </div>
+                            )}
                         </div>
-                        <img src={trending} alt={'Can not show image'}/>
+                        {trendingSong && (
+                            <img src={trendingSong.image} alt={trendingSong.name} />
+                        )}
                     </div>
 
                     <div className="playlist">
@@ -329,25 +279,40 @@ function Home() {
                             </div>
 
                             <div className="items">
-                                {listSong.map((item, index) =>
-                                    <div className="item" key={item.id}>
-                                        <div className="info">
-                                            <p>{item.id}</p>
-                                            <img src={item.image} alt="Can not show image"/>
-                                            <div className="details">
-                                                <h5>{item.name}</h5>
-                                                <p>{item.artist}</p>
+                                {filteredSongs.length > 0 ? (
+                                    filteredSongs.map((item, index) => (
+                                        <div className="item" key={item.id}>
+                                            <div className="info">
+                                                <p>{index + 1}</p>
+                                                <img src={item.image} alt={item.name} />
+                                                <div className="details">
+                                                    <h5>{item.name}</h5>
+                                                    <p>{item.artist}</p>
+                                                </div>
+                                            </div>
+                                            <div className="actions">
+                                                <p className="time-song">{formatTime(item.duration)}</p>
+                                                <div className="icon">
+                                                    <Button
+                                                        type="text"
+                                                        icon={<PlayCircleOutlined />}
+                                                        onClick={() => handleSongSelect(index)}
+                                                        loading={playerLoading && currentSong?.id === item.id}
+                                                    />
+                                                </div>
+                                                <Button
+                                                    type="text"
+                                                    icon={<HeartOutlined />}
+                                                    shape="circle"
+                                                />
                                             </div>
                                         </div>
-                                        <div className="actions">
-                                            <p className={'time-song'}>{formatTime(item.duration)}</p>
-                                            <div className="icon">
-                                                <i className='bx bxs-right-arrow'
-                                                   onClick={() => changePlaying(index)}></i>
-                                            </div>
-                                            <i className='bx bxs-plus-square'></i>
-                                        </div>
-                                    </div>)}
+                                    ))
+                                ) : (
+                                    <div className="no-results">
+                                        <p>No songs found matching your search.</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -359,59 +324,108 @@ function Home() {
                     <div className="profile">
                         <i className='bx bxs-bell'></i>
                         <i className='bx bxs-cog'></i>
-                        {
-                            user !== null ?
-                                <div className="user">
-                                    <div className="left">
-                                        <img src={`${user.avatar}`}/>
-                                    </div>
-                                    <div className="right">
-                                        {user.name}
-                                    </div>
+                        {isAuthenticated && user ? (
+                            <div className="user">
+                                <div className="left">
+                                    <img src={user.avatar} alt={user.name} />
                                 </div>
-                                :
-                                <button className={'login-button'} onClick={() => goToLogin()}>
-                                    Login
-                                </button>
-                        }
+                                <div className="right">
+                                    {user.name}
+                                </div>
+                            </div>
+                        ) : (
+                            <Button 
+                                className="login-button" 
+                                onClick={handleGoToLogin}
+                                type="primary"
+                            >
+                                Login
+                            </Button>
+                        )}
                     </div>
 
                     <div className="music-player">
-
                         <div className="top-section">
                             <div className="header">
                                 <h5>Player</h5>
                                 <i className='bx bxs-playlist'></i>
                             </div>
-                            <div className="song-info">
-                                <img src={playing.image} alt="Can not show image!"/>
-                                <div className="description">
-                                    <h3>{playing.name}</h3>
-                                    <h5>{playing.artist}</h5>
-                                    <p>Best of 2024</p>
-                                    <audio preload={'auto'} src={playing.audio} id={'audio'}>
-                                    </audio>
-                                </div>
-                                <div className="progress">
-                                    <p className={'current-time'}></p>
-                                    <div className="active-line">
-                                        <input type="range" defaultValue={0} min={0} max={100} id={'seek-slide'}
-                                               onClick={seekChange}/>
+                            {currentSong ? (
+                                <div className="song-info">
+                                    <img src={currentSong.image} alt={currentSong.name} />
+                                    <div className="description">
+                                        <h3>{currentSong.name}</h3>
+                                        <h5>{currentSong.artist}</h5>
+                                        <p>Best of 2024</p>
+                                        <audio 
+                                            ref={audioRef}
+                                            preload="auto" 
+                                            src={currentSong.audio}
+                                            id="audio"
+                                        />
                                     </div>
-                                    {/*<div className="deactive-line"></div>*/}
-                                    <p className={'total-duration'}>{formatTime(playing.duration)}</p>
+                                    <div className="progress">
+                                        <p className="current-time">{formatTime(currentTime)}</p>
+                                        <div className="active-line">
+                                            <input 
+                                                type="range" 
+                                                min={0} 
+                                                max={duration || 0} 
+                                                value={currentTime}
+                                                onChange={handleSeekChange}
+                                                id="seek-slide"
+                                            />
+                                        </div>
+                                        <p className="total-duration">{formatTime(duration)}</p>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="song-info">
+                                    <div className="description">
+                                        <h3>No song selected</h3>
+                                        <p>Choose a song to start playing</p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <div className="player-actions">
                             <div className="buttons">
-                                <i className='bx bx-repeat'></i>
-                                <i className='bx bx-first-page' onClick={() => previousSong()}></i>
-                                <i id={'play'} className='bx bxs-right-arrow play-button'
-                                   onClick={() => playMusic(play)}></i>
-                                <i className='bx bx-last-page' onClick={() => nextSong()}></i>
-                                <i className='bx bx-download'></i>
+                                <Button type="text" icon={<i className='bx bx-repeat'></i>} />
+                                <Button 
+                                    type="text" 
+                                    icon={<i className='bx bx-first-page'></i>} 
+                                    onClick={previousSong}
+                                />
+                                <Button 
+                                    type="primary" 
+                                    shape="circle"
+                                    icon={
+                                        isPlaying ? 
+                                        <i className='bx bx-pause'></i> : 
+                                        <i className='bx bxs-right-arrow'></i>
+                                    }
+                                    onClick={togglePlayPause}
+                                    loading={playerLoading}
+                                />
+                                <Button 
+                                    type="text" 
+                                    icon={<i className='bx bx-last-page'></i>} 
+                                    onClick={nextSong}
+                                />
+                                <Button type="text" icon={<i className='bx bx-download'></i>} />
+                            </div>
+                            <div className="volume-control">
+                                <i className='bx bx-volume-low'></i>
+                                <input 
+                                    type="range" 
+                                    min={0} 
+                                    max={1} 
+                                    step={0.1}
+                                    value={volume}
+                                    onChange={handleVolumeChange}
+                                />
+                                <i className='bx bx-volume-full'></i>
                             </div>
                             <div className="lyrics">
                                 <i className='bx bx-chevron-up'></i>
