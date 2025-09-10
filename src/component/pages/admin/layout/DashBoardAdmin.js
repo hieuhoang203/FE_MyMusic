@@ -1,177 +1,248 @@
 import React, {useState} from "react";
 import "../../../../css/dashboard.css";
+import "../../../../css/spotify-theme.css";
 import logo from "../../../../asset/logomusic.png";
 import {Link, Outlet, useNavigate} from "react-router-dom";
+import { 
+    HomeOutlined, 
+    UserOutlined, 
+    TeamOutlined, 
+    PlayCircleOutlined, 
+    TagsOutlined, 
+    BarChartOutlined,
+    LogoutOutlined,
+    MenuOutlined
+} from "@ant-design/icons";
 
 const DashBoardAdmin = () => {
-
-    const [songWaits, setSongWaits] = useState(0)
-    const [podCastWaits, setPodCastWaits] = useState(0)
+    const [songWaits] = useState(0);
+    const [podCastWaits] = useState(0);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const user = JSON.parse(localStorage.getItem("account"));
-
     const navigate = useNavigate();
-
-    const [active, setActive]  = useState(3);
-
-    function OpenOrCloseMenu() {
-        const sideMenu = document.querySelector('aside')
-        sideMenu.style.display = 'block'
-    }
-
-    function changeColorUI() {
-        document.querySelector('.body-dashboard').classList.toggle('dark-mode-variables');
-        const background = document.getElementsByClassName('color-background')
-        background.item(0).classList.toggle('active')
-        background.item(1).classList.toggle('active')
-    }
+    const [active, setActive] = useState(1);
 
     function changeActiveSideBar(value) {
-        const sidebar = document.querySelector('.sidebar')
-        sidebar.querySelector(`a:nth-child(${active})`).classList.toggle('active')
-        sidebar.querySelector(`a:nth-child(${value})`).classList.toggle('active')
-        setActive(value)
+        setActive(value);
     }
 
     function goHomePage() {
-        navigate('/')
+        navigate('/');
     }
 
     function logout() {
-        localStorage.removeItem("account")
-        localStorage.removeItem("token")
+        localStorage.removeItem("account");
+        localStorage.removeItem("token");
+        navigate('/login');
     }
 
+    const menuItems = [
+        { id: 1, icon: <BarChartOutlined />, label: 'Thống kê', path: '/admin' },
+        { id: 2, icon: <UserOutlined />, label: 'Người dùng', path: '/admin/user' },
+        { id: 3, icon: <TeamOutlined />, label: 'Nghệ sĩ', path: '/admin/artis' },
+        { id: 4, icon: <PlayCircleOutlined />, label: 'Bài hát', path: '/admin/song' },
+        { id: 5, icon: <TagsOutlined />, label: 'Thể loại', path: '/admin/genres' },
+    ];
+
     return (
-        <div className="body-dashboard dark-mode-variables">
-            <div className="container">
-                <aside>
-                    <div className="toggle">
-                        <div className="logo">
-                            <img src={logo}/>
-                            <h2>Sub<span className="danger">lime</span></h2>
-                        </div>
-                        <div className="close" id="close-btn">
-                            <i className='bx bx-x'></i>
-                            hello
-                        </div>
+        <div className="spotify-app">
+            {/* Spotify Sidebar */}
+            <aside className={`spotify-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+                <div className="spotify-sidebar-logo">
+                    <i className='bx bx-pulse' style={{ fontSize: '32px', color: '#1db954' }}></i>
+                    <h1>Admin Panel</h1>
+                </div>
+                
+                <ul className="spotify-sidebar-nav">
+                    {menuItems.map((item) => (
+                        <li key={item.id}>
+                            <Link 
+                                to={item.path}
+                                className={active === item.id ? 'active' : ''}
+                                onClick={() => changeActiveSideBar(item.id)}
+                            >
+                                {item.icon}
+                                {item.label}
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+
+                <div style={{ marginTop: 'auto', paddingTop: '24px' }}>
+                    <div className="spotify-sidebar-nav">
+                        <h5 style={{ color: '#b3b3b3', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', margin: '0 0 8px 0' }}>Tài khoản</h5>
+                        <ul className="spotify-sidebar-nav">
+                            <li>
+                                <Link to="/" onClick={goHomePage}>
+                                    <HomeOutlined />
+                                    Về trang chủ
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="#" onClick={logout}>
+                                    <LogoutOutlined />
+                                    Đăng xuất
+                                </Link>
+                            </li>
+                        </ul>
                     </div>
+                </div>
+            </aside>
 
-                    <div className="sidebar">
-                        <Link onClick={() => changeActiveSideBar(1)} to={'/admin/user'}>
-                            <i className='bx bx-user'></i>
-                            <h3>Users</h3>
-                        </Link>
-                        <Link onClick={() => changeActiveSideBar(2)} to={'/admin/artis'}>
-                            <i className='bx bx-microphone'></i>
-                            <h3>Artis</h3>
-                        </Link>
-                        <Link className="active" onClick={() => changeActiveSideBar(3)} to={'/admin'}>
-                            <i className='bx bx-line-chart-down'></i>
-                            <h3>Analytics</h3>
-                        </Link>
-                        <Link onClick={() => changeActiveSideBar(4)} to={'/admin/genres'}>
-                            <i className='bx bx-volume-full'></i>
-                            <h3>Genres</h3>
-                        </Link>
-                        <Link onClick={() => changeActiveSideBar(5)} to={'/admin/song'}>
-                            <i className='bx bx-music'></i>
-                            <h3>Song</h3>
-                            <span className="message-count">{songWaits}</span>
-                        </Link>
-                        <Link onClick={() => changeActiveSideBar(6)} to={'/setting'}>
-                            <i className='bx bx-cog'></i>
-                            <h3>Settings</h3>
-                        </Link>
-
-                        <Link to={'/login'} onClick={() => logout()}>
-                            <i className='bx bx-log-out-circle'></i>
-                            <h3>Logout</h3>
-                        </Link>
-                    </div>
-                </aside>
-
-                <main>
-                    <Outlet/>
-                </main>
-
-                <div className="right-section">
-                    <div className="nav">
-                        <button id="menu-btn" onClick={() => OpenOrCloseMenu()}>
-                            <i className='bx bx-menu'></i>
+            {/* Spotify Main Content */}
+            <main className="spotify-main">
+                {/* Header */}
+                <div className="spotify-header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <button 
+                            className="spotify-player-btn"
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            style={{ display: 'block' }}
+                        >
+                            <MenuOutlined />
                         </button>
-                        <div className="dark-mode" onClick={() => changeColorUI()}>
-                            <i className='bx bxs-sun color-background'></i>
-                            <i className='bx bxs-moon color-background active'></i>
-                        </div>
-
-                        <div className="profile">
-                            <div className="info">
-                                <p>Hey, <b>{user.name}</b></p>
-                                <small className="text-muted">{user.role}</small>
-                            </div>
-                            <div className="profile-photo">
-                                <img src={user.avatar}/>
-                            </div>
-                        </div>
-
+                        <h2>Quản trị hệ thống</h2>
                     </div>
-
-                    <div className="user-profile">
-                        <div className="logo" onClick={() => goHomePage()}>
-                            <img src={logo}/>
-                            <h2>Sublime</h2>
-                            <p>Hoàng Văn Hiếu 🤴</p>
+                    
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <div style={{ 
+                            background: 'rgba(255, 255, 255, 0.1)', 
+                            padding: '8px 16px', 
+                            borderRadius: '20px',
+                            color: '#fff',
+                            fontSize: '14px',
+                            fontWeight: '700'
+                        }}>
+                            Xin chào, {user?.name || 'Admin'}
+                        </div>
+                        <div style={{ 
+                            width: '40px', 
+                            height: '40px', 
+                            borderRadius: '50%', 
+                            background: '#1db954',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#000',
+                            fontWeight: '700',
+                            fontSize: '16px'
+                        }}>
+                            {user?.name?.charAt(0)?.toUpperCase() || 'A'}
                         </div>
                     </div>
+                </div>
 
-                    <div className="reminders">
-                        <div className="header">
-                            <h2>Reminders</h2>
-                            <i className='bx bx-bell'></i>
-                        </div>
-
-                        <div className="notification">
-                            <div className="icon">
-                                <i className='bx bx-volume-full'></i>
+                {/* Stats Cards */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '32px' }}>
+                    <div className="spotify-card" style={{ background: 'linear-gradient(135deg, #1db954 0%, #1ed760 100%)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ 
+                                width: '48px', 
+                                height: '48px', 
+                                borderRadius: '8px', 
+                                background: 'rgba(0, 0, 0, 0.2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#000'
+                            }}>
+                                <PlayCircleOutlined style={{ fontSize: '24px' }} />
                             </div>
-                            <div className="content">
-                                <div className="info">
-                                    <h3>Workshop</h3>
-                                    <small className="text_muted">
-                                        08:00 AM - 12:00 PM
-                                    </small>
-                                </div>
-                                <i className='bx bx-dots-vertical-rounded'></i>
-                            </div>
-                        </div>
-
-                        <div className="notification deactive">
-                            <div className="icon">
-                                <i className='bx bx-edit-alt'></i>
-                            </div>
-                            <div className="content">
-                                <div className="info">
-                                    <h3>Workshop</h3>
-                                    <small className="text_muted">
-                                        08:00 AM - 12:00 PM
-                                    </small>
-                                </div>
-                                <i className='bx bx-dots-vertical-rounded'></i>
-                            </div>
-                        </div>
-
-                        <div className="notification add-reminder">
                             <div>
-                                <i className='bx bx-plus'></i>
-                                <h3>Add Reminder</h3>
+                                <h3 style={{ fontSize: '24px', fontWeight: '700', margin: '0 0 4px 0', color: '#000' }}>
+                                    {songWaits}
+                                </h3>
+                                <p style={{ fontSize: '14px', margin: 0, color: '#000', opacity: 0.8 }}>
+                                    Bài hát chờ duyệt
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="spotify-card" style={{ background: 'linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ 
+                                width: '48px', 
+                                height: '48px', 
+                                borderRadius: '8px', 
+                                background: 'rgba(0, 0, 0, 0.2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#fff'
+                            }}>
+                                <TeamOutlined style={{ fontSize: '24px' }} />
+                            </div>
+                            <div>
+                                <h3 style={{ fontSize: '24px', fontWeight: '700', margin: '0 0 4px 0', color: '#fff' }}>
+                                    {podCastWaits}
+                                </h3>
+                                <p style={{ fontSize: '14px', margin: 0, color: '#fff', opacity: 0.8 }}>
+                                    Podcast chờ duyệt
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="spotify-card" style={{ background: 'linear-gradient(135deg, #4ecdc4 0%, #6dd5ed 100%)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ 
+                                width: '48px', 
+                                height: '48px', 
+                                borderRadius: '8px', 
+                                background: 'rgba(0, 0, 0, 0.2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#fff'
+                            }}>
+                                <UserOutlined style={{ fontSize: '24px' }} />
+                            </div>
+                            <div>
+                                <h3 style={{ fontSize: '24px', fontWeight: '700', margin: '0 0 4px 0', color: '#fff' }}>
+                                    1,234
+                                </h3>
+                                <p style={{ fontSize: '14px', margin: 0, color: '#fff', opacity: 0.8 }}>
+                                    Người dùng hoạt động
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="spotify-card" style={{ background: 'linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ 
+                                width: '48px', 
+                                height: '48px', 
+                                borderRadius: '8px', 
+                                background: 'rgba(0, 0, 0, 0.2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#000'
+                            }}>
+                                <BarChartOutlined style={{ fontSize: '24px' }} />
+                            </div>
+                            <div>
+                                <h3 style={{ fontSize: '24px', fontWeight: '700', margin: '0 0 4px 0', color: '#000' }}>
+                                    98%
+                                </h3>
+                                <p style={{ fontSize: '14px', margin: 0, color: '#000', opacity: 0.8 }}>
+                                    Uptime hệ thống
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                {/* Main Content */}
+                <div className="spotify-card" style={{ minHeight: '400px' }}>
+                    <Outlet />
+                </div>
+            </main>
         </div>
     );
-}
+};
 
 export default DashBoardAdmin;

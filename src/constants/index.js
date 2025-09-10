@@ -36,6 +36,7 @@ export const PAGINATION = {
 // Routes
 export const ROUTES = {
   HOME: '/',
+  HOME_ALT: '/home',
   LOGIN: '/login',
   REGISTER: '/register',
   ADMIN: '/admin',

@@ -1,4 +1,5 @@
 import './App.css';
+import './css/spotify-theme.css';
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { ConfigProvider } from "antd";
@@ -46,6 +47,7 @@ function App() {
                 <AxiosInterceptor />
                 <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/home" element={<Home />} />
                     <Route path="/login" element={<LoginAndRegister />} />
                     <Route path="/register" element={<LoginAndRegister />} />
                     

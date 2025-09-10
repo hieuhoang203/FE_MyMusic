@@ -11,8 +11,7 @@ import {
     updateStatusSong
 } from "../../../service/songService";
 import {
-    Button, Checkbox,
-    ConfigProvider,
+    Button,
     Form,
     Input,
     InputNumber,
@@ -25,9 +24,8 @@ import {
     Card,
     Typography
 } from "antd";
-import {UploadOutlined, MusicOutlined, UserOutlined, TagOutlined} from "@ant-design/icons";
+import {UploadOutlined, PlayCircleOutlined, UserOutlined, TagOutlined} from "@ant-design/icons";
 import {Spin} from "antd";
-import {TinyColor} from "@ctrl/tinycolor";
 import axiosHelper from "../../../api/myApi";
 import "../../../css/admin-forms.css";
 
@@ -40,15 +38,7 @@ const SongAdmin = () => {
     }, []);
 
     // Form custom
-    const colors3 = ['#40e495', '#30dd8a', '#2bb673'];
-    const colors2 = ['#dd528d', '#ff8c79', '#fbae52'];
-
     const [isLoading, setIsLoading] = useState(false);
-
-    const getHoverColors = (colors) =>
-        colors.map((color) => new TinyColor(color).lighten(5).toString());
-    const getActiveColors = (colors) =>
-        colors.map((color) => new TinyColor(color).darken(5).toString());
 
     const [formCustom, setFormCustom] = useState(true)
 
@@ -443,7 +433,7 @@ const SongAdmin = () => {
                         <Button 
                             type="primary" 
                             size="large"
-                            icon={<MusicOutlined />}
+                            icon={<PlayCircleOutlined />}
                             onClick={() => openModal()}
                             className="modern-form-button"
                         >
@@ -712,7 +702,7 @@ const SongAdmin = () => {
                             <Input 
                                 placeholder="Enter song name" 
                                 className="modern-form-input"
-                                prefix={<MusicOutlined />}
+                                prefix={<PlayCircleOutlined />}
                                 onChange={(e) => setSong({...song, name: e.target.value})}
                             />
                         </Form.Item>
@@ -787,7 +777,7 @@ const SongAdmin = () => {
                                 showUploadList={false}
                             >
                                 <p className="ant-upload-drag-icon">
-                                    <MusicOutlined style={{ fontSize: '48px', color: '#667eea' }} />
+                                    <PlayCircleOutlined style={{ fontSize: '48px', color: '#667eea' }} />
                                 </p>
                                 <p className="ant-upload-text">Click or drag audio file to upload</p>
                                 <p className="ant-upload-hint">Support for MP3, WAV, OGG files. Max size: 19MB</p>
@@ -803,7 +793,7 @@ const SongAdmin = () => {
                                 placeholder="Select an album (optional)"
                                 onChange={handleChangeAlbum}
                                 options={albumSelect}
-                                suffixIcon={<MusicOutlined />}
+                                suffixIcon={<PlayCircleOutlined />}
                             />
                         </Form.Item>
                         
