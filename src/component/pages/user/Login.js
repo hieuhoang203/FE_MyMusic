@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, notification, Card, Typography, Space } from "antd";
-import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined, MailOutlined, GoogleOutlined, FacebookOutlined } from "@ant-design/icons";
 import "../../../css/login.css";
 import "../../../css/animation.css";
+import "../../../css/modern-forms.css";
 import useAuth from "../../../hooks/useAuth";
 import { validateEmail, validatePassword, validateName } from "../../../utils/validation";
 import { ROUTES } from "../../../constants";
@@ -55,27 +56,39 @@ const LoginAndRegister = () => {
     }, []);
 
     return (
-        <div className="body-login">
+        <div className="modern-form-container">
             <div className="box-container" id="container">
                 {/* Register Form */}
                 <div className={`form-container sign-up ${!isLoginMode ? 'active' : ''}`}>
-                    <Card className="auth-card">
-                        <Title level={2}>Create Account</Title>
-                        <div className="social-icon">
-                            <Button type="text" icon={<i className='bx bxl-google bx-sm'></i>} />
-                            <Button type="text" icon={<i className='bx bxl-facebook bx-sm'></i>} />
+                    <div className="modern-form-card">
+                        <div className="modern-form-header">
+                            <h1 className="modern-form-title">Create Account</h1>
+                            <p className="modern-form-subtitle">Join our music community today</p>
                         </div>
-                        <Text type="secondary">or use email for registration</Text>
+                        
+                        <div className="modern-form-social">
+                            <button className="modern-social-btn" type="button">
+                                <GoogleOutlined style={{ fontSize: '20px', color: '#4285f4' }} />
+                            </button>
+                            <button className="modern-social-btn" type="button">
+                                <FacebookOutlined style={{ fontSize: '20px', color: '#1877f2' }} />
+                            </button>
+                        </div>
+                        
+                        <div className="modern-form-divider">
+                            <span>or use email for registration</span>
+                        </div>
                         
                         <Form
                             form={registerForm}
                             onFinish={handleRegister}
                             layout="vertical"
-                            className="auth-form"
+                            className="modern-form"
                         >
                             <Form.Item
                                 name="name"
-                                label="Name"
+                                label="Full Name"
+                                className="modern-form-item"
                                 rules={[
                                     { required: true, message: 'Please input your name!' },
                                     { validator: (_, value) => {
@@ -86,13 +99,15 @@ const LoginAndRegister = () => {
                             >
                                 <Input 
                                     prefix={<UserOutlined />} 
-                                    placeholder="Enter your name" 
+                                    placeholder="Enter your full name" 
+                                    className="modern-form-input"
                                 />
                             </Form.Item>
 
                             <Form.Item
                                 name="login"
-                                label="Email"
+                                label="Email Address"
+                                className="modern-form-item"
                                 rules={[
                                     { required: true, message: 'Please input your email!' },
                                     { validator: (_, value) => {
@@ -103,14 +118,16 @@ const LoginAndRegister = () => {
                             >
                                 <Input 
                                     prefix={<MailOutlined />} 
-                                    placeholder="Enter your email" 
+                                    placeholder="Enter your email address" 
                                     type="email"
+                                    className="modern-form-input"
                                 />
                             </Form.Item>
 
                             <Form.Item
                                 name="pass"
                                 label="Password"
+                                className="modern-form-item"
                                 rules={[
                                     { required: true, message: 'Please input your password!' },
                                     { validator: (_, value) => {
@@ -121,43 +138,73 @@ const LoginAndRegister = () => {
                             >
                                 <Input.Password 
                                     prefix={<LockOutlined />} 
-                                    placeholder="Enter your password" 
+                                    placeholder="Create a strong password" 
+                                    className="modern-form-input"
                                 />
                             </Form.Item>
 
-                            <Form.Item>
+                            <Form.Item className="modern-form-item">
                                 <Button 
                                     type="primary" 
                                     htmlType="submit" 
                                     loading={isLoading}
                                     block
+                                    className="modern-form-button"
                                 >
-                                    Sign Up
+                                    Create Account
                                 </Button>
                             </Form.Item>
                         </Form>
-                    </Card>
+                        
+                        <div className="modern-form-footer">
+                            <Text type="secondary">
+                                Already have an account?{' '}
+                                <a 
+                                    href="#" 
+                                    className="modern-form-link"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleModeSwitch(true);
+                                    }}
+                                >
+                                    Sign in here
+                                </a>
+                            </Text>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Login Form */}
                 <div className={`form-container sign-in ${isLoginMode ? 'active' : ''}`}>
-                    <Card className="auth-card">
-                        <Title level={2}>Sign In</Title>
-                        <div className="social-icon">
-                            <Button type="text" icon={<i className='bx bxl-google bx-sm'></i>} />
-                            <Button type="text" icon={<i className='bx bxl-facebook bx-sm'></i>} />
+                    <div className="modern-form-card">
+                        <div className="modern-form-header">
+                            <h1 className="modern-form-title">Welcome Back</h1>
+                            <p className="modern-form-subtitle">Sign in to your account to continue</p>
                         </div>
-                        <Text type="secondary">or use email password</Text>
+                        
+                        <div className="modern-form-social">
+                            <button className="modern-social-btn" type="button">
+                                <GoogleOutlined style={{ fontSize: '20px', color: '#4285f4' }} />
+                            </button>
+                            <button className="modern-social-btn" type="button">
+                                <FacebookOutlined style={{ fontSize: '20px', color: '#1877f2' }} />
+                            </button>
+                        </div>
+                        
+                        <div className="modern-form-divider">
+                            <span>or use email password</span>
+                        </div>
                         
                         <Form
                             form={loginForm}
                             onFinish={handleLogin}
                             layout="vertical"
-                            className="auth-form"
+                            className="modern-form"
                         >
                             <Form.Item
                                 name="login"
-                                label="Email"
+                                label="Email Address"
+                                className="modern-form-item"
                                 rules={[
                                     { required: true, message: 'Please input your email!' },
                                     { validator: (_, value) => {
@@ -168,14 +215,16 @@ const LoginAndRegister = () => {
                             >
                                 <Input 
                                     prefix={<MailOutlined />} 
-                                    placeholder="Enter your email" 
+                                    placeholder="Enter your email address" 
                                     type="email"
+                                    className="modern-form-input"
                                 />
                             </Form.Item>
 
                             <Form.Item
                                 name="pass"
                                 label="Password"
+                                className="modern-form-item"
                                 rules={[
                                     { required: true, message: 'Please input your password!' },
                                     { validator: (_, value) => {
@@ -187,48 +236,78 @@ const LoginAndRegister = () => {
                                 <Input.Password 
                                     prefix={<LockOutlined />} 
                                     placeholder="Enter your password" 
+                                    className="modern-form-input"
                                 />
                             </Form.Item>
 
-                            <Form.Item>
+                            <Form.Item className="modern-form-item">
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                                    <a href="#" className="modern-form-link" style={{ fontSize: '14px' }}>
+                                        Forgot password?
+                                    </a>
+                                </div>
                                 <Button 
                                     type="primary" 
                                     htmlType="submit" 
                                     loading={isLoading}
                                     block
+                                    className="modern-form-button"
                                 >
                                     Sign In
                                 </Button>
                             </Form.Item>
                         </Form>
-                    </Card>
+                        
+                        <div className="modern-form-footer">
+                            <Text type="secondary">
+                                Don't have an account?{' '}
+                                <a 
+                                    href="#" 
+                                    className="modern-form-link"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleModeSwitch(false);
+                                    }}
+                                >
+                                    Create one here
+                                </a>
+                            </Text>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Toggle Container */}
-                <div className="toggle-container">
-                    <div className="toggle">
-                        <div className="toggle-panel toggle-left">
-                            <Title level={1}>Welcome back 👋</Title>
-                            <Text>Enter your personal details to use all of site features</Text>
-                            <Button 
-                                className="hidden" 
-                                onClick={() => handleModeSwitch(true)}
-                                type="primary"
-                            >
-                                Sign In
-                            </Button>
-                        </div>
-                        <div className="toggle-panel toggle-right">
-                            <Title level={1}>Hello, Friend 😘</Title>
-                            <Text>Register with your personal details to use all of site features</Text>
-                            <Button 
-                                className="hidden" 
-                                onClick={() => handleModeSwitch(false)}
-                                type="primary"
-                            >
-                                Sign Up
-                            </Button>
-                        </div>
+                <div className="modern-form-toggle">
+                    <div className="modern-toggle-content">
+                        {isLoginMode ? (
+                            <>
+                                <h1 className="modern-toggle-title">Hello, Friend! 👋</h1>
+                                <p className="modern-toggle-description">
+                                    Join our music community and discover amazing songs from talented artists around the world.
+                                </p>
+                                <Button 
+                                    className="modern-toggle-button"
+                                    onClick={() => handleModeSwitch(false)}
+                                    size="large"
+                                >
+                                    Create Account
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <h1 className="modern-toggle-title">Welcome Back! 🎵</h1>
+                                <p className="modern-toggle-description">
+                                    Sign in to continue your musical journey and access your personalized playlists.
+                                </p>
+                                <Button 
+                                    className="modern-toggle-button"
+                                    onClick={() => handleModeSwitch(true)}
+                                    size="large"
+                                >
+                                    Sign In
+                                </Button>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

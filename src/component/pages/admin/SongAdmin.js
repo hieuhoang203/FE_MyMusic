@@ -21,12 +21,17 @@ import {
     notification,
     Pagination,
     Select,
-    Upload
+    Upload,
+    Card,
+    Typography
 } from "antd";
-import {UploadOutlined} from "@ant-design/icons";
+import {UploadOutlined, MusicOutlined, UserOutlined, TagOutlined} from "@ant-design/icons";
 import {Spin} from "antd";
 import {TinyColor} from "@ctrl/tinycolor";
 import axiosHelper from "../../../api/myApi";
+import "../../../css/admin-forms.css";
+
+const { Title } = Typography;
 
 const SongAdmin = () => {
 
@@ -429,128 +434,234 @@ const SongAdmin = () => {
     return (
         <>
             <Spin size='large' tip='Loading...' spinning={!modal ? isLoading : null}>
-                <div className="new-users">
-                    <h2 className={'name-user'}>Add Song</h2>
-                    <div className="user-list">
-                        <div className="user" onClick={() => openModal()}>
-                            <img
-                                src={'https://res.cloudinary.com/hieuhv203/image/upload/v1715704767/assetHtml/jto8qgtu80dbi7ndvg8z.png'}
-                                alt={'Can not show image'}/>
-                            <h2>More</h2>
-                            <p>New Song</p>
+                <Card className="modern-admin-card" style={{ marginBottom: '24px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div>
+                            <Title level={3} style={{ margin: 0, color: '#374151' }}>Song Management</Title>
+                            <p style={{ margin: '8px 0 0 0', color: '#6b7280' }}>Manage and organize your music library</p>
                         </div>
+                        <Button 
+                            type="primary" 
+                            size="large"
+                            icon={<MusicOutlined />}
+                            onClick={() => openModal()}
+                            className="modern-form-button"
+                        >
+                            Add New Song
+                        </Button>
                     </div>
-                </div>
-                <div className="recent-orders">
-                    <h2>Confirm</h2>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>
-                                <Checkbox></Checkbox>
-                            </th>
-                            <th>Name</th>
-                            <th>Artis</th>
-                            <th>Duration</th>
-                            <th>Try Listening</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {songWaitList != null ? songWaitList.map((value, index) => (
-                            <tr key={index}>
-                                <td><img src={value.avatar} alt={'Can not show image'}/></td>
-                                <td>{value.name}</td>
-                                <td>{value.artists[0].name}</td>
-                                <td>{value.duration}</td>
-                                <td className={'button success'} onClick={() => playMusic(value.id)}>Play</td>
-                                <td className={'button warning'}
-                                    onClick={() => changeStatusSong(value.id, 'Activate')}>Accept
-                                </td>
+                </Card>
+                <Card className="modern-admin-card" style={{ marginBottom: '24px' }}>
+                    <Title level={4} style={{ margin: '0 0 20px 0', color: '#374151' }}>Pending Approval</Title>
+                    <div className="modern-admin-table">
+                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <thead>
+                            <tr>
+                                <th style={{ textAlign: 'left' }}>Song</th>
+                                <th style={{ textAlign: 'left' }}>Artist</th>
+                                <th style={{ textAlign: 'center' }}>Duration</th>
+                                <th style={{ textAlign: 'center' }}>Actions</th>
                             </tr>
-                        )) : <tr><td colSpan={5} style={{textAlign: 'center'}}>No data</td></tr>}
-                        </tbody>
-                    </table>
-                </div>
-                <Pagination
-                    pageSize={3}
-                    total={paginationWait.totalRows}
-                    onChange={(value) => handlePageChange(value, 1)}
-                />
-                <div className="recent-orders">
-                    <h2>All Songs</h2>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th style={{textAlign: "center"}}>Name</th>
-                            <th style={{textAlign: "center"}}>Artis</th>
-                            <th style={{textAlign: "center"}}>Duration</th>
-                            <th style={{textAlign: "center"}}>Status</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {songList != null ? songList.map((value, index) => (
-                            <tr key={value.id}>
-                                <td><img src={value.avatar} alt={'Can not show image'}/></td>
-                                <td>{value.name}</td>
-                                <td>{value.artists[value.artists.length - 1].name}</td>
-                                <td>{value.duration}</td>
-                                <td className={value.status === 'Activate' ? 'success' : 'danger'}>{value.status}</td>
-                                <td className={value.status === 'Activate' ? 'danger button' : 'success button'}
-                                    onClick={() => value.status === 'Activate' ? changeStatusSong(value.id, 'ShutDown') : changeStatusSong(value.id, 'Activate')}>{value.status === 'Activate' ? 'Delete' : 'Return'}</td>
-                                <td className={'button warning'} onClick={() => fillDataToForm(value.id)}>Update</td>
-                                <td className={'button primary'}>Detail</td>
+                            </thead>
+                            <tbody>
+                            {songWaitList != null ? songWaitList.map((value, index) => (
+                                <tr key={index}>
+                                    <td>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <img 
+                                                src={value.avatar} 
+                                                alt={value.name}
+                                                style={{ 
+                                                    width: '48px', 
+                                                    height: '48px', 
+                                                    borderRadius: '8px',
+                                                    objectFit: 'cover'
+                                                }}
+                                            />
+                                            <div>
+                                                <div style={{ fontWeight: '600', color: '#374151' }}>{value.name}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <UserOutlined style={{ color: '#9ca3af' }} />
+                                            {value.artists[0].name}
+                                        </div>
+                                    </td>
+                                    <td style={{ textAlign: 'center', color: '#6b7280' }}>
+                                        {Math.floor(value.duration / 60)}:{(value.duration % 60).toString().padStart(2, '0')}
+                                    </td>
+                                    <td style={{ textAlign: 'center' }}>
+                                        <Button 
+                                            className="modern-action-btn success"
+                                            onClick={() => playMusic(value.id)}
+                                            size="small"
+                                        >
+                                            Play
+                                        </Button>
+                                        <Button 
+                                            className="modern-action-btn warning"
+                                            onClick={() => changeStatusSong(value.id, 'Activate')}
+                                            size="small"
+                                        >
+                                            Approve
+                                        </Button>
+                                    </td>
+                                </tr>
+                            )) : (
+                                <tr>
+                                    <td colSpan={4} style={{ textAlign: 'center', padding: '40px', color: '#9ca3af' }}>
+                                        No pending songs
+                                    </td>
+                                </tr>
+                            )}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="modern-pagination">
+                        <Pagination
+                            pageSize={5}
+                            total={paginationWait.totalRows}
+                            onChange={(value) => handlePageChange(value, 1)}
+                            showSizeChanger={false}
+                        />
+                    </div>
+                </Card>
+
+                <Card className="modern-admin-card">
+                    <Title level={4} style={{ margin: '0 0 20px 0', color: '#374151' }}>All Songs</Title>
+                    <div className="modern-admin-table">
+                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <thead>
+                            <tr>
+                                <th style={{ textAlign: 'left' }}>Song</th>
+                                <th style={{ textAlign: 'left' }}>Artist</th>
+                                <th style={{ textAlign: 'center' }}>Duration</th>
+                                <th style={{ textAlign: 'center' }}>Status</th>
+                                <th style={{ textAlign: 'center' }}>Actions</th>
                             </tr>
-                        )) : <tr><td colSpan={5} style={{textAlign: 'center'}}>No data</td></tr>}
-                        </tbody>
-                    </table>
-                </div>
-                <Pagination
-                    pageSize={3}
-                    total={pagination.totalRows}
-                    onChange={(value) => handlePageChange(value, 2)}
-                />
+                            </thead>
+                            <tbody>
+                            {songList != null ? songList.map((value, index) => (
+                                <tr key={value.id}>
+                                    <td>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <img 
+                                                src={value.avatar} 
+                                                alt={value.name}
+                                                style={{ 
+                                                    width: '48px', 
+                                                    height: '48px', 
+                                                    borderRadius: '8px',
+                                                    objectFit: 'cover'
+                                                }}
+                                            />
+                                            <div>
+                                                <div style={{ fontWeight: '600', color: '#374151' }}>{value.name}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <UserOutlined style={{ color: '#9ca3af' }} />
+                                            {value.artists[value.artists.length - 1].name}
+                                        </div>
+                                    </td>
+                                    <td style={{ textAlign: 'center', color: '#6b7280' }}>
+                                        {Math.floor(value.duration / 60)}:{(value.duration % 60).toString().padStart(2, '0')}
+                                    </td>
+                                    <td style={{ textAlign: 'center' }}>
+                                        <span 
+                                            style={{
+                                                padding: '4px 12px',
+                                                borderRadius: '20px',
+                                                fontSize: '12px',
+                                                fontWeight: '600',
+                                                backgroundColor: value.status === 'Activate' ? '#d1fae5' : '#fee2e2',
+                                                color: value.status === 'Activate' ? '#065f46' : '#991b1b'
+                                            }}
+                                        >
+                                            {value.status}
+                                        </span>
+                                    </td>
+                                    <td style={{ textAlign: 'center' }}>
+                                        <Button 
+                                            className={`modern-action-btn ${value.status === 'Activate' ? 'danger' : 'success'}`}
+                                            onClick={() => value.status === 'Activate' ? changeStatusSong(value.id, 'ShutDown') : changeStatusSong(value.id, 'Activate')}
+                                            size="small"
+                                        >
+                                            {value.status === 'Activate' ? 'Deactivate' : 'Activate'}
+                                        </Button>
+                                        <Button 
+                                            className="modern-action-btn warning"
+                                            onClick={() => fillDataToForm(value.id)}
+                                            size="small"
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button 
+                                            className="modern-action-btn primary"
+                                            size="small"
+                                        >
+                                            View
+                                        </Button>
+                                    </td>
+                                </tr>
+                            )) : (
+                                <tr>
+                                    <td colSpan={5} style={{ textAlign: 'center', padding: '40px', color: '#9ca3af' }}>
+                                        No songs found
+                                    </td>
+                                </tr>
+                            )}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="modern-pagination">
+                        <Pagination
+                            pageSize={5}
+                            total={pagination.totalRows}
+                            onChange={(value) => handlePageChange(value, 2)}
+                            showSizeChanger={false}
+                        />
+                    </div>
+                </Card>
             </Spin>
             <Modal
                 open={modal}
                 onCancel={() => closeModal()}
-                width={500}
+                width={600}
                 footer={null}
-                className={'modal'}
+                className="modern-admin-form"
+                title={formCustom ? "Add New Song" : "Edit Song"}
             >
                 <Spin size='large' tip='Loading...' spinning={modal ? isLoading : null}>
                     <Form
-                        name="wrap"
-                        labelCol={{flex: '100px'}}
-                        labelAlign="left"
-                        labelWrap
+                        name="song-form"
                         form={form}
-                        wrapperCol={{flex: 1}}
-                        colon={false}
-                        style={{maxWidth: 600, marginTop: '60px'}}
-                        initialValues={
-                            {
-                                remember: true,
-                                duration: 0,
-                            }
-                        }
+                        layout="vertical"
+                        className="modern-form"
+                        initialValues={{
+                            remember: true,
+                            duration: 0,
+                        }}
                         encType="multipart/form-data"
                         disabled={isLoading}
+                        onFinish={formCustom ? createSong : updateNewSong}
                     >
-                        <h2>{formCustom ? "Create User" : "Update User"}</h2>
                         <Form.Item
-                            label={'Avatar'}
-                            name={'avatar'}
-                            valuePropName={'fileList'}
+                            label="Song Cover"
+                            name="avatar"
+                            valuePropName="fileList"
+                            className="modern-form-item"
                             rules={[
-                                formCustom ? { required: true, message: 'Avatar cannot be left blank!' } : null,
+                                formCustom ? { required: true, message: 'Please upload a song cover!' } : null,
                                 {
                                     validator(_, fileList) {
                                         return new Promise((resolve, reject) => {
                                             if (fileList && fileList.length && fileList[0].size > 1000000) {
-                                                reject('File size exceeded');
+                                                reject('File size must be less than 1MB');
                                             } else {
                                                 resolve();
                                             }
@@ -560,7 +671,7 @@ const SongAdmin = () => {
                             ]}
                             getValueFromEvent={(event) => event?.fileList}
                         >
-                            <Upload
+                            <Upload.Dragger
                                 maxCount={1}
                                 beforeUpload={(file) => {
                                     return new Promise((resolve, reject) => {
@@ -580,45 +691,62 @@ const SongAdmin = () => {
                                     setSong({ ...song, avatar: info.file.originFileObj })
                                     info.onSuccess('done')
                                 }}
-                                accept={'image/*'}
+                                accept="image/*"
+                                showUploadList={false}
                             >
-                                <Button icon={<UploadOutlined />}>Click to upload</Button>
-                            </Upload>
+                                <p className="ant-upload-drag-icon">
+                                    <UploadOutlined style={{ fontSize: '48px', color: '#667eea' }} />
+                                </p>
+                                <p className="ant-upload-text">Click or drag file to upload</p>
+                                <p className="ant-upload-hint">Support for single file upload. Max size: 1MB</p>
+                            </Upload.Dragger>
                         </Form.Item>
-                        <Form.Item label={'Name'} name={'name'}
-                                rules={[
-                                    {required: true, message: 'Name can not be left blank!'}
-                                ]}
+                        <Form.Item 
+                            label="Song Name" 
+                            name="name"
+                            className="modern-form-item"
+                            rules={[
+                                { required: true, message: 'Please enter song name!' }
+                            ]}
                         >
-                            <Input placeholder={'Enter your name'} name={'name'}
-                                onChange={(events) => setSong({...song, name: events.target.value})}></Input>
+                            <Input 
+                                placeholder="Enter song name" 
+                                className="modern-form-input"
+                                prefix={<MusicOutlined />}
+                                onChange={(e) => setSong({...song, name: e.target.value})}
+                            />
                         </Form.Item>
-                        <Form.Item label={'Duration'} name={'duration'}
-                                    rules={[
-                                    { required: true, message: 'Duration can not be left blank!' },
-                                    { type: 'number', message: 'Duration must be a number!' },
-                                    ]}
+                        
+                        <Form.Item 
+                            label="Duration (seconds)" 
+                            name="duration"
+                            className="modern-form-item"
+                            rules={[
+                                { required: true, message: 'Duration is required!' },
+                                { type: 'number', message: 'Duration must be a number!' },
+                            ]}
                         >
                             <InputNumber
-                            placeholder={'Duration will be auto-filled'}
-                            min={0}
-                            style={{ width: '145px' , backgroundColor: 'white', color: 'black'}}
-                            disabled
+                                placeholder="Duration will be auto-filled"
+                                min={0}
+                                className="modern-form-input"
+                                style={{ width: '100%' }}
+                                disabled
                             />
                         </Form.Item>
 
-                        {/* Trường Sound */}
                         <Form.Item
-                            label={'Sound'}
-                            name={'sound'}
-                            valuePropName={'fileList'}
+                            label="Audio File"
+                            name="sound"
+                            valuePropName="fileList"
+                            className="modern-form-item"
                             rules={[
-                                formCustom ? { required: true, message: 'Sound cannot be left blank!' } : null,
+                                formCustom ? { required: true, message: 'Please upload an audio file!' } : null,
                                 {
                                     validator(_, fileList) {
                                         return new Promise((resolve, reject) => {
                                             if (fileList && fileList.length && fileList[0].size > 19000000) {
-                                                reject('File size exceeded');
+                                                reject('File size must be less than 19MB');
                                             } else {
                                                 resolve();
                                             }
@@ -628,12 +756,12 @@ const SongAdmin = () => {
                             ]}
                             getValueFromEvent={(event) => event?.fileList}
                         >
-                            <Upload
+                            <Upload.Dragger
                                 maxCount={1}
                                 beforeUpload={(file) => {
                                     return new Promise((resolve, reject) => {
                                         if (file.size > 19000000) {
-                                            reject('File sound size exceeded!');
+                                            reject('File size exceeded!');
                                         } else {
                                             resolve('Success!');
                                         }
@@ -655,87 +783,86 @@ const SongAdmin = () => {
                                     getAudioDuration(info.file);
                                     info.onSuccess('done')
                                 }}
-                                accept={'audio/*'}
+                                accept="audio/*"
+                                showUploadList={false}
                             >
-                                <Button icon={<UploadOutlined />}>Click to upload</Button>
-                            </Upload>
+                                <p className="ant-upload-drag-icon">
+                                    <MusicOutlined style={{ fontSize: '48px', color: '#667eea' }} />
+                                </p>
+                                <p className="ant-upload-text">Click or drag audio file to upload</p>
+                                <p className="ant-upload-hint">Support for MP3, WAV, OGG files. Max size: 19MB</p>
+                            </Upload.Dragger>
                         </Form.Item>
                         <Form.Item
-                            label={'Album'}
-                            name={'album'}
+                            label="Album"
+                            name="album"
+                            className="modern-form-item"
                         >
                             <Select
-                                style={{
-                                    width: '100%',
-                                }}
-                                placeholder="Choose the album for the song"
+                                className="modern-form-input"
+                                placeholder="Select an album (optional)"
                                 onChange={handleChangeAlbum}
                                 options={albumSelect}
+                                suffixIcon={<MusicOutlined />}
                             />
                         </Form.Item>
+                        
                         <Form.Item
-                            label={'Genres'}
-                            name={'genres'}
+                            label="Genres"
+                            name="genres"
+                            className="modern-form-item"
                             rules={[
-                                {required: true, message: 'Genres cannot be left blank!'}
+                                { required: true, message: 'Please select at least one genre!' }
                             ]}
                         >
                             <Select
                                 mode="multiple"
                                 allowClear
-                                style={{
-                                    width: '100%',
-                                }}
-                                placeholder="Choose the genres for the song"
+                                className="modern-form-input"
+                                placeholder="Select genres for the song"
                                 onChange={handleChangeGenres}
                                 options={genresSelect}
+                                suffixIcon={<TagOutlined />}
                             />
                         </Form.Item>
+                        
                         <Form.Item
-                            label={'Artis'}
-                            name={'artis'}
+                            label="Artists"
+                            name="artis"
+                            className="modern-form-item"
                             rules={[
-                                {required: true, message: 'Artis cannot be left blank!'}
+                                { required: true, message: 'Please select at least one artist!' }
                             ]}
                         >
                             <Select
                                 mode="multiple"
-                                style={{
-                                    width: '100%',
-                                }}
-                                placeholder="Choose the artis for the song"
+                                className="modern-form-input"
+                                placeholder="Select artists for the song"
                                 onChange={handleChangeArtis}
                                 options={artisSelect}
+                                suffixIcon={<UserOutlined />}
                             />
                         </Form.Item>
-                        <Form.Item className={'button-submit'}>
-                            <ConfigProvider
-                                theme={formCustom ? {
-                                    components: {
-                                        Button: {
-                                            colorPrimary: `linear-gradient(116deg,  ${colors3.join(', ')})`,
-                                            colorPrimaryHover: `linear-gradient(116deg, ${getHoverColors(colors3).join(', ')})`,
-                                            colorPrimaryActive: `linear-gradient(116deg, ${getActiveColors(colors3).join(', ')})`,
-                                            lineWidth: 0,
-                                        }
-                                    }
-                                } : {
-                                    components: {
-                                        Button: {
-                                            colorPrimary: `linear-gradient(116deg,  ${colors2.join(', ')})`,
-                                            colorPrimaryHover: `linear-gradient(116deg, ${getHoverColors(colors2).join(', ')})`,
-                                            colorPrimaryActive: `linear-gradient(116deg, ${getActiveColors(colors2).join(', ')})`,
-                                            lineWidth: 0,
-                                        }
-                                    }
-                                }}
-                            >
-                                <Button htmlType={"button"} type="primary" size="large"
-                                        onClick={() => formCustom ? createSong() : updateNewSong()}
+                        <Form.Item className="modern-form-item" style={{ marginBottom: 0 }}>
+                            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                                <Button 
+                                    onClick={() => closeModal()}
+                                    size="large"
+                                    style={{ minWidth: '100px' }}
                                 >
-                                    {formCustom ? "Create" : "Update"}
+                                    Cancel
                                 </Button>
-                            </ConfigProvider>
+                                <Button 
+                                    type="primary" 
+                                    size="large"
+                                    htmlType="submit"
+                                    loading={isLoading}
+                                    className="modern-form-button"
+                                    style={{ minWidth: '120px' }}
+                                >
+                                    {formCustom ? "Create Song" : "Update Song"}
+                                </Button>
+                            </div>
                         </Form.Item>
                     </Form>
                 </Spin>

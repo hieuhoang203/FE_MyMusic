@@ -1,0 +1,401 @@
+/* Modern Form Styles */
+.modern-form-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-form-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.modern-form-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  padding: 48px;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.modern-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+  border-radius: 24px 24px 0 0;
+}
+
+.modern-form-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.modern-form-title {
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.modern-form-subtitle {
+  color: #64748b;
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+.modern-form-social {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.modern-social-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.modern-social-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #667eea;
+}
+
+.modern-form-divider {
+  text-align: center;
+  margin: 32px 0;
+  position: relative;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.modern-form-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+}
+
+.modern-form-divider span {
+  background: white;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.modern-form {
+  width: 100%;
+}
+
+.modern-form-item {
+  margin-bottom: 24px;
+}
+
+.modern-form-item .ant-form-item-label {
+  padding-bottom: 8px;
+}
+
+.modern-form-item .ant-form-item-label > label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.modern-form-input {
+  height: 52px;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  padding: 0 16px;
+}
+
+.modern-form-input:focus,
+.modern-form-input:hover {
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.modern-form-input.ant-input-affix-wrapper {
+  padding: 0 16px;
+}
+
+.modern-form-input.ant-input-affix-wrapper .ant-input {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  height: 48px;
+}
+
+.modern-form-input.ant-input-affix-wrapper:focus,
+.modern-form-input.ant-input-affix-wrapper:hover {
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.modern-form-input .ant-input-prefix {
+  color: #94a3b8;
+  margin-right: 12px;
+}
+
+.modern-form-button {
+  height: 52px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
+
+.modern-form-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5a67d8, #6b46c1);
+}
+
+.modern-form-button:active {
+  transform: translateY(0);
+}
+
+.modern-form-button.ant-btn-loading {
+  transform: none;
+}
+
+.modern-form-footer {
+  text-align: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.modern-form-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.modern-form-link:hover {
+  color: #5a67d8;
+  text-decoration: underline;
+}
+
+.modern-form-toggle {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  padding: 48px;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  text-align: center;
+}
+
+.modern-toggle-content {
+  position: relative;
+  z-index: 2;
+}
+
+.modern-toggle-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.modern-toggle-description {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.modern-toggle-button {
+  height: 52px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  padding: 0 32px;
+}
+
+.modern-toggle-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Animation for form switching */
+.modern-form-container .form-container {
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(0);
+}
+
+.modern-form-container .form-container.active {
+  transform: translateX(0);
+}
+
+.modern-form-container .form-container:not(.active) {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modern-form-container {
+    padding: 16px;
+  }
+  
+  .modern-form-card,
+  .modern-form-toggle {
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+  
+  .modern-form-title {
+    font-size: 28px;
+  }
+  
+  .modern-form-input {
+    height: 48px;
+    font-size: 16px;
+  }
+  
+  .modern-form-button {
+    height: 48px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modern-form-card,
+  .modern-form-toggle {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+  
+  .modern-form-title {
+    font-size: 24px;
+  }
+  
+  .modern-form-social {
+    gap: 12px;
+  }
+  
+  .modern-social-btn {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Loading Animation */
+.modern-form-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-form-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Error States */
+.modern-form-item .ant-form-item-explain-error {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.modern-form-input.ant-input-status-error {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.modern-form-input.ant-input-status-error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Success States */
+.modern-form-input.ant-input-status-success {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.modern-form-input.ant-input-status-success:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
